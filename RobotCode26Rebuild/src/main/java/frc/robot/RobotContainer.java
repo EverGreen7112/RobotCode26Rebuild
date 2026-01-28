@@ -8,6 +8,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.Swerve.ChangeTeleopSpeedModeCommand;
+import frc.robot.Commands.Swerve.ChangeTeleopSpeedModeCommand.SpeedMode;
 import frc.robot.Commands.Swerve.TeleopDriveCommand;
 
 import frc.robot.Subsystems.Swerve.Swerve;
@@ -43,7 +45,7 @@ public class RobotContainer {
   public static final Trigger chassisLT = chassis.leftTrigger();
   public static final Trigger chassisPovUp = chassis.povUp();
   public static final Trigger chassisPovDown = chassis.povDown();
-  public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftX, chassis::getLeftY, chassis::getRightX);
+  public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
 
   public RobotContainer() {
     registerNamedCommands();
@@ -58,8 +60,8 @@ public class RobotContainer {
 
     //chassis
     Swerve.getInstance().setDefaultCommand(teleopCommand);
-
-
+    chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
+    chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
   }
 
   

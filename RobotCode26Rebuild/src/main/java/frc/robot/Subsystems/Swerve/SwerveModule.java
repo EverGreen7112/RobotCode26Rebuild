@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Swerve;
 
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,6 +10,7 @@ import frc.robot.Utils.EverKit.EverEncoder;
 import frc.robot.Utils.EverKit.EverMotorController;
 import frc.robot.Utils.EverKit.EverPIDController;
 import frc.robot.Utils.EverKit.EverPIDController.ControlType;
+import frc.robot.Utils.EverKit.Implementations.Encoders.EverSparkInternalEncoder;
 import frc.robot.Utils.Math.Funcs;
 import frc.robot.Utils.Math.Vector2d;
 
@@ -52,7 +55,7 @@ public class SwerveModule extends SubsystemBase {
         this(velocityController, driveMotor, driveEncoder,
              angleController, steerMotor, steerEncoder);
         m_absSteerEncoder = absSteerEncoder;
-        m_steerEncoder.setPos(getAbsAngle());
+        //m_steerEncoder.setPos(getAbsAngle());
         
     }
 
@@ -178,6 +181,13 @@ public class SwerveModule extends SubsystemBase {
     public boolean isAbsEncoderConnected(){
         return m_absSteerEncoder.isConnected();
     }
-    
+
+    public EverMotorController getDriveMotor(){
+        return m_driveMotor;
+    }
+
+    public EverMotorController getSteerMotor(){
+        return m_steerMotor;
+    }
 
 }

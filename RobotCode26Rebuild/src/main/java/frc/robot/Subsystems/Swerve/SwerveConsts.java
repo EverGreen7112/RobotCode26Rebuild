@@ -35,23 +35,23 @@ public interface SwerveConsts{
     public static final SwerveModule[] MODULES = new SwerveModule[4];
 
     // motor controllers
-    public static final EverSparkMax 
-            TL_DRIVE_MOTOR = new EverSparkMax(2),
-            TR_DRIVE_MOTOR = new EverSparkMax(4), 
-            DL_DRIVE_MOTOR = new EverSparkMax(6),  
-            DR_DRIVE_MOTOR = new EverSparkMax(8); 
+    public static final EverSparkMax
+            TL_DRIVE_MOTOR = new EverSparkMax(6),
+            TR_DRIVE_MOTOR = new EverSparkMax(8), 
+            DL_DRIVE_MOTOR = new EverSparkMax(18),  
+            DR_DRIVE_MOTOR = new EverSparkMax(4); 
     
     public static final EverSparkMax 
-            TL_STEER_MOTOR = new EverSparkMax(1),
-            TR_STEER_MOTOR = new EverSparkMax(3),
-            DL_STEER_MOTOR = new EverSparkMax(5),
-            DR_STEER_MOTOR = new EverSparkMax(7);
+            TL_STEER_MOTOR = new EverSparkMax(5),
+            TR_STEER_MOTOR = new EverSparkMax(7),
+            DL_STEER_MOTOR = new EverSparkMax(1),
+            DR_STEER_MOTOR = new EverSparkMax(3);
 
     public static final EverSparkMax[] DRIVE_MOTORS = {TL_DRIVE_MOTOR, TR_DRIVE_MOTOR, DL_DRIVE_MOTOR, DR_DRIVE_MOTOR};
     public static final EverSparkMax[] STEER_MOTORS = {TL_STEER_MOTOR, TR_STEER_MOTOR, DL_STEER_MOTOR, DR_STEER_MOTOR};
 
     // encoders
-    public static final EverSparkInternalEncoder
+    public static final EverSparkInternalEncoder 
             TL_DRIVE_ENCODER = new EverSparkInternalEncoder(TL_DRIVE_MOTOR),
             TR_DRIVE_ENCODER = new EverSparkInternalEncoder(TR_DRIVE_MOTOR),
             DL_DRIVE_ENCODER = new EverSparkInternalEncoder(DL_DRIVE_MOTOR),
@@ -67,7 +67,7 @@ public interface SwerveConsts{
     public static final EverSparkInternalEncoder[] STEER_ENCODERS = {TL_STEER_ENCODER, TR_STEER_ENCODER, DL_STEER_ENCODER, DR_STEER_ENCODER};
 
     // swerve module pid controllers
-    public static final EverSparkMaxPIDController 
+    public static final EverSparkMaxPIDController
             TL_VELOCITY_CONTROLLER = new EverSparkMaxPIDController(TL_DRIVE_MOTOR),
             TR_VELOCITY_CONTROLLER = new EverSparkMaxPIDController(TR_DRIVE_MOTOR),
             DL_VELOCITY_CONTROLLER = new EverSparkMaxPIDController(DL_DRIVE_MOTOR),
@@ -84,17 +84,17 @@ public interface SwerveConsts{
             
     // chassis encoders 
     public static final EverAbsEncoder
-            TL_ABS_ENCODER = new EverCANCoder(1),
-            TR_ABS_ENCODER = new EverCANCoder(0),
-            DL_ABS_ENCODER = new EverCANCoder(3),
-            DR_ABS_ENCODER = new EverCANCoder(2);
+            TL_ABS_ENCODER = new EverCANCoder(11),
+            TR_ABS_ENCODER = new EverCANCoder(12),
+            DL_ABS_ENCODER = new EverCANCoder(13),
+            DR_ABS_ENCODER = new EverCANCoder(14);
 
     public static final EverAbsEncoder[] ABS_ENCODERS = {TL_ABS_ENCODER, TR_ABS_ENCODER, DL_ABS_ENCODER, DR_ABS_ENCODER};
     
 
     // swerve module velocity pidf values
-    public static final double WHEEL_VELOCITY_KP = 0.1, WHEEL_VELOCITY_KI = 0.0, WHEEL_VELOCITY_KD = 0.00,
-            WHEEL_VELOCITY_KV = 1/8.5, WHEEL_VELOCITY_KS = 0;
+    public static final double WHEEL_VELOCITY_KP = 0.05, WHEEL_VELOCITY_KI = 0.0, WHEEL_VELOCITY_KD = 0.00,
+            WHEEL_VELOCITY_KV = 0.75 / 2.81, WHEEL_VELOCITY_KS = 0;
     // swerve module wheel angle pid values
     public static final double WHEEL_ANGLE_KP = 0.01, WHEEL_ANGLE_KI = 0.0, WHEEL_ANGLE_KD = 0.000;
 
@@ -144,7 +144,7 @@ public interface SwerveConsts{
            }
            
            for(EverEncoder driveEncoder : DRIVE_ENCODERS){
-               driveEncoder.setVelConversionFactor(DRIVE_GEAR_RATIO * WHEEL_PERIMETER);
+               driveEncoder.setVelConversionFactor(DRIVE_GEAR_RATIO * WHEEL_PERIMETER * (1.0 / 60.0));
                driveEncoder.setPosConversionFactor(DRIVE_GEAR_RATIO * WHEEL_PERIMETER);
            }
    
@@ -156,11 +156,11 @@ public interface SwerveConsts{
                absEncoder.setPosConversionFactor(360.0);
            }
    
-           ABS_ENCODERS[0].setOffset(80.507); //80.5078125
-           ABS_ENCODERS[1].setOffset(137.37); //-42.275394439697266
-           ABS_ENCODERS[2].setOffset(-149.150); //-149.50196838378906
-           ABS_ENCODERS[3].setOffset(-27.509); //-34.8046875
-       
+           ABS_ENCODERS[0].setOffset(81.474609375);//80.507); //80.5078125
+           ABS_ENCODERS[1].setOffset(138.1640625);//137.37); //-42.275394439697266
+           ABS_ENCODERS[2].setOffset(-150);//-149.150); //-149.50196838378906
+           ABS_ENCODERS[3].setOffset(-31.11328125);//-27.509); //-34.8046875
+
    
            for (EverSparkMaxPIDController velocityController : WHEEL_VELOCITY_CONTROLLERS) {
                Slot0Configs configs = new Slot0Configs();
@@ -169,7 +169,7 @@ public interface SwerveConsts{
                configs.kD = WHEEL_VELOCITY_KD;
                configs.kS = WHEEL_VELOCITY_KS;
                configs.kV = WHEEL_VELOCITY_KV;
-               //velocityController.setPID(configs);   
+               velocityController.setPIDF(WHEEL_ANGLE_KP,WHEEL_ANGLE_KI,WHEEL_ANGLE_KD,WHEEL_VELOCITY_KV);   
            }
    
            for (EverSparkMaxPIDController angleController : WHEEL_ANGLE_CONTROLLERS) {

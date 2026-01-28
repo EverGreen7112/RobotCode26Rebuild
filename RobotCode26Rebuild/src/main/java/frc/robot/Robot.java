@@ -6,10 +6,15 @@ package frc.robot;
 
 import java.util.ArrayList;
 
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants.SteerFeedbackType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Subsystems.Swerve.Swerve;
 //import frc.robot.Utils.GamePieceDetector;
 import frc.robot.Utils.EverKit.Periodic;
 //import frc.robot.Utils.GamePieceCamera.GamePieceType;
@@ -23,14 +28,19 @@ public class Robot extends TimedRobot {
   public static ArrayList<Periodic> simulationPeriodicFuncs = new ArrayList<Periodic>();
   private final RobotContainer m_robotContainer;
 
+  //SparkMax spar = new SparkMax(7,MotorType.kBrushless);
+
+
   public Robot() { 
     m_robotContainer = new RobotContainer();
+
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     //SmartDashboard.putString("algeaPos",GamePieceDetector.getInstance().getClosestGamePieceByType(GamePieceType.Algea).toString());
+    SmartDashboard.putNumber("wantedSpeed", Swerve.getInstance().getModules()[0].getSpeed());
   }
 
   @Override
@@ -62,10 +72,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    //spar.set(1);
   }
 
   @Override
   public void teleopPeriodic() {
+    Swerve.getInstance().getModules()[0].setState(3,0);
   }
 
   @Override
@@ -82,3 +94,4 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {}
 }
+

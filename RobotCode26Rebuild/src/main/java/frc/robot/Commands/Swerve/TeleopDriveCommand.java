@@ -29,7 +29,7 @@ public class TeleopDriveCommand extends Command{
     @Override
     public void execute() {
         
-        double speedX = m_xSpeedInput.get();
+        double speedX = -m_xSpeedInput.get();
         double speedY = m_ySpeedInput.get();
         double angularVel = m_angularVelocityInput.get();
 
