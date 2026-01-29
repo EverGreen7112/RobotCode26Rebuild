@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Swerve;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -29,6 +31,8 @@ public class Swerve extends SubsystemBase implements SwerveConsts{
     private Swerve() {
         SwerveConsts.config();
         m_modules = SwerveConsts.MODULES;
+
+
         m_velocity = new Vector2d(0, 0);
         m_angularVelocity = 0;
         m_isGyroOriented = true;
@@ -198,10 +202,16 @@ public class Swerve extends SubsystemBase implements SwerveConsts{
     }
 
     private void log(){
-        // SmartDashboard.putNumber("TL", m_modules[0].getAngle());
-        // SmartDashboard.putNumber("TR", m_modules[1].getAngle());
-        // SmartDashboard.putNumber("DL", m_modules[2].getAngle());
-        // SmartDashboard.putNumber("DR", m_modules[3].getAngle());
+        Logger.recordOutput("Swerve/TL/angle", m_modules[0].getAngle());
+        Logger.recordOutput("Swerve/TR/angle", m_modules[1].getAngle());
+        Logger.recordOutput("Swerve/DL/angle", m_modules[2].getAngle());
+        Logger.recordOutput("Swerve/DR/angle", m_modules[3].getAngle());
+
+
+        SmartDashboard.putNumber("Swerve/TL/angle",m_modules[0].getSpeed());
+        SmartDashboard.putNumber("Swerve/TR/angle",m_modules[1].getSpeed());
+        SmartDashboard.putNumber("Swerve/DL/angle",m_modules[2].getSpeed());
+        SmartDashboard.putNumber("Swerve/DR/angle",m_modules[3].getSpeed());
 
         SmartDashboard.putString("velocity", getRobotOrientedVelocity().toString());
         SmartDashboard.putNumber("angular velocity", getAngularVelocity());
