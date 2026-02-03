@@ -14,6 +14,8 @@ import frc.robot.Commands.Swerve.TeleopDriveCommand;
 
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
+import frc.robot.Utils.NeuralNetworkTable;
+import frc.robot.Utils.NeuralNetworkTable.transmitMode;
 public class RobotContainer {
 
   private static final int CHASSIS_PORT = 0;
@@ -41,6 +43,7 @@ public class RobotContainer {
   public static final Trigger chassisBack = chassis.back();
   public static final Trigger chassisA = chassis.a();
   public static final Trigger chassisB = chassis.b();
+  public static final Trigger chassisX = chassis.x();
   public static final Trigger chassisRT = chassis.rightTrigger();
   public static final Trigger chassisLT = chassis.leftTrigger();
   public static final Trigger chassisPovUp = chassis.povUp();
@@ -62,6 +65,18 @@ public class RobotContainer {
     Swerve.getInstance().setDefaultCommand(teleopCommand);
     chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
     chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
+
+    //neural network shooter calibration 
+
+    chassisA.onTrue(new InstantCommand(() ->  NeuralNetworkTable.getInstance().setTransmit(transmitMode.Start, true)));
+    chassisA.onTrue(new InstantCommand(() ->  NeuralNetworkTable.getInstance().setTransmit(transmitMode.Start, false)));
+
+    chassisB.onTrue(new InstantCommand(() ->  NeuralNetworkTable.getInstance().setTransmit(transmitMode.Stop, true)));
+    chassisB.onTrue(new InstantCommand(() ->  NeuralNetworkTable.getInstance().setTransmit(transmitMode.Stop, false)));
+
+    chassisX.onTrue(new InstantCommand(() ->  NeuralNetworkTable.getInstance().setTransmit(transmitMode.Restart, true)));
+    chassisX.onTrue(new InstantCommand(() ->  NeuralNetworkTable.getInstance().setTransmit(transmitMode.Restart, false)));
+
   }
 
   
