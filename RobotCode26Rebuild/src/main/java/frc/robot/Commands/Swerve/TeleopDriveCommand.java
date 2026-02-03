@@ -29,7 +29,7 @@ public class TeleopDriveCommand extends Command{
     @Override
     public void execute() {
         
-        double speedX = -m_xSpeedInput.get();
+        double speedX = m_xSpeedInput.get();
         double speedY = m_ySpeedInput.get();
         double angularVel = m_angularVelocityInput.get();
 
@@ -48,7 +48,7 @@ public class TeleopDriveCommand extends Command{
             SwerveAngleController.getInstance().stop();
         }
         //create drive vector
-        Vector2d vec = new Vector2d(-speedX * maxSpeed, speedY * maxSpeed);
+        Vector2d vec = new Vector2d(speedX * maxSpeed, -speedY * maxSpeed);
         
         //make sure mag never goes over maxDriveSpeed so driving in all directions will be the same speed
         if(vec.mag() > maxSpeed){

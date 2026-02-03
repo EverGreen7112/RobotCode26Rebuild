@@ -30,22 +30,22 @@ public interface SwerveConsts{
     public static final double MAX_ANGULAR_SPEED = 180; // deg/s/
     public static final double MIN_SPEED = 0.0;
     
-    public static final double GYRO_DIRECTION = -1; //decide the direction of the gyro(counter clock wise should be positive)
+    public static final double GYRO_DIRECTION = 1; //decide the direction of the gyro(counter clock wise should be positive)
     
     public static final SwerveModule[] MODULES = new SwerveModule[4];
-
+    //front is cam
     // motor controllers
     public static final EverSparkMax
-            TL_DRIVE_MOTOR = new EverSparkMax(4),
-            TR_DRIVE_MOTOR = new EverSparkMax(8), 
-            DL_DRIVE_MOTOR = new EverSparkMax(18),  
-            DR_DRIVE_MOTOR = new EverSparkMax(6); 
+            TL_DRIVE_MOTOR = new EverSparkMax(7),//7
+            TR_DRIVE_MOTOR = new EverSparkMax(5), //5 
+            DL_DRIVE_MOTOR = new EverSparkMax(1), //1
+            DR_DRIVE_MOTOR = new EverSparkMax(3);//3 TL - TR - DL -DR
     
     public static final EverSparkMax 
-            TL_STEER_MOTOR = new EverSparkMax(3),
-            TR_STEER_MOTOR = new EverSparkMax(7),
-            DL_STEER_MOTOR = new EverSparkMax(1),
-            DR_STEER_MOTOR = new EverSparkMax(5);
+            TL_STEER_MOTOR = new EverSparkMax(8),//8
+            TR_STEER_MOTOR = new EverSparkMax(6),//6
+            DL_STEER_MOTOR = new EverSparkMax(2),//2
+            DR_STEER_MOTOR = new EverSparkMax(4);//4
 
 
     public static final EverSparkMax[] DRIVE_MOTORS = {TL_DRIVE_MOTOR, TR_DRIVE_MOTOR, DL_DRIVE_MOTOR, DR_DRIVE_MOTOR};

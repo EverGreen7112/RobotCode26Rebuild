@@ -181,13 +181,4 @@ public class SwerveModule extends SubsystemBase {
     public boolean isAbsEncoderConnected(){
         return m_absSteerEncoder.isConnected();
     }
-
-    public EverMotorController getDriveMotor(){
-        return m_driveMotor;
-    }
-
-    public EverMotorController getSteerMotor(){
-        return m_steerMotor;
-    }
-
 }
