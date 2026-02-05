@@ -157,5 +157,4 @@ public class SwerveLocalizer implements Periodic, SwerveConsts {
     public void initialize(){
         start(PeriodicTime.kRobotPeriodic);
     }
-
 }
