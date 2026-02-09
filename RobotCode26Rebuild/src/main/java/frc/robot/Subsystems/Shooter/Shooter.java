@@ -19,7 +19,7 @@ public class Shoter extends SubsystemBase{
     private EverMotorController m_leftMotor, m_rigthMotor, m_angleMotor;
     private EverMotorControllerGroup m_shoting;
     private EverEncoder m_encoder;
-    private DigitalInput m_leftLM, m_rightLM;   
+    private DigitalInput m_TopLM, m_rightLM;   
     private final double SHOTER_GEAR_RATIO = 0; 
     private double m_targetAngle, m_targetVel;
 
@@ -34,8 +34,8 @@ public class Shoter extends SubsystemBase{
         m_angleMotor = new EverSparkMax(0);
         m_encoder = new EverSparkInternalEncoder((EverSparkMax)m_angleMotor);
 
-        m_leftLM = new DigitalInput(0);
-        m_rightLM = new DigitalInput(0); // change all place holders
+        m_TopLM = new DigitalInput(0);
+        m_ButtomLM = new DigitalInput(0); // change all place holders
 
         m_anglePID = new EverSparkMaxPIDController((EverSparkMax)m_angleMotor);
     }
@@ -62,6 +62,7 @@ public class Shoter extends SubsystemBase{
 
     @Override
     public void periodic() {
+        if(m_TopLM.get() || m_ButtomLM.get())
         m_shotingPID.activate(m_targetVel, ControlType.kVel);
         m_anglePID.activate(m_targetAngle, ControlType.kPos);
     }
