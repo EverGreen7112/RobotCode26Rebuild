@@ -36,16 +36,17 @@ public interface SwerveConsts{
 
     // motor controllers
     public static final EverSparkMax
-            TL_DRIVE_MOTOR = new EverSparkMax(6),
-            TR_DRIVE_MOTOR = new EverSparkMax(8), 
-            DL_DRIVE_MOTOR = new EverSparkMax(18),  
-            DR_DRIVE_MOTOR = new EverSparkMax(4); 
+            TL_DRIVE_MOTOR = new EverSparkMax(7),//7
+            TR_DRIVE_MOTOR = new EverSparkMax(5), //5 
+            DL_DRIVE_MOTOR = new EverSparkMax(1), //1
+            DR_DRIVE_MOTOR = new EverSparkMax(3);//3 TL - TR - DL -DR
     
     public static final EverSparkMax 
-            TL_STEER_MOTOR = new EverSparkMax(5),
-            TR_STEER_MOTOR = new EverSparkMax(7),
-            DL_STEER_MOTOR = new EverSparkMax(1),
-            DR_STEER_MOTOR = new EverSparkMax(3);
+            TL_STEER_MOTOR = new EverSparkMax(8),//8
+            TR_STEER_MOTOR = new EverSparkMax(6),//6
+            DL_STEER_MOTOR = new EverSparkMax(2),//2
+            DR_STEER_MOTOR = new EverSparkMax(4);//4
+
 
     public static final EverSparkMax[] DRIVE_MOTORS = {TL_DRIVE_MOTOR, TR_DRIVE_MOTOR, DL_DRIVE_MOTOR, DR_DRIVE_MOTOR};
     public static final EverSparkMax[] STEER_MOTORS = {TL_STEER_MOTOR, TR_STEER_MOTOR, DL_STEER_MOTOR, DR_STEER_MOTOR};
