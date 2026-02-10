@@ -13,20 +13,20 @@ public class Intake extends SubsystemBase{
 
     private static Intake m_instance = new Intake();
 
-    private EverMotorController m_feederMotor, m_openingMotor;
+    private EverMotorController m_feederMotor, m_openingMotor;// feeding is a diffrent subsystem and extend smotor is better
     private EverEncoder m_openingEncoder;
 
-    private DigitalInput m_closingLM, m_openingLM;
+    private DigitalInput m_closingLM, m_openingLM;//two thing first limit swtch doesnt realy have reason
 
-    private final double OPEN_VEL = 0.25, FEEDING_VEL = 0.6; 
+    private final double OPEN_VEL = 0.25, FEEDING_VEL = 0.6;// speed is a scalar usually and velocity is two dimetional 
 
-    private boolean m_state = true;
+    private boolean m_state = true;// m_state is a bad name it doesnt clarify anything about itself
 
     private Intake(){
         m_feederMotor = new EverSparkFlex(0);
         m_openingMotor = new EverTalonFX(0);
 
-        m_openingEncoder = new EverTalonFXInternalEncoder((EverTalonFX)m_openingMotor);
+        m_openingEncoder = new EverTalonFXInternalEncoder((EverTalonFX)m_openingMotor);// you see you had to convert this is because you dont use the everkit correctley
 
         m_closingLM = new DigitalInput(0);
         m_openingLM = new DigitalInput(0);
@@ -43,7 +43,8 @@ public class Intake extends SubsystemBase{
     @Override
     public void periodic() {
         double vel = m_state ? OPEN_VEL : -OPEN_VEL;
-        m_openingMotor.set(vel);
+        m_openingMotor.set(vel);// what do you want to close everytime write functons for it
+
         if(vel < 0){
             m_feederMotor.stop();
             if(m_closingLM.get() && m_openingEncoder.getVel() < 0){
@@ -57,5 +58,6 @@ public class Intake extends SubsystemBase{
             }
         }
     }
+    // no functions for rollers
     
 }
