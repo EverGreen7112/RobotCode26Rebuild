@@ -25,11 +25,11 @@ public class Shoter extends SubsystemBase{
     private double m_targetAngle, m_targetVel;
 
     private EverPIDController m_anglePID, m_shotingPID;
- 
+ // delete left over4 climb
 
     private Shoter(){
         m_leftMotor = new EverTalonFX(0);
-        m_rigthMotor = new EverTalonFX(0);
+        m_rigthMotor = new EverTalonFX(0);//
         m_shoting = new EverMotorControllerGroup(m_rigthMotor, m_leftMotor);
 
         m_angleMotor = new EverSparkMax(0);
