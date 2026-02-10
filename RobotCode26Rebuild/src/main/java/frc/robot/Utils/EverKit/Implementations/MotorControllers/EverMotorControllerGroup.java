@@ -89,6 +89,16 @@ public class EverMotorControllerGroup extends EverMotorController{
     }
 
     @Override
+    public void setPosConversionFactor(double factor) {
+        return;
+    }
+
+    @Override
+    public void setVelConversionFactor(double factor) {
+        return;
+    }
+
+    @Override
     public boolean isConnected() {
         throw new UnsupportedOperationException("Unimplemented method 'isConnected'");
     }
