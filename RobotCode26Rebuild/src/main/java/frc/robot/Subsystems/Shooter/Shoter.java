@@ -64,14 +64,10 @@ public class Shoter extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if((m_topLM.get() || m_buttomLM.get()) && Math.abs(m_shoting.get()) > 0)
+        if((m_topLM.get() && m_shoting.get() > 0) || (m_buttomLM.get() && m_shoting.get() < 0)){
             m_shoting.stop();
+        }
         m_shotingPID.activate(m_targetVel, ControlType.kVel);
         m_anglePID.activate(m_targetAngle, ControlType.kPos);
-    }
-
-    
-
-
-    
+    }  
 }
