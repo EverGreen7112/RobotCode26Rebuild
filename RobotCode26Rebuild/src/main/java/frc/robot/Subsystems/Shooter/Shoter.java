@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Shoter;
+package frc.robot.Subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,6 +11,7 @@ import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverMotorControl
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkMax;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverSparkMaxPIDController;
+import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverTalonFXPIDController;
 
 public class Shoter extends SubsystemBase{
 
@@ -19,7 +20,7 @@ public class Shoter extends SubsystemBase{
     private EverMotorController m_leftMotor, m_rigthMotor, m_angleMotor;
     private EverMotorControllerGroup m_shoting;
     private EverEncoder m_encoder;
-    private DigitalInput m_TopLM, m_rightLM;   
+    private DigitalInput m_topLM, m_buttomLM;   
     private final double SHOTER_GEAR_RATIO = 0; 
     private double m_targetAngle, m_targetVel;
 
@@ -34,10 +35,11 @@ public class Shoter extends SubsystemBase{
         m_angleMotor = new EverSparkMax(0);
         m_encoder = new EverSparkInternalEncoder((EverSparkMax)m_angleMotor);
 
-        m_TopLM = new DigitalInput(0);
-        m_ButtomLM = new DigitalInput(0); // change all place holders
+        m_topLM = new DigitalInput(0);
+        m_buttomLM = new DigitalInput(0); // change all place holders
 
         m_anglePID = new EverSparkMaxPIDController((EverSparkMax)m_angleMotor);
+        m_shotingPID = new EverTalonFXPIDController((EverTalonFX)m_leftMotor);
     }
 
     public static Shoter getInstance(){
@@ -62,7 +64,8 @@ public class Shoter extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if(m_TopLM.get() || m_ButtomLM.get())
+        if((m_topLM.get() || m_buttomLM.get()) && Math.abs(m_shoting.get()) > 0)
+            m_shoting.stop();
         m_shotingPID.activate(m_targetVel, ControlType.kVel);
         m_anglePID.activate(m_targetAngle, ControlType.kPos);
     }
