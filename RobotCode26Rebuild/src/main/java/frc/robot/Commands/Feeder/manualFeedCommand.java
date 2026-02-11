@@ -11,7 +11,7 @@ public class manualFeedCommand extends Command {
 
     @Override
     public void initialize(){
-        Feeder.getInstance().setFeeding(true);
+        Feeder.getInstance().setIsFeeding(true);
         Feeder.getInstance().setManualControl(true);
     } 
 
@@ -22,7 +22,7 @@ public class manualFeedCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        Feeder.getInstance().setFeeding(false);
+        Feeder.getInstance().setIsFeeding(false);
         Feeder.getInstance().setManualControl(false);
     }
     

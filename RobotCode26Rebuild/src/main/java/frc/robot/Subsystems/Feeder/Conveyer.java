@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Feeder;
 
+import static edu.wpi.first.units.Units.Ounce;
+
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.EverKit.EverMotorController;
@@ -33,8 +35,10 @@ public class Conveyer extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_conveyingMotor.set(m_isConveying ? CONVEYING_VEL : 0);// why use ternary operator just use if uwu 
-        // because im gay
+        double speed = m_isConveying ? CONVEYING_VEL : 0;
+        if(speed != m_conveyingMotor.get()){
+            m_conveyingMotor.set(speed);
+        }
 
         if(LOG){
             log();

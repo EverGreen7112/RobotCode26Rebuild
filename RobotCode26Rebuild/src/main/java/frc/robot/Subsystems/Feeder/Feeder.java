@@ -47,7 +47,7 @@ public class Feeder extends SubsystemBase {
         return m_stallTimer >= MAX_STALL_TIME;
     }
 
-    public void setFeeding(boolean feeding){
+    public void setIsFeeding(boolean feeding){
         m_isFeeding = feeding;
     }
 
@@ -55,14 +55,20 @@ public class Feeder extends SubsystemBase {
         m_manualControl = manual;
     }
 
+    private void setFeedingSpeed(){
+        double speed;
+        speed = shouldStopFeeding() ? 0 : FEEDING_VEL;
+        if(m_manualControl){
+            speed = m_isFeeding ? FEEDING_VEL : 0;
+        }
+        m_isFeeding = speed != 0;
+        if(speed != m_feedingMotor.get())
+            m_feedingMotor.set(speed);
+    }
+
     @Override
     public void periodic() {
-        if(!m_manualControl)
-            m_feedingMotor.set(shouldStopFeeding() ? FEEDING_VEL : 0);
-
-        else
-            m_feedingMotor.set(m_isFeeding ? FEEDING_VEL : 0);
-
+        setFeedingSpeed();
         if(LOG)
             log();
 
