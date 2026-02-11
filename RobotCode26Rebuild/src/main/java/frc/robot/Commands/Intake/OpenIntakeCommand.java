@@ -11,7 +11,7 @@ public class OpenIntakeCommand extends Command {
 
     @Override
     public void initialize() {
-        Intake.getInstance().setState(true);
+        Intake.getInstance().setExtntionState(true);
     }
 
     @Override

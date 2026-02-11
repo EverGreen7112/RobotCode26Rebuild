@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Intake;
 
+import static edu.wpi.first.units.Units.Ounce;
+
 import edu.wpi.first.util.datalog.IntegerArrayLogEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,51 +15,70 @@ public class Intake extends SubsystemBase{
 
     private static Intake m_instance = new Intake();
 
-    private EverMotorController m_feederMotor, m_openingMotor;// feeding is a diffrent subsystem and extend smotor is better
+    private EverMotorController m_pickupMotor, m_extentionMotor;
     private EverEncoder m_openingEncoder;
 
-    private DigitalInput m_closingLM, m_openingLM;//two thing first limit swtch doesnt realy have reason
+    private DigitalInput m_retractionLM, m_extntionLM; //two thing first limit swtch doesnt realy have reason // why?
 
-    private final double OPEN_VEL = 0.25, FEEDING_VEL = 0.6;// speed is a scalar usually and velocity is two dimetional 
+    private final double EXTENTION_SPEED = 0.25, PICKUP_SPEED = 0.6;
+    private final boolean LOG = false;
 
-    private boolean m_state = true;// m_state is a bad name it doesnt clarify anything about itself
+    private boolean m_isOpen = true;
 
     private Intake(){
-        m_feederMotor = new EverSparkFlex(0);
-        m_openingMotor = new EverTalonFX(0);
+        m_pickupMotor = new EverSparkFlex(0);
+        m_extentionMotor = new EverTalonFX(0);
 
-        m_openingEncoder = new EverTalonFXInternalEncoder((EverTalonFX)m_openingMotor);// you see you had to convert this is because you dont use the everkit correctley
+        m_openingEncoder = new EverTalonFXInternalEncoder((EverTalonFX)m_extentionMotor);// you see you had to convert this is because you dont use the everkit correctley
 
-        m_closingLM = new DigitalInput(0);
-        m_openingLM = new DigitalInput(0);
+        m_retractionLM = new DigitalInput(0);
+        m_extntionLM = new DigitalInput(0);
     }
 
     public static Intake getInstance(){
         return m_instance;
     }
 
-    public void setState(boolean state){
-        m_state = state;
+    public void setExtntionState(boolean isOpen){
+        m_isOpen = isOpen;
+    }
+
+    public boolean getExtentionState(){
+        return m_isOpen;
+    }
+
+    public void setExtntionSpeed(){
+        double speed = m_isOpen ? EXTENTION_SPEED : -EXTENTION_SPEED;
+        if((m_extntionLM.get() && m_extentionMotor.get() > 0) || (m_retractionLM.get() && m_extentionMotor.get() < 0)){
+            speed = 0;
+        }
+        if(speed != m_extentionMotor.get()){
+            m_extentionMotor.set(speed);
+        }
+        return;
+    }
+
+    public void setPickupSpeed(){
+        double pickupSpeed = m_isOpen ? PICKUP_SPEED : 0;
+        if(pickupSpeed != m_pickupMotor.get()){
+            m_pickupMotor.set(pickupSpeed);
+        }
+        return;
     }
 
     @Override
     public void periodic() {
-        double vel = m_state ? OPEN_VEL : -OPEN_VEL;
-        m_openingMotor.set(vel);// what do you want to close everytime write functons for it
+        setExtntionSpeed();
+        setPickupSpeed();
 
-        if(vel < 0){
-            m_feederMotor.stop();
-            if(m_closingLM.get() && m_openingEncoder.getVel() < 0){
-                m_openingMotor.stop();
-            }
-        }
-        else{
-            m_feederMotor.set(FEEDING_VEL);
-            if(m_openingLM.get() && m_openingEncoder.getVel() > 0){
-                m_openingMotor.stop();
-            }
+        if(LOG){
+            log();
         }
     }
     // no functions for rollers
+
+    private void log(){
+        // log motor output and encoder values
+    }
     
 }
