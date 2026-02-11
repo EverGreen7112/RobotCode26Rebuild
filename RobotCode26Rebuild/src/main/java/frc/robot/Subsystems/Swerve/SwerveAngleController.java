@@ -21,6 +21,10 @@ public class SwerveAngleController implements Periodic{
         return m_instance;
     }
 
+    public void setTargetAngle(double targetAngle){
+        m_targetAngle = targetAngle;
+    }
+
     public void start(double targetAngle){
         stop();
         m_targetAngle = targetAngle;

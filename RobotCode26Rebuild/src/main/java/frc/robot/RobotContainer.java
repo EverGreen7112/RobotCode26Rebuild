@@ -8,10 +8,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.Swerve.ChangeTeleopSpeedModeCommand;
-import frc.robot.Commands.Swerve.ChangeTeleopSpeedModeCommand.SpeedMode;
-import frc.robot.Commands.Swerve.TeleopDriveCommand;
-
+import frc.robot.Commands.Swerve.Manual.ChangeTeleopSpeedModeCommand;
+import frc.robot.Commands.Swerve.Manual.TeleopDriveCommand;
+import frc.robot.Commands.Swerve.Manual.ChangeTeleopSpeedModeCommand.SpeedMode;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
 public class RobotContainer {
