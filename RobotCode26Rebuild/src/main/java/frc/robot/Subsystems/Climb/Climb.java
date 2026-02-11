@@ -10,16 +10,16 @@ public class Climb extends SubsystemBase{
     
     private static Climb m_instance = new Climb();
 
-    private EverMotorController m_motor;
-    private EverEncoder m_encoder;
+    private EverMotorController m_ClimbMotor;
+    private EverEncoder m_ClimbEncoder;
 
     private final double MAX_OPEN = 0, OPEN_VEL = 0.25; // place holder
 
     private boolean log = false;
 
     private Climb(){
-        m_motor = new EverTalonFX(0);
-        m_encoder = new EverCANCoder(0);
+        m_ClimbMotor = new EverTalonFX(0);
+        m_ClimbEncoder = new EverCANCoder(0);
     }
 
     public static Climb getInstance(){
@@ -27,23 +27,23 @@ public class Climb extends SubsystemBase{
     }
 
     public void open(){
-        m_motor.set(OPEN_VEL);
+        m_ClimbMotor.set(OPEN_VEL);
     }
 
     public void close(){
-        m_motor.set(-OPEN_VEL);
+        m_ClimbMotor.set(-OPEN_VEL);
     }
 
     public void stop(){
-        m_motor.stop();
+        m_ClimbMotor.stop();
     }
 
     public boolean canOpen(){
-        return m_encoder.getPos() < MAX_OPEN;
+        return m_ClimbEncoder.getPos() < MAX_OPEN;
     }
 
     public boolean canClose(){
-        return m_encoder.getPos() > 0;
+        return m_ClimbEncoder.getPos() > 0;
     }
 
     private void log(){
@@ -52,7 +52,7 @@ public class Climb extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if((!canOpen() && m_encoder.getVel() > 0) || (!canClose() && m_encoder.getVel() < 0))
+        if((!canOpen() && m_ClimbEncoder.getVel() > 0) || (!canClose() && m_ClimbEncoder.getVel() < 0))
             stop();
 
         if(log){
