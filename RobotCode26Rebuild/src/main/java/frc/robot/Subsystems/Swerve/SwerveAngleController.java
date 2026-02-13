@@ -46,6 +46,10 @@ public class SwerveAngleController implements Periodic{
         stop(PeriodicTime.kAutonomousPeriodic, PeriodicTime.kTeleopPeriodic, PeriodicTime.kTestPeriodic);
     }
 
+    public void setTargetAngle(double targetAngle){
+        m_targetAngle = targetAngle;
+    }
+
     public void initialize(){
         start(PeriodicTime.kAutonomousPeriodic, PeriodicTime.kTeleopPeriodic, PeriodicTime.kTestPeriodic);
 
