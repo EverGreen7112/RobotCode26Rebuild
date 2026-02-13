@@ -39,20 +39,20 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
   
 
-    public Robot() { 
-      m_robotContainer = new RobotContainer();
+  public Robot() { 
+    m_robotContainer = new RobotContainer();
+
+  }
+
+  @Override
+  public void robotInit() {
+    m_robotContainer = new RobotContainer();
   
-    }
-  
-    @Override
-    public void robotInit() {
-      m_robotContainer = new RobotContainer();
-    
-      Logger.recordMetadata("serverTest", "29.01");
-      Logger.addDataReceiver(new WPILOGWriter());
-      Logger.addDataReceiver(new NT4Publisher());
-      Logger.start();
-    }
+    Logger.recordMetadata("serverTest", "29.01");
+    Logger.addDataReceiver(new WPILOGWriter());
+    Logger.addDataReceiver(new NT4Publisher());
+    Logger.start();
+  }
 
 
   @Override
