@@ -5,8 +5,8 @@ import java.util.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Commands.Shooter.Manual.ManualStopShootCommand;
+import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterConsts;
-import frc.robot.Subsystems.Shooter.Shoter;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveAngleController;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
@@ -14,7 +14,7 @@ import frc.robot.Utils.Math.Vector2d;
 
 public class TurnToShotingAngle extends Command{
 
-    boolean m_isShooting = Shoter.getInstance().getIsShooting();
+    boolean m_isShooting = Shooter.getInstance().getIsShooting();
 
     double m_targetAngle;
 
@@ -27,11 +27,11 @@ public class TurnToShotingAngle extends Command{
 
         double robotsOfSetAngle = Math.atan2(y, x);
 
-        Vector2d feulVectorAngle = new Vector2d(Shoter.getInstance().getCurrentVel(), 0);
+        Vector2d fuelVectorAngle = new Vector2d(Shooter.getInstance().getCurrentVel(), 0);
         Vector2d robotVector = Swerve.getInstance().getRobotOrientedVelocity();
 
-        double dot = feulVectorAngle.dot(robotVector);
-        double mag = feulVectorAngle.mag() * robotVector.mag();
+        double dot = fuelVectorAngle.dot(robotVector);
+        double mag = fuelVectorAngle.mag() * robotVector.mag();
         
         m_targetAngle = robotsOfSetAngle + Math.acos(dot / mag); 
     }
