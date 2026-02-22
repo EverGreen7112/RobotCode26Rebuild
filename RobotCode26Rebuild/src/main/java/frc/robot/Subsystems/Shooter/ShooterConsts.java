@@ -18,6 +18,10 @@ import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverTalonFXPIDCont
 
 public interface ShooterConsts {
 
+    public enum ShooterState{
+        kStop, kScoring, kDelivery
+    }
+
     public static final EverMotorController 
         LEFT_MOTOR = new EverSparkMax(0),
         RIGHT_MOTOR = new EverSparkMax(1),

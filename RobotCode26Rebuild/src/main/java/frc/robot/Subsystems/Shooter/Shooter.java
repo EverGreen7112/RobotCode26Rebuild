@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
+import frc.robot.Utils.DeltaTime;
 import frc.robot.Utils.EverKit.EverAbsEncoder;
 import frc.robot.Utils.EverKit.EverEncoder;
 import frc.robot.Utils.EverKit.EverMotorController;
@@ -27,14 +28,15 @@ import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverSparkMaxPIDCon
 import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverTalonFXPIDController;
 import frc.robot.Utils.Math.Vector2d;
 
+
 public class Shooter extends SubsystemBase{
+
 
     private static Shooter m_instance = new Shooter();
 
     private double m_targetAngle, m_targetSpeed,
             m_deltaSpeed, m_currentSpeed;
 
-    private boolean m_isShooting = false;
 
     private EverMotorControllerGroup m_shootingMotors;
 
@@ -47,6 +49,11 @@ public class Shooter extends SubsystemBase{
     private EverEncoder m_encoder;
 
     private Pose2d m_targetHub;
+
+    private ShooterConsts.ShooterState m_shooterState = ShooterConsts.ShooterState.kStop,
+             m_previousShooterState = ShooterConsts.ShooterState.kStop;
+
+    private DeltaTime m_deltaTime = new DeltaTime();
 
     private Shooter(){
         m_shootingMotors = new EverMotorControllerGroup(ShooterConsts.LEFT_MOTOR, ShooterConsts.RIGHT_MOTOR);
@@ -106,6 +113,10 @@ public class Shooter extends SubsystemBase{
         return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
     }
 
+    public void setShooterState(ShooterConsts.ShooterState shooterState){
+        m_shooterState = shooterState;
+    }
+
     /*
      * calculates the minimum angle needed to shoot the ball to the hub based on the current distance and hight of the shooter
      * the formula is based on the physics of projectile motion
@@ -118,10 +129,6 @@ public class Shooter extends SubsystemBase{
                     Math.sqrt(Math.pow(m_targetSpeed,4) - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(getShootingDistance(), 2) + 2 * ShooterConsts.SHOOTING_HIGHT * Math.pow(m_targetSpeed, 2)));
         double mechane = ShooterConsts.GRAVITY * getShootingDistance();
         return Math.toDegrees(Math.atan(mone / mechane));
-    }
-
-    public void setIsShooting(boolean isShooting){
-        m_isShooting = isShooting;
     }
 
     public double getShootingSpeed(){
@@ -142,28 +149,32 @@ public class Shooter extends SubsystemBase{
         return robotsOffSetAngle + Math.toDegrees(Math.atan2(ballVector.y, ballVector.x));
     }
 
-    public boolean getIsShooting() {
-        return m_isShooting;
-    }  
-
     @Override
     public void periodic() {
         if((m_angleAbsEncoder.getAbsPos() > ShooterConsts.MAX_ANGLE && m_shootingMotors.get() > 0) || 
             (m_angleAbsEncoder.getAbsPos() < ShooterConsts.MIN_ANGLE && m_shootingMotors.get() < 0)){
             m_targetAngle = m_angleAbsEncoder.getAbsPos();
         }
-
-        if(m_isShooting){
-            setShootingSpeed();
-        }
-        else{
-            m_targetSpeed = 0;
-        }
-        m_shootingPID.activate(m_targetSpeed, ControlType.kVel);
-        m_anglePID.activate(m_targetAngle, ControlType.kPos);
-
+        
+        //Nadav said to do not sure how to use 
         m_currentSpeed = m_encoder.getVel();
         m_deltaSpeed = m_targetSpeed - m_currentSpeed;
+        double predictedSpeed = m_currentSpeed + (m_deltaSpeed / m_deltaTime.get()) * 0.1; // 0.1 -> FEEDING_TIME
+
+        if(m_shooterState ==ShooterConsts.ShooterState.kScoring ){ // change to stop only once not every loop
+            setShootingSpeed(); // not sure if this should be predicted speed or target speed
+            m_shootingPID.activate(m_targetSpeed, ControlType.kVel);
+            m_anglePID.activate(m_targetAngle, ControlType.kPos);
+        }
+        else if(m_shooterState == ShooterConsts.ShooterState.kDelivery){
+            // delivery code here
+        }
+        if(m_shooterState == ShooterConsts.ShooterState.kStop && m_previousShooterState != ShooterConsts.ShooterState.kStop){
+            m_shootingPID.stop();
+            m_anglePID.stop();
+            m_shootingMotors.stop();
+        }
+        m_previousShooterState = m_shooterState;
     }
 
 
