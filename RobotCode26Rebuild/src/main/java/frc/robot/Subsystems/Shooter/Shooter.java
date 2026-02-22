@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Subsystems.Swerve.Swerve;
@@ -65,24 +66,16 @@ public class Shooter extends SubsystemBase{
         else{
             m_targetHub = ShooterConsts.RED_HUB_POSE;
         }
-        
 
+        m_targetSpeed = ShooterConsts.TARGET_RPM * ShooterConsts.WHEEL_RADIUS * 2 * Math.PI / 60; // convert rpm to m/s
     }
 
     public static Shooter getInstance(){
         return m_instance;
     }
-
-    public double getCurrentVel(){
-        return m_targetSpeed;
-    }
-
-    public void setShootingAngle(double targetAngle){
-        m_targetAngle = targetAngle;
-    }
-
-    public void setShootingSpeed(double targetVel){
-        m_targetSpeed = targetVel;
+    
+    public void setShooterState(ShooterConsts.ShooterState shooterState){
+        m_shooterState = shooterState;
     }
 
     private void setShootingAngle(){
@@ -113,26 +106,16 @@ public class Shooter extends SubsystemBase{
         return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
     }
 
-    public void setShooterState(ShooterConsts.ShooterState shooterState){
-        m_shooterState = shooterState;
-    }
 
     /*
      * calculates the minimum angle needed to shoot the ball to the hub based on the current distance and hight of the shooter
      * the formula is based on the physics of projectile motion
      */
-    /*private double getMinShootingAngle(){
-        return Math.atan(getShootingDistance() / Math.sqrt(Math.pow(getShootingDistance(), 2) + Math.pow(ShooterConsts.SHOOTING_HIGHT, 2)));
-    }*/
     private double getMinShootingAngle(){
         double mone = Math.pow(m_targetSpeed,2) - 
                     Math.sqrt(Math.pow(m_targetSpeed,4) - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(getShootingDistance(), 2) + 2 * ShooterConsts.SHOOTING_HIGHT * Math.pow(m_targetSpeed, 2)));
         double mechane = ShooterConsts.GRAVITY * getShootingDistance();
         return Math.toDegrees(Math.atan(mone / mechane));
-    }
-
-    public double getShootingSpeed(){
-        return m_targetSpeed;
     }
 
     public double getRobotShootingOffsetAngle(){
@@ -149,12 +132,16 @@ public class Shooter extends SubsystemBase{
         return robotsOffSetAngle + Math.toDegrees(Math.atan2(ballVector.y, ballVector.x));
     }
 
+    public double getSpeedInRPM(){
+        return m_targetSpeed * 60 / (ShooterConsts.WHEEL_RADIUS * 2 * Math.PI); // convert m/s to rpm
+    }
+
     @Override
     public void periodic() {
-        if((m_angleAbsEncoder.getAbsPos() > ShooterConsts.MAX_ANGLE && m_shootingMotors.get() > 0) || 
-            (m_angleAbsEncoder.getAbsPos() < ShooterConsts.MIN_ANGLE && m_shootingMotors.get() < 0)){
-            m_targetAngle = m_angleAbsEncoder.getAbsPos();
-        }
+        if((m_angleAbsEncoder.getAbsPos() >= ShooterConsts.MAX_ANGLE && ShooterConsts.ANGLE_MOTOR.get() > 0))
+            m_targetAngle = ShooterConsts.MAX_ANGLE;
+        else if(m_angleAbsEncoder.getAbsPos() <= ShooterConsts.MIN_ANGLE && ShooterConsts.ANGLE_MOTOR.get() < 0)
+                m_targetAngle = ShooterConsts.MIN_ANGLE;
         
         //Nadav said to do not sure how to use 
         m_currentSpeed = m_encoder.getVel();
@@ -163,11 +150,12 @@ public class Shooter extends SubsystemBase{
 
         if(m_shooterState ==ShooterConsts.ShooterState.kScoring ){ // change to stop only once not every loop
             setShootingSpeed(); // not sure if this should be predicted speed or target speed
-            m_shootingPID.activate(m_targetSpeed, ControlType.kVel);
+            m_shootingPID.activate(getSpeedInRPM(), ControlType.kVel);
             m_anglePID.activate(m_targetAngle, ControlType.kPos);
         }
         else if(m_shooterState == ShooterConsts.ShooterState.kDelivery){
-            // delivery code here
+            m_shootingPID.activate(getSpeedInRPM(), ControlType.kVel);
+            m_anglePID.activate(45, ControlType.kPos);
         }
         if(m_shooterState == ShooterConsts.ShooterState.kStop && m_previousShooterState != ShooterConsts.ShooterState.kStop){
             m_shootingPID.stop();
@@ -175,6 +163,17 @@ public class Shooter extends SubsystemBase{
             m_shootingMotors.stop();
         }
         m_previousShooterState = m_shooterState;
+
+        if(ShooterConsts.DEBUG_MODE){
+            log();
+        }
+    }
+
+    public void log(){
+        SmartDashboard.putNumber("Shooter Target Angle", m_targetAngle);
+        SmartDashboard.putNumber("Shooter Current Angle", m_angleAbsEncoder.getAbsPos());
+        SmartDashboard.putNumber("Shooter Target Speed", getSpeedInRPM());
+        SmartDashboard.putNumber("Shooter Current Speed", m_currentSpeed * 60 / (ShooterConsts.WHEEL_RADIUS * 2 * Math.PI));
     }
 
 

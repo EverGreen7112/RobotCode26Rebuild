@@ -32,8 +32,11 @@ public interface ShooterConsts {
 
     public static final Pose2d BLUE_HUB_POSE = new Pose2d(); // change this for the real location of the blue hub
     public static final Pose2d RED_HUB_POSE = new Pose2d(); // change this for the real location of the red hub
+
     
     public static final double 
+
+        WHEEL_RADIUS = 0, // change this for the real radius of the shooter wheel (in meters)
         
         GRAVITY = 9.81, // m/s^2
 
@@ -66,9 +69,6 @@ public interface ShooterConsts {
         
         ANGLE_CAN_CODER.setPosConversionFactor(SHOOTER_GEAR_RATIO * 360); 
         ANGLE_CAN_CODER.setOffset(0);
-
-
-
 
     }
 
