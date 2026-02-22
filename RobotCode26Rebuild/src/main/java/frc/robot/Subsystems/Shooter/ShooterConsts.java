@@ -25,19 +25,25 @@ public interface ShooterConsts {
 
     
     public static final double SHOOTER_GEAR_RATIO = 0; 
+
+    public static final Pose2d BLUE_HUB_POSE = new Pose2d(); // change this for the real location of the blue hub
+    public static final Pose2d RED_HUB_POSE = new Pose2d(); // change this for the real location of the red hub
     
     public static final double 
-        HUB_HIGHT = 0,
+        
+        GRAVITY = 9.81, // m/s^2
+
+        HUB_HIGHT = 1.8,
         MECHANISM_HIGHT = 0,
+        
         SHOOTING_HIGHT = HUB_HIGHT - MECHANISM_HIGHT,// change this for the real hight of the hub (in meters)
+        
         ANGLE_ERROR_MARGIN = 0.1, // change this for the real error margin of the shooter (in meters)
 
         MAX_ANGLE = 60, // change this for the real max angle of the shooter (in degrees)
         MIN_ANGLE = 0, // change this for the real min angle of the shooter (in degrees)
 
-        DEFAULT_SHOOTING_SPEED = 14; // change this for the real default shooting speed (in meters per second)
-
-    public static final Pose2d HUB_POINT = new Pose2d(); // change this for the real location of the hubs
+        TARGET_RPM = 2024; // change this for the real target shooting rpm 
 
     public static final EverCANCoder ANGLE_CAN_CODER = new EverCANCoder(0);
 

@@ -4,16 +4,21 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.Shooter.Manual.ManualShootCommand;
 import frc.robot.Commands.Swerve.ChangeTeleopSpeedModeCommand;
 import frc.robot.Commands.Swerve.ChangeTeleopSpeedModeCommand.SpeedMode;
 import frc.robot.Commands.Swerve.TeleopDriveCommand;
 
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
+import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkMax;
+import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 public class RobotContainer {
 
   private static final int CHASSIS_PORT = 0;
@@ -47,6 +52,8 @@ public class RobotContainer {
   public static final Trigger chassisPovDown = chassis.povDown();
   public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
 
+  private EverTalonFX motor = new EverTalonFX(1);
+
   public RobotContainer() {
     registerNamedCommands();
     configureBindings();
@@ -62,6 +69,7 @@ public class RobotContainer {
     Swerve.getInstance().setDefaultCommand(teleopCommand);
     chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
     chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
+
   }
 
   

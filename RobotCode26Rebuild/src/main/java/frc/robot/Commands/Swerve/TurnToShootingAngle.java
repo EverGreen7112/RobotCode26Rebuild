@@ -12,28 +12,15 @@ import frc.robot.Subsystems.Swerve.SwerveAngleController;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
 import frc.robot.Utils.Math.Vector2d;
 
-public class TurnToShotingAngle extends Command{
+public class TurnToShootingAngle extends Command{
 
     boolean m_isShooting = Shooter.getInstance().getIsShooting();
 
     double m_targetAngle;
 
-    Pose2d m_targetHub = ShooterConsts.HUB_POINT;
 
     private void calculateTargetAngle(){
-        Pose2d pos = SwerveLocalizer.getInstance().getCurrentPoint();
-        double x = m_targetHub.getX() - pos.getX();
-        double y = m_targetHub.getY() - pos.getY();
 
-        double robotsOfSetAngle = Math.atan2(y, x);
-
-        Vector2d fuelVectorAngle = new Vector2d(Shooter.getInstance().getCurrentVel(), 0);
-        Vector2d robotVector = Swerve.getInstance().getRobotOrientedVelocity();
-
-        double dot = fuelVectorAngle.dot(robotVector);
-        double mag = fuelVectorAngle.mag() * robotVector.mag();
-        
-        m_targetAngle = robotsOfSetAngle + Math.acos(dot / mag); 
     }
 
     

@@ -24,8 +24,8 @@ public interface SwerveConsts{
 
     public static final boolean DEBUG_MODE = false;    
     // speed values
-    public static final double MAX_NORMAL_DRIVE_SPEED = 2.6; // m/s
-    public static final double MAX_TURBO_DRIVE_SPEED = 4;
+    public static final double MAX_NORMAL_DRIVE_SPEED = 6; // m/s
+    public static final double MAX_TURBO_DRIVE_SPEED = 8;
     public static final double MAX_SLOW_DRIVE_SPEED = 0.45;
     public static final double MAX_ANGULAR_SPEED = 180; // deg/s/
     public static final double MIN_SPEED = 0.0;

@@ -19,6 +19,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,7 +28,7 @@ import frc.robot.Subsystems.Swerve.SwerveConsts;
 
 //import frc.robot.Utils.GamePieceDetector;
 import frc.robot.Utils.EverKit.Periodic;
-//import frc.robot.Utils.GamePieceCamera.GamePieceType;
+//import frc.robot.Utils.GamePieceCamera.GamePieceType
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -37,6 +38,8 @@ public class Robot extends LoggedRobot {
   public static ArrayList<Periodic> autonomousPeriodicFuncs = new ArrayList<Periodic>();
   public static ArrayList<Periodic> simulationPeriodicFuncs = new ArrayList<Periodic>();
   private RobotContainer m_robotContainer;
+
+  public static Alliance m_alliance;
   
 
     public Robot() { 
@@ -58,6 +61,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    
+    if(SmartDashboard.getBoolean("setAlliance", true))
+        m_alliance = Alliance.Blue;
+    else      m_alliance = Alliance.Red;
 
   }
 
