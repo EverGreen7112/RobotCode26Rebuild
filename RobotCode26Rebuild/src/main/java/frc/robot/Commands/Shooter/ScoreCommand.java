@@ -23,7 +23,7 @@ public class ScoreCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        Command stopShootCommand = new StopShootCommand();
+        Command stopShootCommand = new StopShootCommand(); //TODO: why dont you just use Shooter.getInstance().setShooterState(ShooterConsts.ShooterState.kStop) instead of the command
         stopShootCommand.schedule();
     }
 

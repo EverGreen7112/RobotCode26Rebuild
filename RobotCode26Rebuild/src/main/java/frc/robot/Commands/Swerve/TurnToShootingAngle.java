@@ -24,7 +24,7 @@ public class TurnToShootingAngle extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        Command stopShootCommand = new StopShootCommand();
+        Command stopShootCommand = new StopShootCommand(); //TODO: why are you stopping the shooting here
         stopShootCommand.schedule();
         SwerveAngleController.getInstance().stop();
     }
