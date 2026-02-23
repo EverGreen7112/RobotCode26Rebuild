@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Feeder;
+package frc.robot.Subsystems.FeedAndConvey;
 
 import static edu.wpi.first.units.Units.Ounce;
 
@@ -13,12 +13,9 @@ public class Conveyer extends SubsystemBase {
 
     private boolean m_isConveying = false; 
     private EverMotorController m_conveyingMotor;
-    private final boolean LOG = false; 
-    private final double CONVEYING_VEL = 0.5; // place holder
 
     private Conveyer(){
-        m_conveyingMotor = new EverTalonFX(0);
-        // diigus nigus why do that if we have the everkit why not use it
+        m_conveyingMotor = FeedAndConveyConsts.CONVEY_MOTOR;
     }
 
     public static Conveyer getInstance(){
@@ -35,12 +32,12 @@ public class Conveyer extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double speed = m_isConveying ? CONVEYING_VEL : 0;
+        double speed = m_isConveying ? FeedAndConveyConsts.CONVEYING_VEL : 0;
         if(speed != m_conveyingMotor.get()){
             m_conveyingMotor.set(speed);
         }
 
-        if(LOG){
+        if(FeedAndConveyConsts.DEBUG_MOD){
             log();
         }
     }

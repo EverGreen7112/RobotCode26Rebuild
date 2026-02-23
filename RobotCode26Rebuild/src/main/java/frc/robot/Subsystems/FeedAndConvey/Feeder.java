@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Feeder;
+package frc.robot.Subsystems.FeedAndConvey;
 
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -19,14 +19,9 @@ public class Feeder extends SubsystemBase {
 
     private Timer m_timer;
 
-    private final double MAX_STALL_TIME = 0.5, FEEDING_VEL = 0.25; // place holder
-    private final boolean LOG = false; 
-
     private boolean m_isFeeding = false, m_manualControl = false;
 
     private Feeder(){
-        m_feedingMotor = new EverTalonFX(0);// diigus nigus why do that if we have the everkit why not use it
-        m_enterLM = new DigitalInput(0);
         m_timer = new Timer();
         m_stallTimer = m_timer.getFPGATimestamp();
     }
@@ -44,7 +39,7 @@ public class Feeder extends SubsystemBase {
         } else {
             m_stallTimer = m_timer.getFPGATimestamp();
         }
-        return m_stallTimer >= MAX_STALL_TIME;
+        return m_stallTimer >= FeedAndConveyConsts.FEEDER_MAX_STALL_TIME;
     }
 
     public void setIsFeeding(boolean feeding){
@@ -57,9 +52,9 @@ public class Feeder extends SubsystemBase {
 
     private void setFeedingSpeed(){
         double speed;
-        speed = shouldStopFeeding() ? 0 : FEEDING_VEL;
+        speed = shouldStopFeeding() ? 0 : FeedAndConveyConsts.FEEDING_VEL;
         if(m_manualControl){
-            speed = m_isFeeding ? FEEDING_VEL : 0;
+            speed = m_isFeeding ? FeedAndConveyConsts.FEEDING_VEL : 0;
         }
         m_isFeeding = speed != 0;
         if(speed != m_feedingMotor.get())
@@ -69,7 +64,7 @@ public class Feeder extends SubsystemBase {
     @Override
     public void periodic() {
         setFeedingSpeed();
-        if(LOG)
+        if(FeedAndConveyConsts.DEBUG_MOD)
             log();
 
     }
