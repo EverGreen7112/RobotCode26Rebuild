@@ -15,51 +15,46 @@ public class Intake extends SubsystemBase{
 
     private static Intake m_instance = new Intake();
 
-    private EverMotorController m_pickupMotor, m_extentionMotor;
-    private EverEncoder m_openingEncoder;
+    private EverMotorController m_pickupMotor, m_extensionMotor;
 
-    private DigitalInput m_retractionLM, m_extntionLM; //two thing first limit swtch doesnt realy have reason // why?
+    private DigitalInput m_retractionLM, m_extensionLM; 
 
-    private final double EXTENTION_SPEED = 0.25, PICKUP_SPEED = 0.6;
-    private final boolean LOG = false;
-
-    private boolean m_isOpen = true;
+    private boolean m_isOpen = false;
 
     private Intake(){
-        m_pickupMotor = new EverSparkFlex(0);
-        m_extentionMotor = new EverTalonFX(0);
 
-        m_openingEncoder = new EverTalonFXInternalEncoder((EverTalonFX)m_extentionMotor);// you see you had to convert this is because you dont use the everkit correctley
+        m_pickupMotor = IntakeConsts.PICKUP_MOTOR;
+        m_extensionMotor = IntakeConsts.EXTENSION_MOTOR;
 
-        m_retractionLM = new DigitalInput(0);
-        m_extntionLM = new DigitalInput(0);
+        m_retractionLM = IntakeConsts.RETRACTION_LM;
+        m_extensionLM = IntakeConsts.EXTENSION_LM;
     }
 
     public static Intake getInstance(){
         return m_instance;
     }
 
-    public void setExtntionState(boolean isOpen){
+    public void setExtensionState(boolean isOpen){
         m_isOpen = isOpen;
     }
 
-    public boolean getExtentionState(){
+    public boolean getExtensionState(){
         return m_isOpen;
     }
 
-    public void setExtntionSpeed(){
-        double speed = m_isOpen ? EXTENTION_SPEED : -EXTENTION_SPEED;
-        if((m_extntionLM.get() && m_extentionMotor.get() > 0) || (m_retractionLM.get() && m_extentionMotor.get() < 0)){
+    public void setExtensionSpeed(){
+        double speed = m_isOpen ? IntakeConsts.EXTENSION_SPEED : -IntakeConsts.EXTENSION_SPEED;
+        if((m_extensionLM.get() && m_extensionMotor.get() > 0) || (m_retractionLM.get() && m_extensionMotor.get() < 0)){
             speed = 0;
         }
-        if(speed != m_extentionMotor.get()){
-            m_extentionMotor.set(speed);
+        if(speed != m_extensionMotor.get()){
+            m_extensionMotor.set(speed);
         }
         return;
     }
 
     public void setPickupSpeed(){
-        double pickupSpeed = m_isOpen ? PICKUP_SPEED : 0;
+        double pickupSpeed = m_isOpen ? IntakeConsts.PICKUP_SPEED : 0;
         if(pickupSpeed != m_pickupMotor.get()){
             m_pickupMotor.set(pickupSpeed);
         }
@@ -68,14 +63,14 @@ public class Intake extends SubsystemBase{
 
     @Override
     public void periodic() {
-        setExtntionSpeed();
+        
+        setExtensionSpeed();
         setPickupSpeed();
 
-        if(LOG){
+        if(IntakeConsts.DEBUG_MODE){
             log();
         }
     }
-    // no functions for rollers
 
     private void log(){
         // log motor output and encoder values
