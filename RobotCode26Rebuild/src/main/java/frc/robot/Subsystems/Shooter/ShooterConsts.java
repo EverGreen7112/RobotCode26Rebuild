@@ -15,20 +15,16 @@ import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkMax;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverSparkMaxPIDController;
 import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverTalonFXPIDController;
+import frc.robot.Utils.Math.Funcs;
 
 public interface ShooterConsts {
 
-    public enum ShooterState{
-        kStop, kScoring, kDelivery
-    }
+    public static final EverTalonFX LEFT_MOTOR = new EverTalonFX(0), RIGHT_MOTOR = new EverTalonFX(1);
+    public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(2); 
 
-    public static final EverMotorController 
-        LEFT_MOTOR = new EverSparkMax(0),
-        RIGHT_MOTOR = new EverSparkMax(1),
-        ANGLE_MOTOR = new EverTalonFX(2);   
+    public static final EverTalonFXInternalEncoder SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
 
-    
-    public static final double SHOOTER_GEAR_RATIO = 0; 
+    public static final double SHOOTER_ANGLE_GEAR_RATIO = 0, SHOOTING_GEAR_RATIO = 0; 
 
     public static final Pose2d BLUE_HUB_POSE = new Pose2d(); // change this for the real location of the blue hub
     public static final Pose2d RED_HUB_POSE = new Pose2d(); // change this for the real location of the red hub
@@ -61,14 +57,22 @@ public interface ShooterConsts {
         
         ANGLE_KP = 0, // change this for the real KP of the shooter
         ANGLE_KI = 0, // change this for the real KI of the shooter
-        ANGLE_KD = 0; // change this for the real KD of the shooter  
+        ANGLE_KD = 0; // change this for the real KD of the shooter
+        
+    public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
+    public static final EverTalonFXPIDController SHOOTING_PID_CONTROLLER = new EverTalonFXPIDController(LEFT_MOTOR);
     
     public static final boolean DEBUG_MODE = false;
 
     public static void config(){
         
-        ANGLE_CAN_CODER.setPosConversionFactor(SHOOTER_GEAR_RATIO * 360); 
+        ANGLE_CAN_CODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360); 
         ANGLE_CAN_CODER.setOffset(0);
+
+        SHOOTING_ENCODER.setVelConversionFactor((2 * Math.PI * WHEEL_RADIUS) / (SHOOTING_GEAR_RATIO * 60)); // convert from rpm to m/s
+
+        ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
+        SHOOTING_PID_CONTROLLER.setPID(SPEED_KP, SPEED_KI, SPEED_KD);
 
     }
 

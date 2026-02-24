@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Subsystems.Shooter.ShooterConsts;
 
 
 public class Funcs {
@@ -108,6 +109,18 @@ public class Funcs {
         double verticalSide = Math.abs(cornersArr[1].y - cornersArr[2].y);
         double horizontalSide = Math.abs(cornersArr[0].x - cornersArr[1].x);
         return (verticalSide >= horizontalSide) ? verticalSide : horizontalSide;
+    }
+
+    public static double getSpeedInRPM(double wheelRadius, double SpeedInMPS){
+        return SpeedInMPS * 60 / (wheelRadius * 2 * Math.PI ); // convert m/s to rpm
+    }
+
+    public static double getSpeedInRPM(double wheelRadius, double SpeedInMPS, double gearRatio){
+        return SpeedInMPS * 60 / (wheelRadius * 2 * Math.PI * gearRatio); // convert m/s to rpm
+    }
+
+    public static double getSpeedInMPS(double wheelRadius, double SpeedInRPM){
+        return SpeedInRPM * wheelRadius * 2 * Math.PI / 60; // convert rpm to m/s
     }
     
     /**

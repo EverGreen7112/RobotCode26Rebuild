@@ -4,6 +4,7 @@ import javax.xml.crypto.KeySelector.Purpose;
 
 import org.opencv.core.Point;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -27,155 +28,157 @@ import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkMax;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverSparkMaxPIDController;
 import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverTalonFXPIDController;
+import frc.robot.Utils.Math.Funcs;
 import frc.robot.Utils.Math.Vector2d;
 
 
 public class Shooter extends SubsystemBase{
-    //TODO: move hardware to ShooterConsts only abstract pointers should be used in the subsystem itself, otherwise using everkit is pointless....
+
+    public enum ShooterState{
+        kStop, kScoring, kDelivery
+    }
 
     private static Shooter m_instance = new Shooter();
 
-    private double m_targetAngle, m_targetSpeed,
-            m_deltaSpeed, m_currentSpeed;
-
+    private double m_targetAngle, m_targetSpeed, m_predictedSpeed;
 
     private EverMotorControllerGroup m_shootingMotors;
 
+    private EverMotorController m_angleMotor;
+
     private EverCANCoder m_angleAbsEncoder = ShooterConsts.ANGLE_CAN_CODER;
 
-    private EverPIDController 
-            m_anglePID = new EverTalonFXPIDController((EverTalonFX)ShooterConsts.ANGLE_MOTOR),
-            m_shootingPID = new EverSparkMaxPIDController((EverSparkMax)ShooterConsts.LEFT_MOTOR);
+    private EverPIDController m_anglePID, m_shootingPID;
 
-    private EverEncoder m_encoder;
+    private EverEncoder m_angleEncoder, m_shootingEncoder;
 
     private Pose2d m_targetHub;
 
-    private ShooterConsts.ShooterState m_shooterState = ShooterConsts.ShooterState.kStop,
-             m_previousShooterState = ShooterConsts.ShooterState.kStop;
+    private ShooterState m_shooterState,m_previousShooterState;
 
-    private DeltaTime m_deltaTime = new DeltaTime();
+    private DeltaTime m_deltaTime;
 
     //TODO: why are so many vars are initiated outside of the constructor
 
     private Shooter(){
+        ShooterConsts.config();
+
         m_shootingMotors = new EverMotorControllerGroup(ShooterConsts.LEFT_MOTOR, ShooterConsts.RIGHT_MOTOR);
-        m_encoder = new EverTalonFXInternalEncoder((EverTalonFX)ShooterConsts.ANGLE_MOTOR);
-        
-        //TODO: i would use () ? : ;
-        if(Robot.m_alliance == Alliance.Blue){
-            m_targetHub = ShooterConsts.BLUE_HUB_POSE;
-        }
-        else{
-            m_targetHub = ShooterConsts.RED_HUB_POSE;
-        }
+        m_angleMotor = ShooterConsts.ANGLE_MOTOR;
+        m_angleEncoder = ShooterConsts.ANGLE_CAN_CODER;
+        m_shootingEncoder = ShooterConsts.SHOOTING_ENCODER;
 
-        m_targetSpeed = ShooterConsts.TARGET_RPM * ShooterConsts.WHEEL_RADIUS * 2 * Math.PI / 60; // convert rpm to m/s // TODO: move the conversion between rpm and m/s to a function
+        m_targetHub = Robot.m_alliance == Alliance.Blue ? ShooterConsts.BLUE_HUB_POSE : ShooterConsts.RED_HUB_POSE; 
+
+        m_targetSpeed = Funcs.getSpeedInMPS(ShooterConsts.WHEEL_RADIUS, ShooterConsts.TARGET_RPM);
+
+        m_deltaTime = new DeltaTime();
+
+        m_anglePID = ShooterConsts.ANGLE_PID_CONTROLLER;
+        m_shootingPID = ShooterConsts.SHOOTING_PID_CONTROLLER;
+
+        m_shooterState = ShooterState.kStop;
+        m_previousShooterState = ShooterState.kStop;
     }
-
     public static Shooter getInstance(){
         return m_instance;
     }
     
-    public void setShooterState(ShooterConsts.ShooterState shooterState){ //TODO: i would move ShooterState enum to this class or to a new file
+    public void setShooterState(ShooterState shooterState){
         m_shooterState = shooterState;
     }
 
     //TODO: I would change the order of the functions to be in the order of which they are calling each other(1. getShootingDistance() 2. getMinShootingAngle ...)
+    
     /*TODO:I would change the way these functions are written — instead of
       modifying class member variables, they should receive the necessary
       parameters as input and return the values they are responsible for. */
-
-    private void setShootingAngle(){
-        m_targetAngle = getMinShootingAngle() + ShooterConsts.ANGLE_ERROR_MARGIN;
-        //TODO: just use MathUtil.clamp 
-        if(m_targetAngle > ShooterConsts.MAX_ANGLE){
-            m_targetAngle = ShooterConsts.MAX_ANGLE;
-        }
-        else if(m_targetAngle < ShooterConsts.MIN_ANGLE){
-            m_targetAngle = ShooterConsts.MIN_ANGLE;
-        }
-    }
-
-    //TODO: use normal javadocs
-    /*
-     * calculates the target speed and angle needed to shoot the ball to the hub based on the current distance and hight of the shooter
-     * the formula is based on the physics of projectile motion
-    */
-    private void setShootingSpeed(){
-        setShootingAngle();
-        //TODO: from what i understood from the explanation we keep the shooting speed a const what is this calculation 
-        double mone = 2 * ShooterConsts.GRAVITY * Math.pow(getShootingDistance(),2);
-        double mechane =
-        2 * Math.pow(Math.cos(m_targetAngle), 2) * (getShootingDistance() * Math.tan(m_targetAngle) - ShooterConsts.SHOOTING_HIGHT); 
-        m_targetSpeed = Math.sqrt(mone / mechane);
-    }
 
     private double getShootingDistance(){
         double locX = SwerveLocalizer.getInstance().getCurrentPoint().getX();
         double locY = SwerveLocalizer.getInstance().getCurrentPoint().getY();
         return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
     }
-
-    //TODO: use normal javadocs
-    //TODO: change the names of mone mechane to some kind of logic-related name 
-    /*
-     * calculates the minimum angle needed to shoot the ball to the hub based on the current distance and hight of the shooter
-     * the formula is based on the physics of projectile motion
+    
+    /**
+     * calculates the speed at which we predict the shooter will be at when the ball is fed into it based on the current speed and the target speed
+     * @return the predicted shooter speed in m/s
      */
-    private double getMinShootingAngle(){
-        double mone = Math.pow(m_currentSpeed,2) - 
-                    Math.sqrt(Math.pow(m_currentSpeed,4) - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(getShootingDistance(), 2) + 2 * ShooterConsts.SHOOTING_HIGHT * Math.pow(m_currentSpeed, 2)));
+    private double calcPredictedShooterSpeed(){
+        double currentSpeed = m_shootingEncoder.getVel();
+        double deltaSpeed = m_targetSpeed - currentSpeed; 
+        return currentSpeed + (deltaSpeed / m_deltaTime.get()) * 0.1; // 0.1 -> FEEDING_TIME 
+    }
+
+    //TODO: change the names of mone mechane to some kind of logic-related name 
+    /**
+     * calculates the minimum shooting angle needed to shoot the ball to the hub based on the current distance and hight of the shooter
+     * the formula is based on the physics of projectile motion and it is derived from the formula
+     * @param shootingSpeed the speed at which the ball is shot in m/s
+     * @return the minimum shooting angle in degrees
+     */
+    private double calcMinShootingAngle(double shootingSpeed){
+        double mone = Math.pow(shootingSpeed,2) - 
+        Math.sqrt(Math.pow(shootingSpeed,4) - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(getShootingDistance(), 2) + 2 * ShooterConsts.SHOOTING_HIGHT * Math.pow(shootingSpeed, 2)));
         double mechane = ShooterConsts.GRAVITY * getShootingDistance();
         return Math.toDegrees(Math.atan(mone / mechane));
     }
+    
+    private void setShootingAngleAndSpeed(){
+        m_predictedSpeed = calcPredictedShooterSpeed();
+        m_targetAngle = calcMinShootingAngle(m_predictedSpeed) + ShooterConsts.ANGLE_ERROR_MARGIN;
+        m_targetAngle = MathUtil.clamp(m_targetAngle, ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
+    }
 
-    public double getRobotShootingOffsetAngle(){
+    /**
+     * calculates the offset angle of the robot relative to the target hub and the angle at which the ball will go out of the shooter based on the current speed and direction of the robot
+     * @return the offset angle in degrees that needs to be added to the shooting angle to compensate for the robot's movement and field-relative orientation
+     */
+    public double calcRobotShootingOffsetAngle(){
         Pose2d pos = SwerveLocalizer.getInstance().getCurrentPoint();
         double x = m_targetHub.getX() - pos.getX();
         double y = m_targetHub.getY() - pos.getY();
 
         double robotsOffSetAngle = Math.toDegrees(Math.atan2(y, x));
 
-        Vector2d fuelVectorAngle = new Vector2d(0,m_targetSpeed);
         Vector2d robotVector = Swerve.getInstance().getRobotOrientedVelocity();
 
-        Vector2d ballVector = new Vector2d(robotVector.x, robotVector.y + fuelVectorAngle.y); //TODO: why not just add m_targetSpeed directly?
-        return robotsOffSetAngle + Math.toDegrees(Math.atan2(ballVector.y, ballVector.x)); //TODO: you could reduce the amount of lines here by using the values instead of creating vectors since you are not using any of the vector functions
-    }
-
-    public double getSpeedInRPM(){
-        return m_targetSpeed * 60 / (ShooterConsts.WHEEL_RADIUS * 2 * Math.PI); // convert m/s to rpm
+        return robotsOffSetAngle + Math.toDegrees(Math.atan2(robotVector.y + m_targetSpeed, robotVector.x)); 
     }
 
     @Override
     public void periodic() {
-        //TODO: if this is an attempt to stop the shooter from moving past the max/min angles you should stop the motor 
-        if((m_angleAbsEncoder.getAbsPos() >= ShooterConsts.MAX_ANGLE && ShooterConsts.ANGLE_MOTOR.get() > 0))
-            m_targetAngle = ShooterConsts.MAX_ANGLE;
-        else if(m_angleAbsEncoder.getAbsPos() <= ShooterConsts.MIN_ANGLE && ShooterConsts.ANGLE_MOTOR.get() < 0)
-                m_targetAngle = ShooterConsts.MIN_ANGLE;
-        
-        //Nadav said to do not sure how to use 
-        m_currentSpeed = m_encoder.getVel(); //TOOD: why is m_deltaSpeed not a local variable and the predicted speed calculation seems off
-        m_deltaSpeed = m_targetSpeed - m_currentSpeed; 
-        double predictedSpeed = m_currentSpeed + (m_deltaSpeed / m_deltaTime.get()) * 0.1; // 0.1 -> FEEDING_TIME //TODO: predicted speed is not even used 
 
-        //TODO: i would use switch case
-        if(m_shooterState == ShooterConsts.ShooterState.kScoring ){ 
-            setShootingSpeed(); 
-            m_shootingPID.activate(getSpeedInRPM(), ControlType.kVel);
-            m_anglePID.activate(m_targetAngle, ControlType.kPos);
+        if((m_angleAbsEncoder.getAbsPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0)){
+            m_targetAngle = ShooterConsts.MAX_ANGLE;
+            m_angleMotor.stop();
         }
-        else if(m_shooterState == ShooterConsts.ShooterState.kDelivery){
-            m_shootingPID.activate(getSpeedInRPM(), ControlType.kVel);
-            m_anglePID.activate(45, ControlType.kPos);
+        else if(m_angleAbsEncoder.getAbsPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0){
+                m_targetAngle = ShooterConsts.MIN_ANGLE;
+                m_angleMotor.stop();
         }
-        if(m_shooterState == ShooterConsts.ShooterState.kStop && m_previousShooterState != ShooterConsts.ShooterState.kStop){
-            m_shootingPID.stop();
-            m_anglePID.stop();
-            m_shootingMotors.stop();
+        
+        switch (m_shooterState) {
+            case kScoring:
+                    setShootingAngleAndSpeed();
+                    m_shootingPID.activate(Funcs.getSpeedInRPM(ShooterConsts.WHEEL_RADIUS ,m_predictedSpeed), ControlType.kVel);
+                    m_anglePID.activate(m_targetAngle, ControlType.kPos);
+                break;
+        
+            case kDelivery:
+                    m_shootingPID.activate(Funcs.getSpeedInRPM(ShooterConsts.WHEEL_RADIUS ,m_predictedSpeed), ControlType.kVel);
+                    m_anglePID.activate(45, ControlType.kPos);
+                break;
+            
+            case kStop:
+                if(m_previousShooterState != ShooterState.kStop){
+                    m_shootingPID.stop();
+                    m_anglePID.stop();
+                    m_shootingMotors.stop();
+                }
+                break;
         }
+
         m_previousShooterState = m_shooterState;
 
         if(ShooterConsts.DEBUG_MODE){
@@ -186,8 +189,8 @@ public class Shooter extends SubsystemBase{
     public void log(){
         SmartDashboard.putNumber("Shooter Target Angle", m_targetAngle);
         SmartDashboard.putNumber("Shooter Current Angle", m_angleAbsEncoder.getAbsPos());
-        SmartDashboard.putNumber("Shooter Target Speed", getSpeedInRPM());
-        SmartDashboard.putNumber("Shooter Current Speed", m_currentSpeed * 60 / (ShooterConsts.WHEEL_RADIUS * 2 * Math.PI));
+        SmartDashboard.putNumber("Shooter Speed", Funcs.getSpeedInRPM(ShooterConsts.WHEEL_RADIUS, m_predictedSpeed));
+        SmartDashboard.putNumber("Shooter Current Speed", m_predictedSpeed * 60 / (ShooterConsts.WHEEL_RADIUS * 2 * Math.PI));
     }
 
 
