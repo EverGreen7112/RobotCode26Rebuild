@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
 
-
 public class DeliverCommand extends Command {
 
         @Override

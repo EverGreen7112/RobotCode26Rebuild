@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Subsystems.Shooter.Shooter;
+import frc.robot.Subsystems.Shooter.ShooterConsts;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveConsts;
 
@@ -65,6 +67,8 @@ public class Robot extends LoggedRobot {
     if(SmartDashboard.getBoolean("setAlliance", true))
         m_alliance = Alliance.Blue;
     else      m_alliance = Alliance.Red;
+
+    Shooter.getInstance().setAllianceHub(m_alliance == Alliance.Blue);
 
   }
 

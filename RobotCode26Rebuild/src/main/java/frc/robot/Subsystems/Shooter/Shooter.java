@@ -67,9 +67,6 @@ public class Shooter extends SubsystemBase{
         m_angleEncoder = ShooterConsts.ANGLE_CAN_CODER;
         m_shootingEncoder = ShooterConsts.SHOOTING_ENCODER;
 
-        //TODO: Consider re-initializing m_targetHub on alliance change since i would be locked to a certain alliance and would make debugging harder
-        m_targetHub = Robot.m_alliance == Alliance.Blue ? ShooterConsts.BLUE_HUB_POSE : ShooterConsts.RED_HUB_POSE; 
-
         m_targetSpeed = Funcs.getSpeedInMPS(ShooterConsts.WHEEL_RADIUS, ShooterConsts.TARGET_RPM);
 
         m_deltaTime = new DeltaTime();
@@ -80,19 +77,18 @@ public class Shooter extends SubsystemBase{
         m_shooterState = ShooterState.kStop;
         m_previousShooterState = ShooterState.kStop;
     }
+
     public static Shooter getInstance(){
         return m_instance;
+    }
+
+    public void setAllianceHub(boolean isBlue){
+        m_targetHub = isBlue ? ShooterConsts.BLUE_HUB_POSE : ShooterConsts.RED_HUB_POSE;
     }
     
     public void setShooterState(ShooterState shooterState){
         m_shooterState = shooterState;
     }
-
-    //TODO: I would change the order of the functions to be in the order of which they are calling each other(1. getShootingDistance() 2. getMinShootingAngle ...)
-    
-    /*TODO:I would change the way these functions are written — instead of
-      modifying class member variables, they should receive the necessary
-      parameters as input and return the values they are responsible for. */
 
     private double getShootingDistance(){
         double locX = SwerveLocalizer.getInstance().getCurrentPoint().getX();
@@ -110,7 +106,6 @@ public class Shooter extends SubsystemBase{
         return currentSpeed + (deltaSpeed / m_deltaTime.get()) * 0.1; // 0.1 -> FEEDING_TIME 
     }
 
-    //TODO: change the names of mone mechane to some kind of logic-related name 
     /**
      * calculates the minimum shooting angle needed to shoot the ball to the hub based on the current distance and hight of the shooter
      * the formula is based on the physics of projectile motion and it is derived from the formula
@@ -118,15 +113,15 @@ public class Shooter extends SubsystemBase{
      * @return the minimum shooting angle in degrees
      */
     private double calcMinShootingAngle(double shootingSpeed){
-        double mone = Math.pow(shootingSpeed,2) - 
+        double verticalVelocity = Math.pow(shootingSpeed,2) - 
         Math.sqrt(Math.pow(shootingSpeed,4) - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(getShootingDistance(), 2) + 2 * ShooterConsts.SHOOTING_HIGHT * Math.pow(shootingSpeed, 2)));
-        double mechane = ShooterConsts.GRAVITY * getShootingDistance();
-        return Math.toDegrees(Math.atan(mone / mechane));
+        double horizontalForce = ShooterConsts.GRAVITY * getShootingDistance();
+        return Math.toDegrees(Math.atan(verticalVelocity / horizontalForce));
     }
     
-    private void setShootingAngleAndSpeed(){
-        m_predictedSpeed = calcPredictedShooterSpeed();
-        m_targetAngle = calcMinShootingAngle(m_predictedSpeed) + ShooterConsts.ANGLE_ERROR_MARGIN;
+    private void setShootingAngleAndSpeed(double shootingSpeed, double targetAngle){
+        m_predictedSpeed = shootingSpeed;
+        m_targetAngle = targetAngle + ShooterConsts.ANGLE_ERROR_MARGIN;
         m_targetAngle = MathUtil.clamp(m_targetAngle, ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
     }
 
@@ -139,36 +134,34 @@ public class Shooter extends SubsystemBase{
         double x = m_targetHub.getX() - pos.getX();
         double y = m_targetHub.getY() - pos.getY();
 
-        double robotsOffSetAngle = Math.toDegrees(Math.atan2(y, x));//TODO: Offset is a single word
+        double robotsOffsetAngle = Math.toDegrees(Math.atan2(y, x));
 
-        Vector2d robotVector = Swerve.getInstance().getRobotOrientedVelocity();//TODO: I would change the name of robotVector to something like robotVelocity to indicate that it is the velocity of the robot and not just a random vector
+        Vector2d robotVelocity = Swerve.getInstance().getRobotOrientedVelocity();
 
-        return robotsOffSetAngle + Math.toDegrees(Math.atan2(robotVector.y + m_targetSpeed, robotVector.x)); //TODO: shouldnt you use predicted speed here? also i would consider moving this function out of this subsystem 
+        return robotsOffsetAngle + Math.toDegrees(Math.atan2(robotVelocity.y + m_predictedSpeed, robotVelocity.x));
     }
 
     @Override
     public void periodic() {
 
         if((m_angleAbsEncoder.getAbsPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0)){
-            m_targetAngle = ShooterConsts.MAX_ANGLE; //TODO: i dont see a reason for this line to exist since you are clamping the target angle in setShootingAngleAndSpeed()
             m_angleMotor.stop();
         }
         else if(m_angleAbsEncoder.getAbsPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0){
-            m_targetAngle = ShooterConsts.MIN_ANGLE;//TODO: same here
             m_angleMotor.stop();
         }
         
         switch (m_shooterState) {
             case kScoring:
-                    setShootingAngleAndSpeed();
+                    double predictedShooterSpeed = calcPredictedShooterSpeed();
+                    setShootingAngleAndSpeed(predictedShooterSpeed, calcMinShootingAngle(predictedShooterSpeed));
                     m_shootingPID.activate(Funcs.getSpeedInRPM(ShooterConsts.WHEEL_RADIUS ,m_predictedSpeed), ControlType.kVel); //TODO: i would change the name of Funcs.getSpeedInRPM to something like Funcs.convertMpsToRpm or something that indicates that it is converting the speed from m/s to rpm 
                     m_anglePID.activate(m_targetAngle, ControlType.kPos);
                 break;
         
             case kDelivery:
                     m_shootingPID.activate(Funcs.getSpeedInRPM(ShooterConsts.WHEEL_RADIUS ,m_predictedSpeed), ControlType.kVel);
-                    //TODO: Extract hardcoded angle 45 to a constant (e.g., DELIVERY_ANGLE)
-                    m_anglePID.activate(45, ControlType.kPos);
+                    m_anglePID.activate(ShooterConsts.DELIVERY_RPM, ControlType.kPos);
                 break;
             
             case kStop: 
@@ -191,7 +184,7 @@ public class Shooter extends SubsystemBase{
         SmartDashboard.putNumber("Shooter Target Angle", m_targetAngle);
         SmartDashboard.putNumber("Shooter Current Angle", m_angleAbsEncoder.getAbsPos());
         SmartDashboard.putNumber("Shooter Speed", Funcs.getSpeedInRPM(ShooterConsts.WHEEL_RADIUS, m_predictedSpeed));
-        SmartDashboard.putNumber("Shooter Current Speed", m_predictedSpeed * 60 / (ShooterConsts.WHEEL_RADIUS * 2 * Math.PI));
+        SmartDashboard.putNumber("Shooter Current Speed", Funcs.getSpeedInMPS(ShooterConsts.WHEEL_RADIUS, m_predictedSpeed));
     }
 
 

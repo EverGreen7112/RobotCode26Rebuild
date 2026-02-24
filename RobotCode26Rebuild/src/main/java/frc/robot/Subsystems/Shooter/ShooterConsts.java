@@ -46,7 +46,8 @@ public interface ShooterConsts {
         MAX_ANGLE = 60, // change this for the real max angle of the shooter (in degrees)
         MIN_ANGLE = 0, // change this for the real min angle of the shooter (in degrees)
 
-        TARGET_RPM = 2024; // change this for the real target shooting rpm 
+        TARGET_RPM = 2024, // change this for the real target shooting rpm 
+        DELIVERY_RPM = 1000; // change this for the real delivery rpm
 
     public static final EverCANCoder ANGLE_CAN_CODER = new EverCANCoder(0);
 
