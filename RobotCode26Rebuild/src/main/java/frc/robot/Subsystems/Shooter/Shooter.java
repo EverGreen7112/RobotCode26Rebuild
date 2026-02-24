@@ -58,7 +58,6 @@ public class Shooter extends SubsystemBase{
 
     private DeltaTime m_deltaTime;
 
-    //TODO: why are so many vars are initiated outside of the constructor
 
     private Shooter(){
         ShooterConsts.config();
@@ -68,6 +67,7 @@ public class Shooter extends SubsystemBase{
         m_angleEncoder = ShooterConsts.ANGLE_CAN_CODER;
         m_shootingEncoder = ShooterConsts.SHOOTING_ENCODER;
 
+        //TODO: Consider re-initializing m_targetHub on alliance change since i would be locked to a certain alliance and would make debugging harder
         m_targetHub = Robot.m_alliance == Alliance.Blue ? ShooterConsts.BLUE_HUB_POSE : ShooterConsts.RED_HUB_POSE; 
 
         m_targetSpeed = Funcs.getSpeedInMPS(ShooterConsts.WHEEL_RADIUS, ShooterConsts.TARGET_RPM);
@@ -106,7 +106,7 @@ public class Shooter extends SubsystemBase{
      */
     private double calcPredictedShooterSpeed(){
         double currentSpeed = m_shootingEncoder.getVel();
-        double deltaSpeed = m_targetSpeed - currentSpeed; 
+        double deltaSpeed = m_targetSpeed - currentSpeed; //TODO: add a const to store the feeding time
         return currentSpeed + (deltaSpeed / m_deltaTime.get()) * 0.1; // 0.1 -> FEEDING_TIME 
     }
 
@@ -139,39 +139,40 @@ public class Shooter extends SubsystemBase{
         double x = m_targetHub.getX() - pos.getX();
         double y = m_targetHub.getY() - pos.getY();
 
-        double robotsOffSetAngle = Math.toDegrees(Math.atan2(y, x));
+        double robotsOffSetAngle = Math.toDegrees(Math.atan2(y, x));//TODO: Offset is a single word
 
-        Vector2d robotVector = Swerve.getInstance().getRobotOrientedVelocity();
+        Vector2d robotVector = Swerve.getInstance().getRobotOrientedVelocity();//TODO: I would change the name of robotVector to something like robotVelocity to indicate that it is the velocity of the robot and not just a random vector
 
-        return robotsOffSetAngle + Math.toDegrees(Math.atan2(robotVector.y + m_targetSpeed, robotVector.x)); 
+        return robotsOffSetAngle + Math.toDegrees(Math.atan2(robotVector.y + m_targetSpeed, robotVector.x)); //TODO: shouldnt you use predicted speed here? also i would consider moving this function out of this subsystem 
     }
 
     @Override
     public void periodic() {
 
         if((m_angleAbsEncoder.getAbsPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0)){
-            m_targetAngle = ShooterConsts.MAX_ANGLE;
+            m_targetAngle = ShooterConsts.MAX_ANGLE; //TODO: i dont see a reason for this line to exist since you are clamping the target angle in setShootingAngleAndSpeed()
             m_angleMotor.stop();
         }
         else if(m_angleAbsEncoder.getAbsPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0){
-                m_targetAngle = ShooterConsts.MIN_ANGLE;
-                m_angleMotor.stop();
+            m_targetAngle = ShooterConsts.MIN_ANGLE;//TODO: same here
+            m_angleMotor.stop();
         }
         
         switch (m_shooterState) {
             case kScoring:
                     setShootingAngleAndSpeed();
-                    m_shootingPID.activate(Funcs.getSpeedInRPM(ShooterConsts.WHEEL_RADIUS ,m_predictedSpeed), ControlType.kVel);
+                    m_shootingPID.activate(Funcs.getSpeedInRPM(ShooterConsts.WHEEL_RADIUS ,m_predictedSpeed), ControlType.kVel); //TODO: i would change the name of Funcs.getSpeedInRPM to something like Funcs.convertMpsToRpm or something that indicates that it is converting the speed from m/s to rpm 
                     m_anglePID.activate(m_targetAngle, ControlType.kPos);
                 break;
         
             case kDelivery:
                     m_shootingPID.activate(Funcs.getSpeedInRPM(ShooterConsts.WHEEL_RADIUS ,m_predictedSpeed), ControlType.kVel);
+                    //TODO: Extract hardcoded angle 45 to a constant (e.g., DELIVERY_ANGLE)
                     m_anglePID.activate(45, ControlType.kPos);
                 break;
             
-            case kStop:
-                if(m_previousShooterState != ShooterState.kStop){
+            case kStop: 
+                if(m_previousShooterState != ShooterState.kStop){ 
                     m_shootingPID.stop();
                     m_anglePID.stop();
                     m_shootingMotors.stop();
