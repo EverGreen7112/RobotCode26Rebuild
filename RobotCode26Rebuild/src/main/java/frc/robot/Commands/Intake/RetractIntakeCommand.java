@@ -3,19 +3,24 @@ package frc.robot.Commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Intake.Intake;
 
-public class OpenIntakeCommand extends Command {
+public class RetractIntakeCommand extends Command {
     
-    public OpenIntakeCommand(){
+    public RetractIntakeCommand(){
         addRequirements(Intake.getInstance());
     }
 
     @Override
     public void initialize() {
-        Intake.getInstance().setExtensionState(true);
+        Intake.getInstance().startRetracting();
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
+    
+    public void end(boolean interrupted) {
+        Intake.getInstance().stopExtending();
+    }
+    
 }
