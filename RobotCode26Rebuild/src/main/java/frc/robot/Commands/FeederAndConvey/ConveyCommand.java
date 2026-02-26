@@ -1,12 +1,12 @@
-package frc.robot.Commands.Feeder;
+package frc.robot.Commands.FeederAndConvey;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Subsystems.Feeder.Conveyer;
+import frc.robot.Subsystems.FeedAndConvey.Conveyer;
 
-public class manualConveyCommand extends Command {
+public class ConveyCommand extends Command {
 
-    public manualConveyCommand(){
-        addRequirements(Conveyer.getInstance());
+    public ConveyCommand(){
+        addRequirements(frc.robot.Subsystems.FeedAndConvey.Conveyer.getInstance());
     }
 
     @Override

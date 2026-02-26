@@ -12,11 +12,12 @@ public class Conveyer extends SubsystemBase {
     
     private static Conveyer m_instance = new Conveyer();
 
-    private boolean m_isConveying = false; 
+    private boolean m_isConveying; 
     private EverMotorController m_conveyingMotor;
 
     private Conveyer(){
         m_conveyingMotor = FeedAndConveyConsts.CONVEY_MOTOR;
+        m_isConveying = false;
     }
 
     public static Conveyer getInstance(){

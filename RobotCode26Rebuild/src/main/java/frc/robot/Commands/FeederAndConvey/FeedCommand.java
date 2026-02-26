@@ -1,18 +1,17 @@
-package frc.robot.Commands.Feeder;
+package frc.robot.Commands.FeederAndConvey;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Subsystems.Feeder.Feeder;
+import frc.robot.Subsystems.FeedAndConvey.Feeder;
 
-public class manualFeedCommand extends Command {
+public class FeedCommand extends Command {
 
-    public manualFeedCommand(){
+    public FeedCommand(){
         addRequirements(Feeder.getInstance());
     }
 
     @Override
     public void initialize(){
         Feeder.getInstance().setIsFeeding(true);
-        Feeder.getInstance().setManualControl(true);
     } 
 
     @Override
@@ -23,7 +22,6 @@ public class manualFeedCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         Feeder.getInstance().setIsFeeding(false);
-        Feeder.getInstance().setManualControl(false);
     }
     
 }
