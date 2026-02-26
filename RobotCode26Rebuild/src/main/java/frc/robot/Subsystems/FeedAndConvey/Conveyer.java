@@ -3,6 +3,7 @@ package frc.robot.Subsystems.FeedAndConvey;
 import static edu.wpi.first.units.Units.Ounce;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.EverKit.EverMotorController;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
@@ -43,7 +44,8 @@ public class Conveyer extends SubsystemBase {
     }
 
     private void log(){
-        // log motor output
+        SmartDashboard.putBoolean("Is Conveying", m_isConveying);
+        SmartDashboard.putNumber("Conveying Motor Speed", m_conveyingMotor.get());
     }
     
 }

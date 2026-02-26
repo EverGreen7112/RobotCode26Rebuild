@@ -13,8 +13,8 @@ public interface FeedAndConveyConsts {
 
     public final static double FEEDER_MAX_STALL_TIME = 0.5, FEEDING_VEL = 0.25; // place holder
 
-    public static final DigitalInput LEFT_ENTRACE_LM = new DigitalInput(0),
-                                     RIGHT_ENTRACE_LM = new DigitalInput(1);
+    public static final DigitalInput ENTER_LEFT_LM = new DigitalInput(0), ENTER_RIGHT_LM = new DigitalInput(1);
+
 
                                      
 

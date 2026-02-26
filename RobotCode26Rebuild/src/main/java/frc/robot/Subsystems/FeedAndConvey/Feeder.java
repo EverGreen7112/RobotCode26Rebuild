@@ -3,37 +3,45 @@ package frc.robot.Subsystems.FeedAndConvey;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.EverKit.EverMotorController;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 
 public class Feeder extends SubsystemBase {
-    //!! fix names
+
     private static Feeder m_instance = new Feeder();
 
     private EverMotorController m_feedingMotor;
 
-    private DigitalInput m_enterLM;
+    private DigitalInput m_enterLeftLM, m_enterRightLM;
 
     private double m_stallTimer;
 
     private Timer m_timer;
 
-    private boolean m_isFeeding = false, m_manualControl = false;
+    private boolean m_isFeeding;
 
     private Feeder(){
         m_timer = new Timer();
         m_stallTimer = m_timer.getFPGATimestamp();
+        m_feedingMotor = FeedAndConveyConsts.FEEDING_MOTOR;
+        m_enterLeftLM = FeedAndConveyConsts.ENTER_LEFT_LM;
+        m_enterRightLM = FeedAndConveyConsts.ENTER_RIGHT_LM;
+        
+        m_isFeeding = false;
     }
 
     public static Feeder getInstance(){
         return m_instance;
     }
 
+
+    // TODO: change this to DeltaTime class in ShooterB branch
     private boolean shouldStopFeeding(){
         if(m_isFeeding){
             m_stallTimer = m_timer.getFPGATimestamp() - m_stallTimer;
-            if(!m_enterLM.get())
+            if(!m_enterLeftLM.get() || !m_enterRightLM.get())
                 m_stallTimer = m_timer.getFPGATimestamp();
             
         } else {
@@ -46,16 +54,9 @@ public class Feeder extends SubsystemBase {
         m_isFeeding = feeding;
     }
 
-    public void setManualControl(boolean manual){
-        m_manualControl = manual;
-    }
-
-    private void setFeedingSpeed(){
+    private void controlFeedingSpeed(){
         double speed;
         speed = shouldStopFeeding() ? 0 : FeedAndConveyConsts.FEEDING_VEL;
-        if(m_manualControl){
-            speed = m_isFeeding ? FeedAndConveyConsts.FEEDING_VEL : 0;
-        }
         m_isFeeding = speed != 0;
         if(speed != m_feedingMotor.get())
             m_feedingMotor.set(speed);
@@ -63,15 +64,18 @@ public class Feeder extends SubsystemBase {
 
     @Override
     public void periodic() {
-        setFeedingSpeed();
+        controlFeedingSpeed();
         if(FeedAndConveyConsts.DEBUG_MOD)
             log();
 
     }
 
-
     private void log(){
-        // log limit switch state and motor current
+        SmartDashboard.putNumber("Feeder Stall Timer", m_stallTimer);
+        SmartDashboard.putBoolean("Feeder Is Feeding", m_isFeeding);
+        SmartDashboard.putNumber("Feeder Motor Speed", m_feedingMotor.get());
+        SmartDashboard.putBoolean("Feeder Left LM", m_enterLeftLM.get());
+        SmartDashboard.putBoolean("Feeder Right LM", m_enterRightLM.get());
     }
 
 }
