@@ -111,7 +111,7 @@ public class Funcs {
         return (verticalSide >= horizontalSide) ? verticalSide : horizontalSide;
     }
 
-    public static double getSpeedInRPM(double wheelRadius, double SpeedInMPS){
+    public static double convertMStoRPM(double wheelRadius, double SpeedInMPS){
         return SpeedInMPS * 60 / (wheelRadius * 2 * Math.PI ); // convert m/s to rpm
     }
 
