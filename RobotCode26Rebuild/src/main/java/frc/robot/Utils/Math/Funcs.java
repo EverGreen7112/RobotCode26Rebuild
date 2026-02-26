@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Subsystems.Shooter.ShooterConsts;
 
 
 public class Funcs {
@@ -111,15 +110,35 @@ public class Funcs {
         return (verticalSide >= horizontalSide) ? verticalSide : horizontalSide;
     }
 
+    /**
+     * converts from m/s to rpm based on the radius of the wheel
+     * @param wheelRadius
+     * @param SpeedInMPS
+     * @return
+     */
     public static double convertMStoRPM(double wheelRadius, double SpeedInMPS){
         return SpeedInMPS * 60 / (wheelRadius * 2 * Math.PI ); // convert m/s to rpm
     }
 
-    public static double getSpeedInRPM(double wheelRadius, double SpeedInMPS, double gearRatio){
+    /**
+     * converts from m/s to rpm based on the radius of the wheel and the gear ratio
+     * @param wheelRadius
+     * @param SpeedInMPS
+     * @param gearRatio
+     * @return
+     */
+    public static double convertMStoRPMWithGearRatio(double wheelRadius, double SpeedInMPS, double gearRatio){
         return SpeedInMPS * 60 / (wheelRadius * 2 * Math.PI * gearRatio); // convert m/s to rpm
     }
 
-    public static double getSpeedInMPS(double wheelRadius, double SpeedInRPM){
+
+    /**
+     * converts from rpm to m/s based on the radius of the wheel
+     * @param wheelRadius
+     * @param SpeedInRPM
+     * @return
+     */
+    public static double convertRPMtoMS(double wheelRadius, double SpeedInRPM){
         return SpeedInRPM * wheelRadius * 2 * Math.PI / 60; // convert rpm to m/s
     }
     

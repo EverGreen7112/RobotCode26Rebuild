@@ -46,8 +46,6 @@ public class Shooter extends SubsystemBase{
 
     private EverMotorController m_angleMotor;
 
-    private EverCANCoder m_angleAbsEncoder = ShooterConsts.ANGLE_CAN_CODER;
-
     private EverPIDController m_anglePID, m_shootingPID;
 
     private EverEncoder m_angleEncoder, m_shootingEncoder;
@@ -67,7 +65,7 @@ public class Shooter extends SubsystemBase{
         m_angleEncoder = ShooterConsts.ANGLE_CAN_CODER;
         m_shootingEncoder = ShooterConsts.SHOOTING_ENCODER;
 
-        m_targetSpeed = Funcs.getSpeedInMPS(ShooterConsts.WHEEL_RADIUS, ShooterConsts.TARGET_RPM);
+        m_targetSpeed = Funcs.convertRPMtoMS(ShooterConsts.WHEEL_RADIUS, ShooterConsts.TARGET_RPM);
 
         m_deltaTime = new DeltaTime();
 
@@ -130,27 +128,27 @@ public class Shooter extends SubsystemBase{
         double x = m_targetHub.getX() - pos.getX();
         double y = m_targetHub.getY() - pos.getY();
 
-        double robotsOffsetAngle = Math.toDegrees(Math.atan2(y, x));
+        double robotsOffsetAnglefFromHub = Math.toDegrees(Math.atan2(y, x));
 
         Vector2d robotVelocity = Swerve.getInstance().getRobotOrientedVelocity();
 
-        return robotsOffsetAngle + Math.toDegrees(Math.atan2(robotVelocity.y + m_predictedSpeed, robotVelocity.x));
+        return robotsOffsetAnglefFromHub + Math.toDegrees(Math.atan2(robotVelocity.y + m_predictedSpeed, robotVelocity.x));
     }
 
     @Override
     public void periodic() {
 
-        if((m_angleAbsEncoder.getAbsPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0)){
+        if((m_angleEncoder.getPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0)){
             m_angleMotor.stop();
         }
-        else if(m_angleAbsEncoder.getAbsPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0){
+        else if(m_angleEncoder.getPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0){
             m_angleMotor.stop();
         }
         
         switch (m_shooterState) {
             case kScoring:
-                    m_targetAngle = MathUtil.clamp(m_targetAngle, ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
-                    m_shootingPID.activate(Funcs.convertMStoRPM(ShooterConsts.WHEEL_RADIUS ,m_targetSpeed), ControlType.kVel); //TODO: i would change the name of Funcs.getSpeedInRPM to something like Funcs.convertMpsToRpm or something that indicates that it is converting the speed from m/s to rpm 
+                    m_targetAngle = MathUtil.clamp(calcMinShootingAngle(calcPredictedShooterSpeed()), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
+                    m_shootingPID.activate(Funcs.convertMStoRPM(ShooterConsts.WHEEL_RADIUS ,m_targetSpeed), ControlType.kVel);
                     m_anglePID.activate(m_targetAngle, ControlType.kPos);
                 break;
         
@@ -177,9 +175,9 @@ public class Shooter extends SubsystemBase{
 
     public void log(){
         SmartDashboard.putNumber("Shooter Target Angle", m_targetAngle);
-        SmartDashboard.putNumber("Shooter Current Angle", m_angleAbsEncoder.getAbsPos());
+        SmartDashboard.putNumber("Shooter Current Angle", m_angleEncoder.getPos());
         SmartDashboard.putNumber("Shooter Speed", Funcs.convertMStoRPM(ShooterConsts.WHEEL_RADIUS, m_predictedSpeed));
-        SmartDashboard.putNumber("Shooter Current Speed", Funcs.getSpeedInMPS(ShooterConsts.WHEEL_RADIUS, m_predictedSpeed));
+        SmartDashboard.putNumber("Shooter Target Speed", Funcs.convertMStoRPM(ShooterConsts.WHEEL_RADIUS, m_targetSpeed));
     }
 
 }

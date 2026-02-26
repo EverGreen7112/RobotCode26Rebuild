@@ -36,10 +36,10 @@ public interface ShooterConsts {
         
         GRAVITY = 9.81, // m/s^2
 
-        HUB_HIGHT = 1.8,
-        MECHANISM_HIGHT = 0,
+        HUB_HEIGHT = 1.8,
+        MECHANISM_HEIGHT = 0,
         
-        SHOOTING_HIGHT = HUB_HIGHT - MECHANISM_HIGHT,// change this for the real hight of the hub (in meters)
+        SHOOTING_HIGHT = HUB_HEIGHT - MECHANISM_HEIGHT,// change this for the real hight of the hub (in meters)
         
         ANGLE_ERROR_MARGIN = 0.1, // change this for the real error margin of the shooter (in meters)
 
@@ -64,6 +64,7 @@ public interface ShooterConsts {
     public static final EverTalonFXPIDController SHOOTING_PID_CONTROLLER = new EverTalonFXPIDController(LEFT_MOTOR);
     
     public static final boolean DEBUG_MODE = false;
+    public static final double DELIVERY_ANGLE = 45;
 
     public static void config(){
         
