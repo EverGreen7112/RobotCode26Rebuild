@@ -1,15 +1,10 @@
 package frc.robot.Subsystems.Intake;
 
-import static edu.wpi.first.units.Units.Ounce;
-
-import edu.wpi.first.util.datalog.IntegerArrayLogEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.EverKit.EverEncoder;
 import frc.robot.Utils.EverKit.EverMotorController;
-import frc.robot.Utils.EverKit.Implementations.Encoders.EverTalonFXInternalEncoder;
-import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkFlex;
-import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 
 public class Intake extends SubsystemBase{
 
@@ -24,7 +19,7 @@ public class Intake extends SubsystemBase{
 
         m_pickupMotor = IntakeConsts.PICKUP_MOTOR;
         m_extensionMotor = IntakeConsts.EXTENSION_MOTOR;
-        m_extensionEncoder = IntakeConsts.EXETNSION_ENCODER;
+        m_extensionEncoder = IntakeConsts.EXTENSION_ENCODER;
 
         m_retractionLM = IntakeConsts.RETRACTION_LM;
         m_extensionLM = IntakeConsts.EXTENSION_LM;
@@ -35,11 +30,19 @@ public class Intake extends SubsystemBase{
     }
 
     public void startExtending(){
-        m_extensionMotor.set(IntakeConsts.EXTENSION_SPEED);
+        if(!m_extensionLM.get()){
+            m_extensionMotor.set(IntakeConsts.EXTENSION_SPEED);
+        }
+        else
+            stopExtending();
     }
 
     public void startRetracting(){
-        m_extensionMotor.set(-IntakeConsts.EXTENSION_SPEED);
+        if(!m_retractionLM.get()){
+            m_extensionMotor.set(-IntakeConsts.EXTENSION_SPEED);
+        }
+        else
+            stopExtending();
     }
 
     public void stopExtending(){
@@ -75,7 +78,11 @@ public class Intake extends SubsystemBase{
     }
 
     private void log(){
-        // log motor output and encoder values
+        SmartDashboard.putBoolean("Is Extending", m_extensionMotor.get() > 0);
+        SmartDashboard.putBoolean("Is Retracting", m_extensionMotor.get() < 0);
+        SmartDashboard.putNumber("Extension Encoder Position", m_extensionEncoder.getPos());
+        SmartDashboard.putBoolean("Extension Limit Switch", m_extensionLM.get());
+        SmartDashboard.putBoolean("Retraction Limit Switch", m_retractionLM.get());
     }
     
 }

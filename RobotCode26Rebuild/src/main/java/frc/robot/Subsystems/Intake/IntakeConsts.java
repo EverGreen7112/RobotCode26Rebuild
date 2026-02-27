@@ -11,7 +11,7 @@ public interface IntakeConsts {
         public static final EverSparkFlex PICKUP_MOTOR = new EverSparkFlex(0);
         
         public static final EverTalonFX EXTENSION_MOTOR = new EverTalonFX(1);
-        public static final EverTalonFXInternalEncoder EXETNSION_ENCODER = new EverTalonFXInternalEncoder(EXTENSION_MOTOR);
+        public static final EverTalonFXInternalEncoder EXTENSION_ENCODER = new EverTalonFXInternalEncoder(EXTENSION_MOTOR);
 
 
         public static final DigitalInput RETRACTION_LM = new DigitalInput(0), 
