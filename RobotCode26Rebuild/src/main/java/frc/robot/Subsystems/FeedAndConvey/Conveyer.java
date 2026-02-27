@@ -1,7 +1,5 @@
 package frc.robot.Subsystems.FeedAndConvey;
 
-import static edu.wpi.first.units.Units.Ounce;
-
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,18 +12,16 @@ public class Conveyer extends SubsystemBase {
 
     private boolean m_isConveying; 
     private EverMotorController m_conveyingMotor;
+    private Double m_lastSpeed;
 
     private Conveyer(){
         m_conveyingMotor = FeedAndConveyConsts.CONVEY_MOTOR;
         m_isConveying = false;
+        m_lastSpeed = 0.0;
     }
 
     public static Conveyer getInstance(){
         return m_instance;
-    }
-
-    public boolean getIsConveying(){
-        return m_isConveying;
     }
 
     public void setConveying(boolean conveying){
@@ -34,10 +30,12 @@ public class Conveyer extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double speed = m_isConveying ? FeedAndConveyConsts.CONVEYING_VEL : 0;
-        if(speed != m_conveyingMotor.get()){
+        double speed = m_isConveying ? FeedAndConveyConsts.CONVEYING_SPEED : 0;
+        if(speed != m_lastSpeed){
             m_conveyingMotor.set(speed);
         }
+
+        m_lastSpeed = speed;
 
         if(FeedAndConveyConsts.DEBUG_MOD){
             log();

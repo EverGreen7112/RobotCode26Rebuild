@@ -1,6 +1,5 @@
 package frc.robot.Subsystems.FeedAndConvey;
 
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,7 +15,7 @@ public class Feeder extends SubsystemBase {
 
     private DigitalInput m_enterLeftLM, m_enterRightLM;
 
-    private double m_stallTimer;
+    private double m_stallTimer, m_lastSpeed;
 
     private Timer m_timer;
 
@@ -30,6 +29,7 @@ public class Feeder extends SubsystemBase {
         m_enterRightLM = FeedAndConveyConsts.ENTER_RIGHT_LM;
         
         m_isFeeding = false;
+        m_lastSpeed = 0;
     }
 
     public static Feeder getInstance(){
@@ -39,15 +39,16 @@ public class Feeder extends SubsystemBase {
 
     // TODO: change this to DeltaTime class in ShooterB branch
     private boolean shouldStopFeeding(){
+        double currentDeltaTime = 0;
         if(m_isFeeding){
-            m_stallTimer = m_timer.getFPGATimestamp() - m_stallTimer;
+            currentDeltaTime = m_timer.getFPGATimestamp() - m_stallTimer;
             if(!m_enterLeftLM.get() || !m_enterRightLM.get())
                 m_stallTimer = m_timer.getFPGATimestamp();
             
         } else {
             m_stallTimer = m_timer.getFPGATimestamp();
         }
-        return m_stallTimer >= FeedAndConveyConsts.FEEDER_MAX_STALL_TIME;
+        return currentDeltaTime >= FeedAndConveyConsts.FEEDER_MAX_STALL_TIME;
     }
 
     public void setIsFeeding(boolean feeding){
@@ -55,11 +56,12 @@ public class Feeder extends SubsystemBase {
     }
 
     private void controlFeedingSpeed(){
-        double speed;
-        speed = shouldStopFeeding() ? 0 : FeedAndConveyConsts.FEEDING_VEL;
+        double speed = shouldStopFeeding() ? 0 : FeedAndConveyConsts.FEEDING_SPEED;
         m_isFeeding = speed != 0;
-        if(speed != m_feedingMotor.get())
+        if(speed != m_lastSpeed){
             m_feedingMotor.set(speed);
+        }
+        m_lastSpeed = speed;
     }
 
     @Override
