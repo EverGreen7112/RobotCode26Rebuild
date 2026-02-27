@@ -30,19 +30,11 @@ public class Intake extends SubsystemBase{
     }
 
     public void startExtending(){
-        if(!m_extensionLM.get()){
-            m_extensionMotor.set(IntakeConsts.EXTENSION_SPEED);
-        }
-        else
-            stopExtending();
+        m_extensionMotor.set(IntakeConsts.EXTENSION_SPEED);
     }
 
     public void startRetracting(){
-        if(!m_retractionLM.get()){
-            m_extensionMotor.set(-IntakeConsts.EXTENSION_SPEED);
-        }
-        else
-            stopExtending();
+        m_extensionMotor.set(-IntakeConsts.EXTENSION_SPEED);
     }
 
     public void stopExtending(){
