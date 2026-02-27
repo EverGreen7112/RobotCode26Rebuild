@@ -1,11 +1,8 @@
 package frc.robot.Subsystems.Shooter;
 
-import javax.xml.crypto.KeySelector.Purpose;
-
-import org.opencv.core.Point;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -40,7 +37,7 @@ public class Shooter extends SubsystemBase{
 
     private static Shooter m_instance = new Shooter();
 
-    private double m_targetAngle, m_targetSpeed, m_predictedSpeed;
+    private double m_targetAngle, m_targetSpeed, m_predictedBallV0;
 
     private EverMotorControllerGroup m_shootingMotors;
 
@@ -53,6 +50,8 @@ public class Shooter extends SubsystemBase{
     private Pose2d m_targetHub;
 
     private ShooterState m_shooterState, m_previousShooterState;
+
+    private InterpolatingDoubleTreeMap m_shooterSpeedToPredictedBallV0;
 
     private DeltaTime m_deltaTime;
 
@@ -74,6 +73,10 @@ public class Shooter extends SubsystemBase{
 
         m_shooterState = ShooterState.kStop;
         m_previousShooterState = ShooterState.kStop;
+
+        m_shooterSpeedToPredictedBallV0 = ShooterConsts.SHOOTER_TO_BALL_SPEED_TABLE;
+
+        m_targetHub = ShooterConsts.BLUE_HUB_POSE; // default to blue hub, will be changed in teleopInit based on the alliance color
     }
 
     public static Shooter getInstance(){
@@ -95,24 +98,26 @@ public class Shooter extends SubsystemBase{
     }
     
     /**
-     * calculates the speed at which we predict the shooter will be at when the ball is fed into it based on the current speed and the target speed
+     * calculates the speed at which we predict the shooter will be at when the ball is fed into it
      * @return the predicted shooter speed in m/s
      */
     private double calcPredictedShooterSpeed(){
         double currentSpeed = m_shootingEncoder.getVel();
-        double deltaSpeed = m_targetSpeed - currentSpeed; //TODO: add a const to store the feeding time
-        return currentSpeed + (deltaSpeed / m_deltaTime.get()) * 0.1; // 0.1 -> FEEDING_TIME 
+        double deltaSpeed = m_targetSpeed - currentSpeed; 
+        return currentSpeed + (deltaSpeed / m_deltaTime.get()) * 0.1; //TODO: add a const to store the feeding time
     }
 
+
+    // TODO: need to consider which angle we take. the function return two angles + and - 
     /**
      * calculates the minimum shooting angle needed to shoot the ball to the hub based on the current distance and hight of the shooter
      * the formula is based on the physics of projectile motion and it is derived from the formula
-     * @param shootingSpeed the speed at which the ball is shot in m/s
+     * @param shootingSpeed the speed at which the ball will be shot in m/s
      * @return the minimum shooting angle in degrees
      */
-    private double calcMinShootingAngle(double shootingSpeed){
+    private double calcShootingAngle(double shootingSpeed){
         double verticalVelocity = Math.pow(shootingSpeed,2) - 
-        Math.sqrt(Math.pow(shootingSpeed,4) - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(getShootingDistance(), 2) + 2 * ShooterConsts.SHOOTING_HIGHT * Math.pow(shootingSpeed, 2)));
+        Math.sqrt(Math.pow(shootingSpeed,4) - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(getShootingDistance(), 2) + 2 * ShooterConsts.SHOOTING_HEIGHT * Math.pow(shootingSpeed, 2)));
         
         double horizontalForce = ShooterConsts.GRAVITY * getShootingDistance();
         return Math.toDegrees(Math.atan(verticalVelocity / horizontalForce));
@@ -120,7 +125,7 @@ public class Shooter extends SubsystemBase{
 
     /**
      * calculates the offset angle of the robot relative to the target hub and the angle at which the ball will go out of the shooter based on the current speed and direction of the robot
-     * @return the offset angle in degrees that needs to be added to the shooting angle to compensate for the robot's movement and field-relative orientation
+     * @return the offset angle in degrees that needs to be added to the robot's shooting angle to compensate for the robot's movement and field-relative orientation
      */
     // move this to a correct place
     public double calcRobotShootingOffsetAngle(){
@@ -128,11 +133,11 @@ public class Shooter extends SubsystemBase{
         double x = m_targetHub.getX() - pos.getX();
         double y = m_targetHub.getY() - pos.getY();
 
-        double robotsOffsetAnglefFromHub = Math.toDegrees(Math.atan2(y, x));
+        double robotsOffsetAngleFromHub = Math.toDegrees(Math.atan2(y, x));
 
         Vector2d robotVelocity = Swerve.getInstance().getRobotOrientedVelocity();
 
-        return robotsOffsetAnglefFromHub + Math.toDegrees(Math.atan2(robotVelocity.y + m_predictedSpeed, robotVelocity.x));
+        return robotsOffsetAngleFromHub + Math.toDegrees(Math.atan2(robotVelocity.y + m_predictedBallV0, robotVelocity.x));
     }
 
     @Override
@@ -147,13 +152,14 @@ public class Shooter extends SubsystemBase{
         
         switch (m_shooterState) {
             case kScoring:
-                    m_targetAngle = MathUtil.clamp(calcMinShootingAngle(calcPredictedShooterSpeed()), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
-                    m_shootingPID.activate(Funcs.convertMStoRPM(ShooterConsts.WHEEL_RADIUS ,m_targetSpeed), ControlType.kVel);
+                    m_predictedBallV0 = m_shooterSpeedToPredictedBallV0.get(MathUtil.clamp(calcPredictedShooterSpeed(), ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
+                    m_targetAngle = MathUtil.clamp(calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
+                    m_shootingPID.activate(ShooterConsts.TARGET_RPM , ControlType.kVel);
                     m_anglePID.activate(m_targetAngle, ControlType.kPos);
                 break;
         
             case kDelivery:
-                    m_shootingPID.activate(Funcs.convertMStoRPM(ShooterConsts.WHEEL_RADIUS ,m_targetSpeed), ControlType.kVel);
+                    m_shootingPID.activate(ShooterConsts.DELIVERY_RPM, ControlType.kVel);
                     m_anglePID.activate(ShooterConsts.DELIVERY_ANGLE, ControlType.kPos);
                 break;
             
@@ -176,8 +182,8 @@ public class Shooter extends SubsystemBase{
     public void log(){
         SmartDashboard.putNumber("Shooter Target Angle", m_targetAngle);
         SmartDashboard.putNumber("Shooter Current Angle", m_angleEncoder.getPos());
-        SmartDashboard.putNumber("Shooter Speed", Funcs.convertMStoRPM(ShooterConsts.WHEEL_RADIUS, m_predictedSpeed));
-        SmartDashboard.putNumber("Shooter Target Speed", Funcs.convertMStoRPM(ShooterConsts.WHEEL_RADIUS, m_targetSpeed));
+        SmartDashboard.putNumber("Ball speed", m_predictedBallV0);
+        SmartDashboard.putNumber("Shooting Speed", m_shootingEncoder.getVel());
     }
 
 }

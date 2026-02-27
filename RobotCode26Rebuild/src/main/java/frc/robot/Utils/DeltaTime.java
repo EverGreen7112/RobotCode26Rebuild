@@ -1,8 +1,12 @@
 package frc.robot.Utils;
 
+import frc.robot.Utils.EverKit.Periodic;
+
 public class DeltaTime {
 
     private double m_lastTime;
+
+    private final double MIN_TIME = 0.001; // minimum delta time to avoid division by zero
     
     public DeltaTime(){
         m_lastTime = System.currentTimeMillis();
@@ -18,10 +22,11 @@ public class DeltaTime {
      * @return delta time in seconds
      */
     public double get(){
-        long currentTime = System.currentTimeMillis();
+        double currentTime = System.currentTimeMillis();
         double deltaTime = (currentTime - m_lastTime) / 1000.0; // convert to seconds
         m_lastTime = currentTime;
-        return deltaTime;
+        return Math.max(deltaTime, MIN_TIME); // ensure minimum delta time is not zero  
     }
+
     
 }

@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Shooter;
 import org.opencv.core.Point;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Utils.EverKit.EverAbsEncoder;
 import frc.robot.Utils.EverKit.EverEncoder;
@@ -39,7 +40,7 @@ public interface ShooterConsts {
         HUB_HEIGHT = 1.8,
         MECHANISM_HEIGHT = 0,
         
-        SHOOTING_HIGHT = HUB_HEIGHT - MECHANISM_HEIGHT,// change this for the real hight of the hub (in meters)
+        SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT,// change this for the real hight of the hub (in meters)
         
         ANGLE_ERROR_MARGIN = 0.1, // change this for the real error margin of the shooter (in meters)
 
@@ -66,6 +67,14 @@ public interface ShooterConsts {
     public static final boolean DEBUG_MODE = false;
     public static final double DELIVERY_ANGLE = 45;
 
+    // TODO: make the cases for different shooting speeds and their corresponding initial velocity of the ball
+    // we need more cases in the 70 - 100% range of the taget speeding motor power because that's where we will be doing most of the shooting, and we need to be more precise in that range
+    // low index values correspond to lower shooting speeds and low predicted ball v0, high index values correspond to higher shooting speeds and high predicted ball v0
+    public static final double[] BALL_V0_DATA = {0, 0, 0, 0, 0}; // change this for the real data of the initial velocity of the ball(in m/s)
+    public static final double[] SHOOTER_SPEED = {0, 0, 0, 0, 0}; // change this for the real data of the Shooter speed (in m/s)
+
+    public static final InterpolatingDoubleTreeMap SHOOTER_TO_BALL_SPEED_TABLE = new InterpolatingDoubleTreeMap();
+
     public static void config(){
         
         ANGLE_CAN_CODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360); 
@@ -76,6 +85,9 @@ public interface ShooterConsts {
         ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
         SHOOTING_PID_CONTROLLER.setPID(SPEED_KP, SPEED_KI, SPEED_KD);
 
+        for(int i = 0; i < BALL_V0_DATA.length; i++){
+            SHOOTER_TO_BALL_SPEED_TABLE.put(SHOOTER_SPEED[i], BALL_V0_DATA[i]);
+        }
     }
 
 
