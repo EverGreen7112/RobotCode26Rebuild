@@ -61,5 +61,11 @@ public abstract class EverMotorController {
 
 
     public abstract boolean isConnected();
+
+
+    public abstract void setPosConversionFactor(double factor);
+
+
+    public abstract void setVelConversionFactor(double factor);
     
 }

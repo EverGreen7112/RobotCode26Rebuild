@@ -3,14 +3,21 @@ package frc.robot.Utils.EverKit.Implementations.Encoders;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Utils.EverKit.EverEncoder;
+import frc.robot.Utils.EverKit.EverMotorController;
+import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkFlex;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkMax;
 
 public class EverSparkInternalEncoder extends EverEncoder{
 
     private RelativeEncoder m_encoder;
-    private EverSparkMax m_controller;
+    private EverMotorController m_controller;
 
     public EverSparkInternalEncoder(EverSparkMax controller){
+        m_encoder = controller.getControllerInstance().getEncoder();
+        m_controller = controller;
+    }
+
+    public EverSparkInternalEncoder(EverSparkFlex controller){
         m_encoder = controller.getControllerInstance().getEncoder();
         m_controller = controller;
     }
