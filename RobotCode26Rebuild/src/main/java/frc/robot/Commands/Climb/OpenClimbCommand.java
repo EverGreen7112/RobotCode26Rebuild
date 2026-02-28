@@ -16,7 +16,7 @@ public class OpenClimbCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Climb.getInstance().cantOpen();
+        return false;
     }
 
     @Override
