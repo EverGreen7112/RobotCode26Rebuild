@@ -1,4 +1,4 @@
-package frc.robot.Commands.FeederAndConvey;
+package frc.robot.Commands.Feeder;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.FeedAndConvey.Feeder;

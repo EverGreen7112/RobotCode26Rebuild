@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveAngleController;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
@@ -29,7 +30,7 @@ import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverTalonFXPIDCont
 import frc.robot.Utils.Math.Funcs;
 import frc.robot.Utils.Math.Vector2d;
 
-public class Shooter extends SubsystemBase {
+public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     public enum ShooterState {
         kStop,

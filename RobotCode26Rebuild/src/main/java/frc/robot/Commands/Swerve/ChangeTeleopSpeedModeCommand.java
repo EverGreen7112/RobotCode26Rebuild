@@ -5,9 +5,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 //import frc.robot.Subsystems.Elevator.Elevator;
 //import frc.robot.Subsystems.Elevator.Elevator.ElevatorLevel;
 //import frc.robot.Subsystems.Swerve.Swerve;
-import frc.robot.Subsystems.Swerve.SwerveConsts;
+import frc.robot.Subsystems.Consts;
+import frc.robot.Subsystems.Consts.SwerveConsts;
 
-public class ChangeTeleopSpeedModeCommand extends Command{
+public class ChangeTeleopSpeedModeCommand extends Command implements Consts.SwerveConsts{
 
     public enum SpeedMode{
         kNormal,

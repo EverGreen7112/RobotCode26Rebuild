@@ -4,13 +4,14 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Subsystems.Consts;
+import frc.robot.Subsystems.Consts.SwerveConsts;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveAngleController;
-import frc.robot.Subsystems.Swerve.SwerveConsts;
 import frc.robot.Utils.Math.Funcs;
 import frc.robot.Utils.Math.Vector2d;
 
-public class TeleopDriveCommand extends Command{
+public class TeleopDriveCommand extends Command implements Consts.SwerveConsts{
     
     private final double DEADZONE = 0.2;
     public static double maxSpeed;

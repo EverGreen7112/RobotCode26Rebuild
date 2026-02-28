@@ -1,13 +1,15 @@
-package frc.robot.Subsystems.FeedAndConvey;
+package frc.robot.Subsystems.Feeder;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Subsystems.Consts;
+import frc.robot.Subsystems.FeedAndConveyConsts;
 import frc.robot.Utils.EverKit.EverMotorController;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 
-public class Feeder extends SubsystemBase {
+public class Feeder extends SubsystemBase implements Consts.FeedAndConveyConsts{
 
     private static Feeder m_instance = new Feeder();
 

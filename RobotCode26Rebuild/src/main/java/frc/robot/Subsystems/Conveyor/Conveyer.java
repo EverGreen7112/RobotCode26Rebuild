@@ -1,12 +1,14 @@
-package frc.robot.Subsystems.FeedAndConvey;
+package frc.robot.Subsystems.Conveyor;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Subsystems.Consts;
+import frc.robot.Subsystems.Consts.FeedAndConveyConsts;
 import frc.robot.Utils.EverKit.EverMotorController;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 
-public class Conveyer extends SubsystemBase {
+public class Conveyer extends SubsystemBase implements Consts.FeedAndConveyConsts{
     
     private static Conveyer m_instance = new Conveyer();
 
