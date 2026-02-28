@@ -52,8 +52,17 @@ public class Climb extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if((cantOpen() && m_climbEncoder.getVel() > 0) || (cantClose() && m_climbEncoder.getVel() < 0))
+        if(cantClose()){
+            m_climbEncoder.setPos(0);
+        }
+
+        if((cantOpen() && m_climbEncoder.getVel() > 0) || (cantClose() && m_climbEncoder.getVel() < 0)){
             stop();
+        }
+
+        if(m_climbEncoder.getPos() > ClimbConst.MAX_OPEN && m_climbMotor.get() > 0){
+            stop();
+        }
 
         if(ClimbConst.DEBUG_MODE){
             log();
