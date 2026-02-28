@@ -109,6 +109,38 @@ public class Funcs {
         double horizontalSide = Math.abs(cornersArr[0].x - cornersArr[1].x);
         return (verticalSide >= horizontalSide) ? verticalSide : horizontalSide;
     }
+
+    /**
+     * converts from m/s to rpm based on the radius of the wheel
+     * @param wheelRadius
+     * @param SpeedInMPS
+     * @return
+     */
+    public static double convertMStoRPM(double wheelRadius, double SpeedInMPS){
+        return SpeedInMPS * 60 / (wheelRadius * 2 * Math.PI ); // convert m/s to rpm
+    }
+
+    /**
+     * converts from m/s to rpm based on the radius of the wheel and the gear ratio
+     * @param wheelRadius
+     * @param SpeedInMPS
+     * @param gearRatio
+     * @return
+     */
+    public static double convertMStoRPMWithGearRatio(double wheelRadius, double SpeedInMPS, double gearRatio){
+        return SpeedInMPS * 60 / (wheelRadius * 2 * Math.PI * gearRatio); // convert m/s to rpm
+    }
+
+
+    /**
+     * converts from rpm to m/s based on the radius of the wheel
+     * @param wheelRadius
+     * @param SpeedInRPM
+     * @return
+     */
+    public static double convertRPMtoMS(double wheelRadius, double SpeedInRPM){
+        return SpeedInRPM * wheelRadius * 2 * Math.PI / 60; // convert rpm to m/s
+    }
     
     /**
      * return the center of the rectengle 0 - x, 1 - y
