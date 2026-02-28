@@ -24,19 +24,17 @@ public class Conveyer extends SubsystemBase {
         return m_instance;
     }
 
-    public void setConveying(boolean conveying){
-        m_isConveying = conveying;
+    public void startConveying(){
+        m_conveyingMotor.set(FeedAndConveyConsts.CONVEYING_SPEED);
+    }
+
+    public void stopConveying(){
+        m_conveyingMotor.set(0);
+
     }
 
     @Override
     public void periodic() {
-        double speed = m_isConveying ? FeedAndConveyConsts.CONVEYING_SPEED : 0;
-        if(speed != m_lastSpeed){
-            m_conveyingMotor.set(speed);
-        }
-
-        m_lastSpeed = speed;
-
         if(FeedAndConveyConsts.DEBUG_MOD){
             log();
         }
