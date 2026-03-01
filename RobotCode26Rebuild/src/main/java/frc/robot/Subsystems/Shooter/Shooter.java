@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Subsystems.Consts;
+import frc.robot.Subsystems.Consts.ShooterConsts;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveAngleController;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
@@ -163,6 +164,10 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                 + Math.toDegrees(Math.atan2(robotVelocity.y + m_predictedBallV0, robotVelocity.x));
     }
 
+    public ShooterState getShooterState(){
+        return m_shooterState;
+    }
+
     @Override
     public void periodic() {
 
@@ -194,8 +199,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                     m_shootingPID.stop();
                     m_anglePID.stop();
                     m_shootingMotors.stop();
+                    SwerveAngleController.getInstance().stop();
                 }
-                SwerveAngleController.getInstance().stop();
                 break;
 
             case kTrench:

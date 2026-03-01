@@ -5,6 +5,8 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Subsystems.Consts;
+import frc.robot.Subsystems.Consts.SwerveConsts;
 import frc.robot.Utils.EverKit.EverAbsEncoder;
 import frc.robot.Utils.EverKit.EverEncoder;
 import frc.robot.Utils.EverKit.EverMotorController;
@@ -14,7 +16,7 @@ import frc.robot.Utils.EverKit.Implementations.Encoders.EverSparkInternalEncoder
 import frc.robot.Utils.Math.Funcs;
 import frc.robot.Utils.Math.Vector2d;
 
-public class SwerveModule extends SubsystemBase {
+public class SwerveModule extends SubsystemBase implements Consts.SwerveConsts{
 
     // swerve module motor controllers
     private EverPIDController m_velocityController;

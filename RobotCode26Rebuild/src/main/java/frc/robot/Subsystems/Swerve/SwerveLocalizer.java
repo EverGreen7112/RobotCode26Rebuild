@@ -16,10 +16,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Subsystems.Consts;
 import frc.robot.Utils.LocalizationCamera;
 import frc.robot.Utils.EverKit.Periodic;
 
-public class SwerveLocalizer implements Periodic, SwerveConsts {
+public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
     private final boolean DEBUG_MODE = true;
 
     private static final LocalizationCamera[] CAMS = {

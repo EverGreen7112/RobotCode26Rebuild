@@ -3,10 +3,12 @@ package frc.robot.Subsystems.Climb;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Subsystems.Consts;
+import frc.robot.Subsystems.Consts.ClimbConst;
 import frc.robot.Utils.EverKit.EverEncoder;
 import frc.robot.Utils.EverKit.EverMotorController;
 
-public class Climb extends SubsystemBase{
+public class Climb extends SubsystemBase implements Consts.ClimbConst{
     
     private static Climb m_instance = new Climb();
 

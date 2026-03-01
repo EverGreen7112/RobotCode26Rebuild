@@ -12,14 +12,10 @@ public class Conveyer extends SubsystemBase implements Consts.FeedAndConveyConst
     
     private static Conveyer m_instance = new Conveyer();
 
-    private boolean m_isConveying; 
     private EverMotorController m_conveyingMotor;
-    private Double m_lastSpeed;
 
     private Conveyer(){
         m_conveyingMotor = FeedAndConveyConsts.CONVEY_MOTOR;
-        m_isConveying = false;
-        m_lastSpeed = 0.0;
     }
 
     public static Conveyer getInstance(){
@@ -43,7 +39,6 @@ public class Conveyer extends SubsystemBase implements Consts.FeedAndConveyConst
     }
 
     private void log(){
-        SmartDashboard.putBoolean("Is Conveying", m_isConveying);
         SmartDashboard.putNumber("Conveying Motor Speed", m_conveyingMotor.get());
     }
     

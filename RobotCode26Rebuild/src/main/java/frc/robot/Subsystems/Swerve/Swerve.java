@@ -8,13 +8,15 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Subsystems.Consts;
+import frc.robot.Subsystems.Consts.SwerveConsts;
 import frc.robot.Utils.Math.Funcs;
 import frc.robot.Utils.Math.Vector2d;
 
 /**
     NWU - positive X is forward positive Y is left positive rotation is counter-clock wise
  * */
-public class Swerve extends SubsystemBase implements SwerveConsts{
+public class Swerve extends SubsystemBase implements Consts.SwerveConsts{
     final boolean DEBUG_MODE = true;
 
     public static Swerve m_instance = new Swerve();

@@ -1,7 +1,7 @@
 package frc.robot.Commands.Feeder;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Subsystems.FeedAndConvey.Feeder;
+import frc.robot.Subsystems.Feeder.Feeder;
 
 public class FeedCommand extends Command {
 
@@ -11,7 +11,7 @@ public class FeedCommand extends Command {
 
     @Override
     public void initialize(){
-        Feeder.getInstance().setIsFeeding(true);
+        Feeder.getInstance().startFeed();
     } 
 
     @Override
@@ -21,7 +21,7 @@ public class FeedCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        Feeder.getInstance().setIsFeeding(false);
+        Feeder.getInstance().stopFeed();
     }
     
 }
