@@ -293,6 +293,8 @@ public interface Consts {
                                 SHOOTER_TO_BALL_SPEED_TABLE.put(SHOOTER_SPEED[i], BALL_V0_DATA[i]);
                         }
                 }
+
+                public static Pose2d STATIC_SHOOT_POSE = new Pose2d();
         }
 
         public interface IntakeConsts {
@@ -340,6 +342,10 @@ public interface Consts {
                 public static final DigitalInput BOTTOM_LM = new DigitalInput(0), TOP_RM = new DigitalInput(1);
 
                 public static final boolean DEBUG_MODE = false;
+
+                public static final Pose2d BLUE_CLIMB_POSE = new Pose2d();
+                public static final Pose2d RED_CLIMB_POSE = new Pose2d();
+
 
         }
 

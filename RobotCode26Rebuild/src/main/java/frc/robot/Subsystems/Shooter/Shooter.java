@@ -37,7 +37,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         kStop,
         kScoring,
         kDelivery,
-        kTrench
+        kTrench,
+        kSetPoint
     }
 
     private static Shooter m_instance = new Shooter();
@@ -59,6 +60,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     private InterpolatingDoubleTreeMap m_shooterSpeedToPredictedBallV0;
 
     private DeltaTime m_deltaTime;
+
+    private Pose2d m_setPointShootPose;
 
     private Shooter() {
         ShooterConsts.config();
@@ -82,6 +85,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
         m_targetHub = ShooterConsts.BLUE_HUB_POSE; // default to blue hub, will be changed in teleopInit based on the
                                                    // alliance color
+        m_setPointShootPose = ShooterConsts.STATIC_SHOOT_POSE;
     }
 
     public static Shooter getInstance() {
@@ -102,9 +106,21 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
     }
 
+    private double getShootingDistanceFromSetPoint(Pose2d setPoint){
+        double locX = setPoint.getX();
+        double locY = setPoint.getY();
+        return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
+    }
+
     private double getHubAngle() {
         double locX = SwerveLocalizer.getInstance().getCurrentPoint().getX();
         double locY = SwerveLocalizer.getInstance().getCurrentPoint().getY();
+        return Math.toDegrees(Math.atan2((m_targetHub.getY() - locY), (m_targetHub.getX() - locX)));
+    }
+
+    private double getHubAngleFromSetPoint(Pose2d setPoint){
+        double locX = setPoint.getX();
+        double locY = setPoint.getY();
         return Math.toDegrees(Math.atan2((m_targetHub.getY() - locY), (m_targetHub.getX() - locX)));
     }
 
@@ -132,12 +148,24 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
      * @return the minimum shooting angle in degrees
      */
     private double calcShootingAngle(double shootingSpeed) {
+        double shootingDistance = getShootingDistance();
         double verticalVelocity = Math.pow(shootingSpeed, 2) -
                 Math.sqrt(Math.pow(shootingSpeed, 4)
-                        - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(getShootingDistance(), 2)
+                        - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(shootingDistance, 2)
                                 + 2 * ShooterConsts.SHOOTING_HEIGHT * Math.pow(shootingSpeed, 2)));
 
-        double horizontalForce = ShooterConsts.GRAVITY * getShootingDistance();
+        double horizontalForce = ShooterConsts.GRAVITY * shootingDistance;
+        return Math.toDegrees(Math.atan(verticalVelocity / horizontalForce));
+    }
+
+    private double calcShootingAngleFromSetPoint(double shootingSpeed, Pose2d setPoint){
+        double shootingDistance = getShootingDistanceFromSetPoint(setPoint);
+        double verticalVelocity = Math.pow(shootingSpeed, 2) -
+                Math.sqrt(Math.pow(shootingSpeed, 4)
+                        - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(shootingDistance, 2)
+                                + 2 * ShooterConsts.SHOOTING_HEIGHT * Math.pow(shootingSpeed, 2)));
+
+        double horizontalForce = ShooterConsts.GRAVITY * shootingDistance;
         return Math.toDegrees(Math.atan(verticalVelocity / horizontalForce));
     }
 
@@ -208,6 +236,15 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                 m_anglePID.activate(ShooterConsts.MIN_ANGLE, ControlType.kPos);
                 SwerveAngleController.getInstance().stop();
                 break;
+            
+            case kSetPoint:
+                m_predictedBallV0 = m_shooterSpeedToPredictedBallV0.get(
+                        MathUtil.clamp(calcPredictedShooterSpeed(), ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
+                m_targetAngle = MathUtil.clamp(calcShootingAngleFromSetPoint(m_predictedBallV0, ShooterConsts.STATIC_SHOOT_POSE), ShooterConsts.MIN_ANGLE,
+                        ShooterConsts.MAX_ANGLE);
+                m_shootingPID.activate(ShooterConsts.TARGET_RPM, ControlType.kVel);
+                m_anglePID.activate(m_targetAngle, ControlType.kPos);
+                SwerveAngleController.getInstance().start(getHubAngleFromSetPoint(ShooterConsts.STATIC_SHOOT_POSE));
         }
 
         m_previousShooterState = m_shooterState;
