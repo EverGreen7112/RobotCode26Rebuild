@@ -16,10 +16,6 @@ public class ScoreCommand extends Command{
         Shooter.getInstance().setShooterState(ShooterState.kScoring);
     }
 
-    @Override
-    public void execute() {
-        
-    }
 
     @Override
     public void end(boolean interrupted) {

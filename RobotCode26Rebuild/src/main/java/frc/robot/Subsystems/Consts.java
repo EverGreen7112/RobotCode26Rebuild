@@ -294,7 +294,7 @@ public interface Consts {
                         }
                 }
 
-                public static Pose2d STATIC_SHOOT_POSE = new Pose2d();
+                public static Pose2d STATIC_SHOOT_POSE_BLUE = new Pose2d(), STATIC_SHOOT_POSE_RED = new Pose2d();
         }
 
         public interface IntakeConsts {
@@ -328,6 +328,8 @@ public interface Consts {
                 public static final DigitalInput ENTER_LEFT_LM = new DigitalInput(0),
                                 ENTER_RIGHT_LM = new DigitalInput(1);
 
+                public static final double FEEDING_TIME = 0.3; // place holder (in seconds)
+
         }
 
         public interface ClimbConst {
@@ -339,7 +341,7 @@ public interface Consts {
                 public static final EverTalonFXInternalEncoder CLIMB_ENCODER = new EverTalonFXInternalEncoder(
                                 CLIMB_MOTOR);
 
-                public static final DigitalInput BOTTOM_LM = new DigitalInput(0), TOP_RM = new DigitalInput(1);
+                public static final DigitalInput BOTTOM_LM = new DigitalInput(0), TOP_LM = new DigitalInput(1);
 
                 public static final boolean DEBUG_MODE = false;
 
@@ -350,15 +352,15 @@ public interface Consts {
         }
 
         public interface AutoConsts {
-
-                public static final double MIN_TRENCH_Y = 0;
-                public static final double MAX_TRENCH_Y = 0;
-                public static final double MIN_TRENCH_X = 0;
-                public static final double MAX_TRENCH_X = 0;
-
-                public static final double RED_ALLIANCE_X = 0;
-                public static final double RED_ALLIANCE_Y = 0;
                 
-                public static final double MAX_SHOOTING_DISTANCE = 0;
+                public static final double LEFT_MIN_TRENCH_X = 3.793,
+                        LEFT_MAX_TRENCH_X = 5.372,
+                        RIGHT_MIN_TRENCH_X = 11.285,
+                        RIGHT_MAX_TRENCH_X = 12.604,
+
+                        RED_ALLIANCE_ZONE_X = 12.603,
+
+                        BLUE_ALLIANCE_ZONE_X = 3.792;
+                
         }
 }

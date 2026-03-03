@@ -8,13 +8,10 @@ import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
 
 public class StaticShootingCommand extends Command {
 
-    public StaticShootingCommand(){
-
-    }
 
     @Override
     public void initialize() {
-        Shooter.getInstance().setShooterState(ShooterState.kSetPoint);
+        Shooter.getInstance().setShooterState(ShooterState.kStaticPoint);
     }
 
     @Override

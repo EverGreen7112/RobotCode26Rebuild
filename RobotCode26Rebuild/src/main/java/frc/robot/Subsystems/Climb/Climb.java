@@ -20,7 +20,7 @@ public class Climb extends SubsystemBase implements Consts.ClimbConst{
         m_climbMotor = ClimbConst.CLIMB_MOTOR;
         m_climbEncoder = ClimbConst.CLIMB_ENCODER;
         m_bottomLimitSwitch = ClimbConst.BOTTOM_LM;
-        m_topLimitSwitch = ClimbConst.TOP_RM;
+        m_topLimitSwitch = ClimbConst.TOP_LM;
     }
 
     public static Climb getInstance(){
@@ -39,19 +39,15 @@ public class Climb extends SubsystemBase implements Consts.ClimbConst{
         m_climbMotor.stop();
     }
 
-    public boolean cantOpen(){
-        return !m_topLimitSwitch.get();
+    private boolean cantOpen(){
+        return m_topLimitSwitch.get();
     }
 
-    public boolean cantClose(){
+    private boolean cantClose(){
         return m_bottomLimitSwitch.get();
     }
 
-    private void log(){
-        SmartDashboard.putBoolean("Climb Bottom Limit Switch", m_bottomLimitSwitch.get());
-        SmartDashboard.putBoolean("Climb Top Limit Switch", m_topLimitSwitch.get());
-    }
-
+    
     @Override
     public void periodic() {
         if(cantClose()){
@@ -62,15 +58,25 @@ public class Climb extends SubsystemBase implements Consts.ClimbConst{
             stop();
         }
 
-        if(m_climbEncoder.getPos() > ClimbConst.MAX_OPEN && m_climbMotor.get() > 0){
-            stop();
-        }
-
         if(ClimbConst.DEBUG_MODE){
             log();
         }
 
     }
 
+    //TODO: need to see if the condition is right for both limit switches
+
+    private boolean isTopLmDisconnected(){
+        return m_topLimitSwitch.get() && m_climbEncoder.getPos() < ClimbConst.MAX_OPEN;
+    }
+
+    private boolean isBottomLmDisconnected(){
+        return m_bottomLimitSwitch.get() && m_climbEncoder.getPos() > 0;
+    }
+
+    private void log(){
+        SmartDashboard.putBoolean("Climb Bottom Limit Switch", m_bottomLimitSwitch.get());
+        SmartDashboard.putBoolean("Climb Top Limit Switch", m_topLimitSwitch.get());
+    }
 
 }

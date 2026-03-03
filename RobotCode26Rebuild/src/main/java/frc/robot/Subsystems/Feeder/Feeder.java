@@ -56,7 +56,7 @@ public class Feeder extends SubsystemBase implements Consts.FeedAndConveyConsts{
             m_isEmpty = false;
         }
 
-        if(m_counter.get() > 3){
+        if(m_counter.get() > FeedAndConveyConsts.FEEDER_MAX_STALL_TIME){
             m_isEmpty = true;
         }
 

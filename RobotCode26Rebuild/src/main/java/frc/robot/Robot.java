@@ -5,26 +5,18 @@
 package frc.robot;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.rlog.RLOGServer;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants.SteerFeedbackType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Subsystems.AutoOperationsController;
 import frc.robot.Subsystems.Shooter.Shooter;
-import frc.robot.Subsystems.Swerve.Swerve;
 //import frc.robot.Utils.GamePieceDetector;
 import frc.robot.Utils.EverKit.Periodic;
 //import frc.robot.Utils.GamePieceCamera.GamePieceType
@@ -50,7 +42,7 @@ public class Robot extends LoggedRobot {
     public void robotInit() {
       m_robotContainer = new RobotContainer();
     
-      Logger.recordMetadata("serverTest", "29.01");
+      Logger.recordMetadata("RobotCode-ReBuild-26", "29.01");
       Logger.addDataReceiver(new WPILOGWriter());
       Logger.addDataReceiver(new NT4Publisher());
       Logger.start();
@@ -65,7 +57,8 @@ public class Robot extends LoggedRobot {
         m_alliance = Alliance.Blue;
     else      m_alliance = Alliance.Red;
 
-    Shooter.getInstance().setAllianceHub(m_alliance == Alliance.Blue);
+    Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
+    AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
 
   }
 

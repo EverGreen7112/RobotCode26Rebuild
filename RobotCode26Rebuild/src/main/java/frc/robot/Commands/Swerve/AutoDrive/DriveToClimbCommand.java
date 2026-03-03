@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Swerve.SwerveAutoController;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
@@ -23,14 +24,14 @@ public class DriveToClimbCommand extends Command implements Consts.ClimbConst {
 
     @Override
     public void initialize() {
-        boolean isBlue = (DriverStation.getAlliance().get() == Alliance.Blue);
+        boolean isBlue = Robot.m_alliance == Alliance.Blue;
         m_targetClimbPose2d = isBlue ? BLUE_CLIMB_POSE : RED_CLIMB_POSE;
         Pose2d currentPose = SwerveLocalizer.getInstance().getCurrentPoint();
         
         //use pathplanner only for long distances
         if(Funcs.getDis(currentPose, m_targetClimbPose2d) > ALIGNMENT_DIS){
-            Pose2d beforeBranch = m_targetClimbPose2d.plus(new Transform2d(-ALIGNMENT_DIS, 0, new Rotation2d()));
-            m_driveCommand = SwerveAutoController.getInstance().generateDriveToCommand(beforeBranch, 0.1)
+            Pose2d beforeClimb = m_targetClimbPose2d.plus(new Transform2d(-ALIGNMENT_DIS, 0, new Rotation2d()));
+            m_driveCommand = SwerveAutoController.getInstance().generateDriveToCommand(beforeClimb, 0.1)
                              .andThen(new AlignToClimbCommand(isBlue));
 
         

@@ -4,25 +4,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
 
-public class StopShootCommand extends Command{
+public class StopShootingCommand extends Command{
     
-    public StopShootCommand(){
+    public StopShootingCommand(){
         addRequirements(Shooter.getInstance());
     }
 
     @Override
     public void initialize() {
         Shooter.getInstance().setShooterState(ShooterState.kStop);
-    }
-
-    @Override
-    public void execute() {
-        
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        
     }
 
     @Override
