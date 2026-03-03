@@ -35,7 +35,7 @@ public class AlignToClimbCommand extends Command implements Consts.ClimbConst{
 
     @Override
     public void initialize() {
-        m_targetClimb = m_isBlue ? ClimbConst.BLUE_CLIMB_POSE : ClimbConst.RED_CLIMB_POSE;
+        m_targetClimb = m_isBlue ? ClimbConst.BLUE_CLIMB_POSE_TOP : ClimbConst.RED_CLIMB_POSE_TOP;
         SwerveAngleController.getInstance().start(m_targetClimb.getRotation().getDegrees(), true);
 
         Pose2d pose = SwerveLocalizer.getInstance().getCurrentPoint();

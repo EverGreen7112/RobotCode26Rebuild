@@ -4,6 +4,7 @@ import frc.robot.Subsystems.Swerve.SwerveModule;
 import com.ctre.phoenix6.configs.Slot0Configs;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -24,6 +25,8 @@ import frc.robot.Utils.Math.Vector2d;
 public interface Consts {
 
         public interface SwerveConsts {
+
+                //TODO: change all place holder to real values
 
                 public static final boolean DEBUG_MODE = false;
                 // speed values
@@ -204,34 +207,26 @@ public interface Consts {
 
         public interface ShooterConsts {
 
+                //TODO: change all place holder to real values
+
                 public static final EverTalonFX LEFT_MOTOR = new EverTalonFX(0), RIGHT_MOTOR = new EverTalonFX(1);
                 public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(2);
 
-                public static final EverTalonFXInternalEncoder SHOOTING_ENCODER = new EverTalonFXInternalEncoder(
-                                LEFT_MOTOR);
+                public static final EverTalonFXInternalEncoder SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
 
                 public static final double SHOOTER_ANGLE_GEAR_RATIO = 0, SHOOTING_GEAR_RATIO = 0;
 
-                public static final Pose2d BLUE_HUB_POSE = new Pose2d(); // change this for the real location of the
-                                                                         // blue hub
-                public static final Pose2d RED_HUB_POSE = new Pose2d(); // change this for the real location of the red
-                                                                        // hub
+                public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d()); 
+                public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d()); 
 
-                public static final double
+                public static final double WHEEL_RADIUS = 0, // change this for the real radius of the shooter wheel (in meters)
 
-                WHEEL_RADIUS = 0, // change this for the real radius of the shooter wheel (in meters)
-
-                                GRAVITY = 9.81, // m/s^2
+                                GRAVITY = 9.81, // (in m/s^2)
 
                                 HUB_HEIGHT = 1.8,
-                                MECHANISM_HEIGHT = 0,
+                                MECHANISM_HEIGHT = 0, // change to the real hight of the mechanism from the ground (in meters)
 
-                                SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT, // change this for the real hight of
-                                                                                 // the hub (in
-                                                                                 // meters)
-
-                                ANGLE_ERROR_MARGIN = 0.1, // change this for the real error margin of the shooter (in
-                                                          // meters)
+                                SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT,
 
                                 MAX_ANGLE = 60, // change this for the real max angle of the shooter (in degrees)
                                 MIN_ANGLE = 0, // change this for the real min angle of the shooter (in degrees)
@@ -249,10 +244,8 @@ public interface Consts {
                                 ANGLE_KI = 0, // change this for the real KI of the shooter
                                 ANGLE_KD = 0; // change this for the real KD of the shooter
 
-                public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(
-                                ANGLE_MOTOR);
-                public static final EverTalonFXPIDController SHOOTING_PID_CONTROLLER = new EverTalonFXPIDController(
-                                LEFT_MOTOR);
+                public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
+                public static final EverTalonFXPIDController SHOOTING_PID_CONTROLLER = new EverTalonFXPIDController(LEFT_MOTOR);
 
                 public static final boolean DEBUG_MODE = false;
                 public static final double DELIVERY_ANGLE = 45;
@@ -279,12 +272,7 @@ public interface Consts {
                         ANGLE_CAN_CODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
                         ANGLE_CAN_CODER.setOffset(0);
 
-                        SHOOTING_ENCODER.setVelConversionFactor(
-                                        (2 * Math.PI * WHEEL_RADIUS) / (SHOOTING_GEAR_RATIO * 60)); // convert
-                                                                                                    // from
-                                                                                                    // rpm
-                                                                                                    // to
-                                                                                                    // m/s
+                        SHOOTING_ENCODER.setVelConversionFactor((2 * Math.PI * WHEEL_RADIUS) / (SHOOTING_GEAR_RATIO * 60)); // convert to m/s
 
                         ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
                         SHOOTING_PID_CONTROLLER.setPID(SPEED_KP, SPEED_KI, SPEED_KD);
@@ -298,6 +286,8 @@ public interface Consts {
         }
 
         public interface IntakeConsts {
+
+                //TODO: change all place holder to real values
 
                 public static final EverSparkFlex PICKUP_MOTOR = new EverSparkFlex(0);
 
@@ -316,17 +306,18 @@ public interface Consts {
 
         public interface FeedAndConveyConsts {
 
+                //TODO: change all place holder to real values
+
                 public final static boolean DEBUG_MOD = false;
 
                 public final static double CONVEYING_SPEED = 0.5; // motor power, place holder
 
                 public final static EverTalonFX CONVEY_MOTOR = new EverTalonFX(0), FEEDING_MOTOR = new EverTalonFX(1);
 
-                public final static double FEEDER_MAX_STALL_TIME = 0.5, FEEDING_SPEED = 0.25; // motor power, place
-                                                                                              // holder
+                public final static double FEEDER_MAX_STALL_TIME = 0.5, FEEDING_SPEED = 0.25; // motor power, place holder
 
                 public static final DigitalInput ENTER_LEFT_LM = new DigitalInput(0),
-                                ENTER_RIGHT_LM = new DigitalInput(1);
+                                                ENTER_RIGHT_LM = new DigitalInput(1);
 
                 public static final double FEEDING_TIME = 0.3; // place holder (in seconds)
 
@@ -334,19 +325,22 @@ public interface Consts {
 
         public interface ClimbConst {
 
-                public static final double MAX_OPEN = 3000, OPEN_VEL = 0.25; // place holder
+                //TODO: change all place holder to real values
+
+                public static final double MAX_OPEN = 3000, OPEN_VEL = 0.25;
 
                 public static final EverTalonFX CLIMB_MOTOR = new EverTalonFX(0);
 
-                public static final EverTalonFXInternalEncoder CLIMB_ENCODER = new EverTalonFXInternalEncoder(
-                                CLIMB_MOTOR);
+                public static final EverTalonFXInternalEncoder CLIMB_ENCODER = new EverTalonFXInternalEncoder(CLIMB_MOTOR);
 
                 public static final DigitalInput BOTTOM_LM = new DigitalInput(0), TOP_LM = new DigitalInput(1);
 
                 public static final boolean DEBUG_MODE = false;
 
-                public static final Pose2d BLUE_CLIMB_POSE = new Pose2d();
-                public static final Pose2d RED_CLIMB_POSE = new Pose2d();
+                public static final Pose2d BLUE_CLIMB_POSE_TOP = new Pose2d(1.065, 4.857, new Rotation2d()),
+                                         BLUE_CLIMB_POSE_BOTTOM = new Pose2d(1.065, 3.679, new Rotation2d());
+                public static final Pose2d RED_CLIMB_POSE_TOP = new Pose2d(15.49, 4.857, new Rotation2d()),
+                                        RED_CLIMB_POSE_BOTTOM = new Pose2d(15.49, 3.679, new Rotation2d() );
 
 
         }

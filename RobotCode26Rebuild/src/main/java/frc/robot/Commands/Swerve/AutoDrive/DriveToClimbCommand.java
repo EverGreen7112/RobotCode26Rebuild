@@ -25,7 +25,7 @@ public class DriveToClimbCommand extends Command implements Consts.ClimbConst {
     @Override
     public void initialize() {
         boolean isBlue = Robot.m_alliance == Alliance.Blue;
-        m_targetClimbPose2d = isBlue ? BLUE_CLIMB_POSE : RED_CLIMB_POSE;
+        m_targetClimbPose2d = isBlue ? BLUE_CLIMB_POSE_TOP : RED_CLIMB_POSE_TOP;
         Pose2d currentPose = SwerveLocalizer.getInstance().getCurrentPoint();
         
         //use pathplanner only for long distances
