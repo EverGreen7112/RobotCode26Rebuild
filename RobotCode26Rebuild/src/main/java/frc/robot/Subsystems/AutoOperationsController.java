@@ -4,9 +4,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Commands.Climb.CloseClimbCommand;
+import frc.robot.Commands.Conveyor.ConveyCommand;
 import frc.robot.Commands.Shooter.CloseShooterCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Subsystems.Consts.AutoConsts;
+import frc.robot.Subsystems.Conveyor.Conveyer;
 import frc.robot.Subsystems.Feeder.Feeder;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
 import frc.robot.Utils.EverKit.Periodic;
@@ -22,11 +24,13 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
     private boolean m_shouldCloseForTrench, m_prevShouldCloseForTrench;
     private boolean m_ShouldShootAuto, m_prevShouldShootAuto;
 
+    private ConveyCommand m_conveyCommand;
+
     private Pose2d m_robotPose;
 
     private Alliance m_alliance;
 
-    private boolean m_isOn;
+    private boolean m_autoMode;
 
 
     private AutoOperationsController(){
@@ -38,7 +42,10 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
 
         m_alliance = Alliance.Blue;
 
-        m_isOn = true;
+        m_conveyCommand = new ConveyCommand();
+        m_autoMode = true;
+
+        m_conveyCommand.schedule();
     }
 
     public static AutoOperationsController getInstance(){
@@ -74,8 +81,12 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
         return x < AutoConsts.LEFT_MAX_TRENCH_X && x > AutoConsts.LEFT_MIN_TRENCH_X;
     }
 
+
+    //TODO: use this to dicide shooting button function
     public boolean shouldScore(){
         double x = m_robotPose.getY();
+
+        
         
         boolean isInScoringZone;
         if(m_alliance == Alliance.Blue){
@@ -92,8 +103,8 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
         return isInScoringZone && isNotEmpty;
     }
 
-    public void setIsOn(boolean isOn){
-        m_isOn = isOn;
+    public void setAutoMode(boolean isOn){
+        m_autoMode = isOn;
     }
 
 
@@ -101,20 +112,19 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
     @Override
     public void periodic(){
 
-        if(m_isOn){
+        m_robotPose = SwerveLocalizer.getInstance().getCurrentPoint();
         
-            m_robotPose = SwerveLocalizer.getInstance().getCurrentPoint();
-            
-            //trench mode
-            m_shouldCloseForTrench = shouldCloseForTrench();
-            if(m_shouldCloseForTrench && !m_prevShouldCloseForTrench){
-                startRobotTrenchMode();
-            }
-            else if(!m_shouldCloseForTrench && m_prevShouldCloseForTrench){
-                stopRobotTrenchMode();
-            }
-            m_prevShouldCloseForTrench = m_shouldCloseForTrench;
-
+        //trench mode
+        m_shouldCloseForTrench = shouldCloseForTrench();
+        if(m_shouldCloseForTrench && !m_prevShouldCloseForTrench){
+            startRobotTrenchMode();
+        }
+        else if(!m_shouldCloseForTrench && m_prevShouldCloseForTrench){
+            stopRobotTrenchMode();
+        }
+        m_prevShouldCloseForTrench = m_shouldCloseForTrench;
+        
+        if(m_autoMode){
 
             //auto scoring
             m_ShouldShootAuto = shouldScore();

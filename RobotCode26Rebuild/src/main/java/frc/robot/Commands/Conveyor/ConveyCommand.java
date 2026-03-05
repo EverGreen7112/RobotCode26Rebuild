@@ -17,7 +17,7 @@ public class ConveyCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return !Feeder.getInstance().getIsEmpty();
+        return false;
     }
 
     @Override

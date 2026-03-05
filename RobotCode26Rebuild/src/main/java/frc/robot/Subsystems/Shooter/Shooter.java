@@ -148,8 +148,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
         Vector2d robotVelocity = Swerve.getInstance().getRobotOrientedVelocity();
 
-        return robotsOffsetAngleFromHub
-                + Math.toDegrees(Math.atan2(robotVelocity.y + m_predictedBallV0, robotVelocity.x));
+        return robotsOffsetAngleFromHub + Math.toDegrees(Math.atan2(robotVelocity.y + m_predictedBallV0, robotVelocity.x));
     }
 
     public ShooterState getShooterState(){
@@ -171,8 +170,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                     calcPredictedShooterSpeed(), ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
                 m_targetAngle = MathUtil.clamp(
                     calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
-                m_shootingPID.activate(ShooterConsts.TARGET_RPM, ControlType.kVel);
                 m_anglePID.activate(m_targetAngle, ControlType.kPos);
+                m_shootingPID.activate(ShooterConsts.TARGET_RPM, ControlType.kVel);
                 SwerveAngleController.getInstance().start(
                     calcRobotShootingOffsetAngle(SwerveLocalizer.getInstance().getCurrentPoint()));
                 break;
@@ -183,6 +182,24 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                 SwerveAngleController.getInstance().stop();
                 break;
 
+                
+            case kClose:
+                m_shootingPID.stop();
+                m_anglePID.activate(ShooterConsts.MIN_ANGLE, ControlType.kPos);
+                SwerveAngleController.getInstance().stop();
+                break;
+                
+            case kStaticPoint:
+                m_predictedBallV0 = m_shooterSpeedToPredictedBallV0.get(MathUtil.clamp(
+                    calcPredictedShooterSpeed(), ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
+                m_targetAngle = MathUtil.clamp(
+                    calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
+                m_anglePID.activate(m_targetAngle, ControlType.kPos);
+                m_shootingPID.activate(ShooterConsts.TARGET_RPM, ControlType.kVel);
+                SwerveAngleController.getInstance().start(
+                    calcRobotShootingOffsetAngle(m_staticShootingPose));
+                    break;
+
             case kStop:
                 if (m_previousShooterState != ShooterState.kStop) {
                     m_shootingPID.stop();
@@ -190,23 +207,6 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                     m_shootingMotors.stop();
                     SwerveAngleController.getInstance().stop(); 
                 }
-                break;
-
-            case kClose:
-                m_shootingPID.stop();
-                m_anglePID.activate(ShooterConsts.MIN_ANGLE, ControlType.kPos);
-                SwerveAngleController.getInstance().stop();
-                break;
-            
-            case kStaticPoint:
-                m_predictedBallV0 = m_shooterSpeedToPredictedBallV0.get(MathUtil.clamp(
-                    calcPredictedShooterSpeed(), ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
-                m_targetAngle = MathUtil.clamp(
-                    calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
-                m_shootingPID.activate(ShooterConsts.TARGET_RPM, ControlType.kVel);
-                m_anglePID.activate(m_targetAngle, ControlType.kPos);
-                SwerveAngleController.getInstance().start(
-                    calcRobotShootingOffsetAngle(m_staticShootingPose));
                 break;
         }
 

@@ -13,7 +13,6 @@ public class CloseShooterCommand extends Command {
     @Override
     public void initialize() {
         Shooter.getInstance().setShooterState(ShooterState.kClose);
-        
     }
 
     @Override
