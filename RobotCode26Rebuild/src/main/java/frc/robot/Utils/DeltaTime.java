@@ -1,19 +1,23 @@
 package frc.robot.Utils;
 
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Utils.EverKit.Periodic;
 
 public class DeltaTime {
 
     private double m_lastTime;
 
+    private Timer timer;
+
     private final double MIN_TIME = 0.001; // minimum delta time to avoid division by zero
     
     public DeltaTime(){
-        m_lastTime = System.currentTimeMillis();
+        timer = new Timer();
+        m_lastTime = timer.getFPGATimestamp();
     }
 
     public void setNow(){
-        m_lastTime = System.currentTimeMillis();
+        m_lastTime = timer.getFPGATimestamp();
     }
 
     /**
@@ -22,9 +26,8 @@ public class DeltaTime {
      * @return delta time in seconds
      */
     public double get(){
-        double currentTime = System.currentTimeMillis();
-        double deltaTime = (currentTime - m_lastTime) / 1000.0; // convert to seconds
-        m_lastTime = currentTime;
+        double currentTime = timer.getFPGATimestamp();
+        double deltaTime = (currentTime - m_lastTime); 
         return Math.max(deltaTime, MIN_TIME); // ensure minimum delta time is not zero  
     }
 

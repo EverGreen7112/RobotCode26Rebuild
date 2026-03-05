@@ -13,6 +13,7 @@ import frc.robot.Utils.EverKit.EverEncoder;
 import frc.robot.Utils.EverKit.EverMotorController;
 import frc.robot.Utils.EverKit.EverMotorController.IdleMode;
 import frc.robot.Utils.EverKit.Implementations.Encoders.EverCANCoder;
+import frc.robot.Utils.EverKit.Implementations.Encoders.EverSparkInternalAbsEncoder;
 import frc.robot.Utils.EverKit.Implementations.Encoders.EverSparkInternalEncoder;
 import frc.robot.Utils.EverKit.Implementations.Encoders.EverTalonFXInternalEncoder;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkFlex;
@@ -26,7 +27,7 @@ public interface Consts {
 
         public interface SwerveConsts {
 
-                //TODO: change all place holder to real values
+                // TODO: change all place holder to real values
 
                 public static final boolean DEBUG_MODE = false;
                 // speed values
@@ -43,45 +44,47 @@ public interface Consts {
                 public static final SwerveModule[] MODULES = new SwerveModule[4];
 
                 // motor controllers
-                public static final EverSparkMax TL_DRIVE_MOTOR = new EverSparkMax(7), // 7
-                                TR_DRIVE_MOTOR = new EverSparkMax(5), // 5
-                                DL_DRIVE_MOTOR = new EverSparkMax(1), // 1
-                                DR_DRIVE_MOTOR = new EverSparkMax(3);// 3 TL - TR - DL -DR
+                public static final EverTalonFX 
+                                TL_DRIVE_MOTOR = new EverTalonFX(3), // 7
+                                TR_DRIVE_MOTOR = new EverTalonFX(1), // 5
+                                DL_DRIVE_MOTOR = new EverTalonFX(2), // 1
+                                DR_DRIVE_MOTOR = new EverTalonFX(0);// 3 TL - TR - DL -DR
 
-                public static final EverSparkMax TL_STEER_MOTOR = new EverSparkMax(8), // 8
-                                TR_STEER_MOTOR = new EverSparkMax(6), // 6
-                                DL_STEER_MOTOR = new EverSparkMax(2), // 2
-                                DR_STEER_MOTOR = new EverSparkMax(4);// 4
+                public static final EverSparkMax 
+                                TL_STEER_MOTOR = new EverSparkMax(11), // 8
+                                TR_STEER_MOTOR = new EverSparkMax(10), // 6
+                                DL_STEER_MOTOR = new EverSparkMax(12), // 2
+                                DR_STEER_MOTOR = new EverSparkMax(13);// 4
 
-                public static final EverSparkMax[] DRIVE_MOTORS = { TL_DRIVE_MOTOR, TR_DRIVE_MOTOR, DL_DRIVE_MOTOR,
+                public static final EverTalonFX[] DRIVE_MOTORS = { TL_DRIVE_MOTOR, TR_DRIVE_MOTOR, DL_DRIVE_MOTOR,
                                 DR_DRIVE_MOTOR };
                 public static final EverSparkMax[] STEER_MOTORS = { TL_STEER_MOTOR, TR_STEER_MOTOR, DL_STEER_MOTOR,
                                 DR_STEER_MOTOR };
 
                 // encoders
-                public static final EverSparkInternalEncoder TL_DRIVE_ENCODER = new EverSparkInternalEncoder(
-                                TL_DRIVE_MOTOR),
-                                TR_DRIVE_ENCODER = new EverSparkInternalEncoder(TR_DRIVE_MOTOR),
-                                DL_DRIVE_ENCODER = new EverSparkInternalEncoder(DL_DRIVE_MOTOR),
-                                DR_DRIVE_ENCODER = new EverSparkInternalEncoder(DR_DRIVE_MOTOR);
+                public static final EverTalonFXInternalEncoder 
+                                TL_DRIVE_ENCODER = new EverTalonFXInternalEncoder(TL_DRIVE_MOTOR),
+                                TR_DRIVE_ENCODER = new EverTalonFXInternalEncoder(TR_DRIVE_MOTOR),
+                                DL_DRIVE_ENCODER = new EverTalonFXInternalEncoder(DL_DRIVE_MOTOR),
+                                DR_DRIVE_ENCODER = new EverTalonFXInternalEncoder(DR_DRIVE_MOTOR);
 
-                public static final EverSparkInternalEncoder TL_STEER_ENCODER = new EverSparkInternalEncoder(
-                                TL_STEER_MOTOR),
+                public static final EverSparkInternalEncoder 
+                                TL_STEER_ENCODER = new EverSparkInternalEncoder(TL_STEER_MOTOR),
                                 TR_STEER_ENCODER = new EverSparkInternalEncoder(TR_STEER_MOTOR),
                                 DL_STEER_ENCODER = new EverSparkInternalEncoder(DL_STEER_MOTOR),
                                 DR_STEER_ENCODER = new EverSparkInternalEncoder(DR_STEER_MOTOR);
 
-                public static final EverSparkInternalEncoder[] DRIVE_ENCODERS = { TL_DRIVE_ENCODER, TR_DRIVE_ENCODER,
+                public static final EverTalonFXInternalEncoder[] DRIVE_ENCODERS = { TL_DRIVE_ENCODER, TR_DRIVE_ENCODER,
                                 DL_DRIVE_ENCODER, DR_DRIVE_ENCODER };
                 public static final EverSparkInternalEncoder[] STEER_ENCODERS = { TL_STEER_ENCODER, TR_STEER_ENCODER,
                                 DL_STEER_ENCODER, DR_STEER_ENCODER };
 
                 // swerve module pid controllers
-                public static final EverSparkMaxPIDController TL_VELOCITY_CONTROLLER = new EverSparkMaxPIDController(
+                public static final EverTalonFXPIDController TL_VELOCITY_CONTROLLER = new EverTalonFXPIDController(
                                 TL_DRIVE_MOTOR),
-                                TR_VELOCITY_CONTROLLER = new EverSparkMaxPIDController(TR_DRIVE_MOTOR),
-                                DL_VELOCITY_CONTROLLER = new EverSparkMaxPIDController(DL_DRIVE_MOTOR),
-                                DR_VELOCITY_CONTROLLER = new EverSparkMaxPIDController(DR_DRIVE_MOTOR);
+                                TR_VELOCITY_CONTROLLER = new EverTalonFXPIDController(TR_DRIVE_MOTOR),
+                                DL_VELOCITY_CONTROLLER = new EverTalonFXPIDController(DL_DRIVE_MOTOR),
+                                DR_VELOCITY_CONTROLLER = new EverTalonFXPIDController(DR_DRIVE_MOTOR);
 
                 public static final EverSparkMaxPIDController TL_ANGLE_CONTROLLER = new EverSparkMaxPIDController(
                                 TL_STEER_MOTOR),
@@ -89,16 +92,16 @@ public interface Consts {
                                 DL_ANGLE_CONTROLLER = new EverSparkMaxPIDController(DL_STEER_MOTOR),
                                 DR_ANGLE_CONTROLLER = new EverSparkMaxPIDController(DR_STEER_MOTOR);
 
-                public static final EverSparkMaxPIDController[] WHEEL_VELOCITY_CONTROLLERS = { TL_VELOCITY_CONTROLLER,
+                public static final EverTalonFXPIDController[] WHEEL_VELOCITY_CONTROLLERS = { TL_VELOCITY_CONTROLLER,
                                 TR_VELOCITY_CONTROLLER, DL_VELOCITY_CONTROLLER, DR_VELOCITY_CONTROLLER };
                 public static final EverSparkMaxPIDController[] WHEEL_ANGLE_CONTROLLERS = { TL_ANGLE_CONTROLLER,
                                 TR_ANGLE_CONTROLLER, DL_ANGLE_CONTROLLER, DR_ANGLE_CONTROLLER };
 
                 // chassis encoders
-                public static final EverAbsEncoder TL_ABS_ENCODER = new EverCANCoder(11),
-                                TR_ABS_ENCODER = new EverCANCoder(12),
-                                DL_ABS_ENCODER = new EverCANCoder(13),
-                                DR_ABS_ENCODER = new EverCANCoder(14);
+                public static final EverSparkInternalAbsEncoder TL_ABS_ENCODER = new EverSparkInternalAbsEncoder(STEER_MOTORS[0]),
+                                TR_ABS_ENCODER = new EverSparkInternalAbsEncoder(STEER_MOTORS[1]),
+                                DL_ABS_ENCODER = new EverSparkInternalAbsEncoder(STEER_MOTORS[2]),
+                                DR_ABS_ENCODER = new EverSparkInternalAbsEncoder(STEER_MOTORS[3]);
 
                 public static final EverAbsEncoder[] ABS_ENCODERS = { TL_ABS_ENCODER, TR_ABS_ENCODER, DL_ABS_ENCODER,
                                 DR_ABS_ENCODER };
@@ -133,7 +136,8 @@ public interface Consts {
                                                 -(CHASSIS_LENGTH / 2));
 
                 // array of physical module vectors
-                public static final Vector2d[] modulesPositions = { TL,
+                public static final Vector2d[] modulesPositions = { 
+                                TL,
                                 TR,
                                 DL,
                                 DR
@@ -171,7 +175,7 @@ public interface Consts {
                         ABS_ENCODERS[2].setOffset(-150);// -149.150); //-149.50196838378906
                         ABS_ENCODERS[3].setOffset(-31.11328125);// -27.509); //-34.8046875
 
-                        for (EverSparkMaxPIDController velocityController : WHEEL_VELOCITY_CONTROLLERS) {
+                        for (EverTalonFXPIDController velocityController : WHEEL_VELOCITY_CONTROLLERS) {
                                 Slot0Configs configs = new Slot0Configs();
                                 configs.kP = WHEEL_VELOCITY_KP;
                                 configs.kI = WHEEL_VELOCITY_KI;
@@ -207,24 +211,27 @@ public interface Consts {
 
         public interface ShooterConsts {
 
-                //TODO: change all place holder to real values
+                // TODO: change all place holder to real values
 
-                public static final EverTalonFX LEFT_MOTOR = new EverTalonFX(0), RIGHT_MOTOR = new EverTalonFX(1);
-                public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(2);
+                public static final EverTalonFX LEFT_MOTOR = new EverTalonFX(5), RIGHT_MOTOR = new EverTalonFX(19);
+                public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(3);
 
-                public static final EverTalonFXInternalEncoder SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
+                public static final EverTalonFXInternalEncoder SHOOTING_ENCODER = new EverTalonFXInternalEncoder(
+                                LEFT_MOTOR);
 
                 public static final double SHOOTER_ANGLE_GEAR_RATIO = 0, SHOOTING_GEAR_RATIO = 0;
 
-                public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d()); 
-                public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d()); 
+                public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d());
+                public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d());
 
-                public static final double WHEEL_RADIUS = 0, // change this for the real radius of the shooter wheel (in meters)
+                public static final double WHEEL_RADIUS = 0, // change this for the real radius of the shooter wheel (in
+                                                             // meters)
 
                                 GRAVITY = 9.81, // (in m/s^2)
 
                                 HUB_HEIGHT = 1.8,
-                                MECHANISM_HEIGHT = 0, // change to the real hight of the mechanism from the ground (in meters)
+                                MECHANISM_HEIGHT = 0, // change to the real hight of the mechanism from the ground (in
+                                                      // meters)
 
                                 SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT,
 
@@ -234,7 +241,7 @@ public interface Consts {
                                 TARGET_RPM = 2024, // change this for the real target shooting rpm
                                 DELIVERY_RPM = 1000; // change this for the real delivery rpm
 
-                public static final EverCANCoder ANGLE_CAN_CODER = new EverCANCoder(0);
+                public static final EverSparkInternalAbsEncoder ANGLE_CAN_CODER = new EverSparkInternalAbsEncoder(ANGLE_MOTOR);
 
                 public static final double SPEED_KP = 0, // change this for the real KP of the shooter
                                 SPEED_KI = 0, // change this for the real KI of the shooter
@@ -244,8 +251,10 @@ public interface Consts {
                                 ANGLE_KI = 0, // change this for the real KI of the shooter
                                 ANGLE_KD = 0; // change this for the real KD of the shooter
 
-                public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
-                public static final EverTalonFXPIDController SHOOTING_PID_CONTROLLER = new EverTalonFXPIDController(LEFT_MOTOR);
+                public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(
+                                ANGLE_MOTOR);
+                public static final EverTalonFXPIDController SHOOTING_PID_CONTROLLER = new EverTalonFXPIDController(
+                                LEFT_MOTOR);
 
                 public static final boolean DEBUG_MODE = false;
                 public static final double DELIVERY_ANGLE = 45;
@@ -287,16 +296,16 @@ public interface Consts {
 
         public interface IntakeConsts {
 
-                //TODO: change all place holder to real values
+                // TODO: change all place holder to real values
 
-                public static final EverSparkFlex PICKUP_MOTOR = new EverSparkFlex(0);
+                public static final EverTalonFX PICKUP_MOTOR = new EverTalonFX(14);
 
                 public static final EverTalonFX EXTENSION_MOTOR = new EverTalonFX(1);
                 public static final EverTalonFXInternalEncoder EXTENSION_ENCODER = new EverTalonFXInternalEncoder(
                                 EXTENSION_MOTOR);
 
                 public static final DigitalInput RETRACTION_LM = new DigitalInput(0),
-                                EXTENSION_LM = new DigitalInput(1);
+                                EXTENSION_LM = new DigitalInput(3);
 
                 public final double EXTENSION_SPEED = 0.25, PICKUP_SPEED = 0.6;
                 public final boolean DEBUG_MODE = false;
@@ -306,55 +315,57 @@ public interface Consts {
 
         public interface FeedAndConveyConsts {
 
-                //TODO: change all place holder to real values
+                // TODO: change all place holder to real values
 
-                public final static boolean DEBUG_MOD = false;
+                public final static boolean DEBUG_MOD = true;
 
-                public final static double CONVEYING_SPEED = 0.5; // motor power, place holder
+                public final static double CONVEYING_SPEED = -0.5; // motor power, place holder
 
-                public final static EverTalonFX CONVEY_MOTOR = new EverTalonFX(0), FEEDING_MOTOR = new EverTalonFX(1);
+                public final static EverTalonFX CONVEY_MOTOR = new EverTalonFX(17), FEEDING_MOTOR =
+                 new EverTalonFX(16);
 
-                public final static double FEEDER_MAX_STALL_TIME = 0.5, FEEDING_SPEED = 0.25; // motor power, place holder
+                public final static double FEEDER_MAX_STALL_TIME = 2, FEEDING_SPEED = 0.4; // motor power, place
+                                                                                              // holder
 
-                public static final DigitalInput ENTER_LEFT_LM = new DigitalInput(0),
-                                                ENTER_RIGHT_LM = new DigitalInput(1);
+                public static final DigitalInput ENTER_LEFT_LM = new DigitalInput(2),
+                                                 ENTER_RIGHT_LM = new DigitalInput(1);
 
-                public static final double FEEDING_TIME = 0.3; // place holder (in seconds)
+                public static final double FEEDING_TIME = 0.15; // place holder (in seconds)
 
         }
 
         public interface ClimbConst {
 
-                //TODO: change all place holder to real values
+                // TODO: change all place holder to real values
 
                 public static final double MAX_OPEN = 3000, OPEN_VEL = 0.25;
 
                 public static final EverTalonFX CLIMB_MOTOR = new EverTalonFX(0);
 
-                public static final EverTalonFXInternalEncoder CLIMB_ENCODER = new EverTalonFXInternalEncoder(CLIMB_MOTOR);
+                public static final EverTalonFXInternalEncoder CLIMB_ENCODER = new EverTalonFXInternalEncoder(
+                                CLIMB_MOTOR);
 
-                public static final DigitalInput BOTTOM_LM = new DigitalInput(0), TOP_LM = new DigitalInput(1);
+                public static final DigitalInput BOTTOM_LM = new DigitalInput(5), TOP_LM = new DigitalInput(4);
 
                 public static final boolean DEBUG_MODE = false;
 
                 public static final Pose2d BLUE_CLIMB_POSE_TOP = new Pose2d(1.065, 4.857, new Rotation2d()),
-                                         BLUE_CLIMB_POSE_BOTTOM = new Pose2d(1.065, 3.679, new Rotation2d());
+                                BLUE_CLIMB_POSE_BOTTOM = new Pose2d(1.065, 3.679, new Rotation2d());
                 public static final Pose2d RED_CLIMB_POSE_TOP = new Pose2d(15.49, 4.857, new Rotation2d()),
-                                        RED_CLIMB_POSE_BOTTOM = new Pose2d(15.49, 3.679, new Rotation2d() );
-
+                                RED_CLIMB_POSE_BOTTOM = new Pose2d(15.49, 3.679, new Rotation2d());
 
         }
 
         public interface AutoConsts {
-                
+
                 public static final double LEFT_MIN_TRENCH_X = 3.793,
-                        LEFT_MAX_TRENCH_X = 5.372,
-                        RIGHT_MIN_TRENCH_X = 11.285,
-                        RIGHT_MAX_TRENCH_X = 12.604,
+                                LEFT_MAX_TRENCH_X = 5.372,
+                                RIGHT_MIN_TRENCH_X = 11.285,
+                                RIGHT_MAX_TRENCH_X = 12.604,
 
-                        RED_ALLIANCE_ZONE_X = 12.603,
+                                RED_ALLIANCE_ZONE_X = 12.603,
 
-                        BLUE_ALLIANCE_ZONE_X = 3.792;
-                
+                                BLUE_ALLIANCE_ZONE_X = 3.792;
+
         }
 }

@@ -51,12 +51,16 @@ public class Feeder extends SubsystemBase implements Consts.FeedAndConveyConsts{
 
     @Override
     public void periodic(){
-        if(m_enterLeftLM.get() || m_enterRightLM.get()){
+
+        double time = m_counter.get();
+        SmartDashboard.putNumber("time", time);
+
+        if(!m_enterLeftLM.get() || !m_enterRightLM.get()){
             m_counter.setNow();
             m_isEmpty = false;
         }
 
-        if(m_counter.get() > FeedAndConveyConsts.FEEDER_MAX_STALL_TIME){
+        if(time > FeedAndConveyConsts.FEEDER_MAX_STALL_TIME){
             m_isEmpty = true;
         }
 
@@ -67,8 +71,9 @@ public class Feeder extends SubsystemBase implements Consts.FeedAndConveyConsts{
 
     private void log(){
         SmartDashboard.putNumber("Feeder Motor Speed", m_feedingMotor.get());
-        SmartDashboard.putBoolean("Feeder Left LM", m_enterLeftLM.get());
-        SmartDashboard.putBoolean("Feeder Right LM", m_enterRightLM.get());
+        SmartDashboard.putBoolean("Feeder Left LM", !m_enterLeftLM.get());
+        SmartDashboard.putBoolean("Feeder Right LM", !m_enterRightLM.get());
+        SmartDashboard.putNumber("delta Time", m_counter.get());
     }
 
 }

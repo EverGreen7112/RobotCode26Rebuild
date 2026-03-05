@@ -43,7 +43,6 @@ public class Robot extends LoggedRobot {
       m_robotContainer = new RobotContainer();
     
       Logger.recordMetadata("RobotCode-ReBuild-26", "29.01");
-      Logger.addDataReceiver(new WPILOGWriter());
       Logger.addDataReceiver(new NT4Publisher());
       Logger.start();
     }
