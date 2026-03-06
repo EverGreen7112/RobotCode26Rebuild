@@ -57,7 +57,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
         m_shootingMotors = new EverMotorControllerGroup(ShooterConsts.LEFT_MOTOR, ShooterConsts.RIGHT_MOTOR);
         m_angleMotor = ShooterConsts.ANGLE_MOTOR;
-        m_angleEncoder = ShooterConsts.ANGLE_CAN_CODER;
+        m_angleEncoder = ShooterConsts.ANGLE_ABS_ENCODER;
         m_shootingEncoder = ShooterConsts.SHOOTING_ENCODER;
 
         m_targetSpeed = Funcs.convertRPMtoMS(ShooterConsts.WHEEL_RADIUS, ShooterConsts.TARGET_RPM);

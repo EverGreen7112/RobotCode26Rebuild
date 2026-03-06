@@ -1,6 +1,8 @@
 package frc.robot.Utils.EverKit.Implementations.Encoders;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
+
 import frc.robot.Utils.EverKit.EverAbsEncoder;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkMax;
 
@@ -11,11 +13,10 @@ public class EverSparkInternalAbsEncoder extends EverAbsEncoder {
     
     private double m_posFactor = 1.0;
     private double m_velFactor = 1.0;
-    private double m_softwareOffset = 0.0;
+    private double m_offSet = 0.0;
 
     public EverSparkInternalAbsEncoder(EverSparkMax controller){
         m_controller = controller;
-        // This returns the base AbsoluteEncoder interface
         m_encoder = m_controller.getControllerInstance().getAbsoluteEncoder();
     }
 
@@ -26,31 +27,14 @@ public class EverSparkInternalAbsEncoder extends EverAbsEncoder {
         return m_encoder.getPosition() * m_posFactor;
     }
 
-    
-    public double getRelativePos() {
-        return getAbsPos() - m_softwareOffset;
-    }
-
-    
-    public void setRelativePos(double pos) {
-        // Formula: CurrentPosition - DesiredPosition
-        m_softwareOffset = getAbsPos() - pos;
-    }
-
-    
-    public double getRelativeVel() {
-        // Raw RPM/Rotations-per-sec * velocity factor
-        return m_encoder.getVelocity() * m_velFactor;
-    }
-
     @Override
     public double getOffset() {
-        return m_softwareOffset;
+        return m_offSet * 360;
     }
 
     @Override
     public void setOffset(double offset) {
-        m_softwareOffset = offset;
+        m_offSet = offset / 360;
     }
 
     @Override
@@ -71,7 +55,7 @@ public class EverSparkInternalAbsEncoder extends EverAbsEncoder {
 
     @Override
     public double getPos() {
-        return m_encoder.getPosition() * m_posFactor;
+        return (m_encoder.getPosition() - m_offSet) * m_posFactor;
     }
 
     //dont use now...

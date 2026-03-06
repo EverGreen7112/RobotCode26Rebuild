@@ -11,11 +11,13 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Subsystems.AutoOperationsController;
+import frc.robot.Subsystems.Consts.ShooterConsts;
 import frc.robot.Subsystems.Shooter.Shooter;
 //import frc.robot.Utils.GamePieceDetector;
 import frc.robot.Utils.EverKit.Periodic;
@@ -51,13 +53,17 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    
+    SmartDashboard.putBoolean("setAlliance", SmartDashboard.getBoolean("setAlliance", true));
     if(SmartDashboard.getBoolean("setAlliance", true))
         m_alliance = Alliance.Blue;
     else      m_alliance = Alliance.Red;
 
     Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
+
+
+
+    SmartDashboard.putNumber("angle",ShooterConsts.ANGLE_MOTOR.getControllerInstance().getAbsoluteEncoder().getPosition());
 
   }
 
@@ -90,6 +96,8 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    //ShooterConsts.ANGLE_MOTOR.set(-0.2);
 
   }
 
