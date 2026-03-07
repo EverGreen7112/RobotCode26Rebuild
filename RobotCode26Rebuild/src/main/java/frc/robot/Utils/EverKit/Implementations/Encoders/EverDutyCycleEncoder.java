@@ -2,6 +2,7 @@ package frc.robot.Utils.EverKit.Implementations.Encoders;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Utils.EverKit.EverAbsEncoder;
+import frc.robot.Utils.Math.Funcs;
 
 public class EverDutyCycleEncoder extends EverAbsEncoder {
 
@@ -17,7 +18,7 @@ public class EverDutyCycleEncoder extends EverAbsEncoder {
 
     @Override
     public double getAbsPos() {
-        return ((m_dutyCycleEncoder.get() - m_offSet) * 360 * m_posConversionFactor) % 360;
+        return Funcs.modulo(((m_dutyCycleEncoder.get() * 360 * m_posConversionFactor)),360);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class EverDutyCycleEncoder extends EverAbsEncoder {
 
     @Override
     public double getPos() {
-        return ((m_dutyCycleEncoder.get() - m_offSet) * 360) % 360;
+        return Funcs.modulo(((m_dutyCycleEncoder.get() - m_offSet) * 360 * m_posConversionFactor), 360);
     }
 
     //under contruction

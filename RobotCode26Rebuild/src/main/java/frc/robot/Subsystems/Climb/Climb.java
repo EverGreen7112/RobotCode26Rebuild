@@ -17,10 +17,10 @@ public class Climb extends SubsystemBase implements Consts.ClimbConst{
     private DigitalInput m_bottomLimitSwitch, m_topLimitSwitch;
 
     private Climb(){
-        m_climbMotor = ClimbConst.CLIMB_MOTOR;
-        m_climbEncoder = ClimbConst.CLIMB_ENCODER;
-        m_bottomLimitSwitch = ClimbConst.BOTTOM_LM;
-        m_topLimitSwitch = ClimbConst.TOP_LM;
+        // m_climbMotor = ClimbConst.CLIMB_MOTOR;
+        // m_climbEncoder = ClimbConst.CLIMB_ENCODER;
+        // m_bottomLimitSwitch = ClimbConst.BOTTOM_LM;
+        // m_topLimitSwitch = ClimbConst.TOP_LM;
     }
 
     public static Climb getInstance(){
@@ -48,21 +48,21 @@ public class Climb extends SubsystemBase implements Consts.ClimbConst{
     }
 
     
-    @Override
-    public void periodic() {
-        if(cantClose()){
-            m_climbEncoder.setPos(0);
-        }
+    // @Override
+    // public void periodic() {
+    //     if(cantClose()){
+    //         m_climbEncoder.setPos(0);
+    //     }
 
-        if((cantOpen() && m_climbEncoder.getVel() > 0) || (cantClose() && m_climbEncoder.getVel() < 0)){
-            stop();
-        }
+    //     if((cantOpen() && m_climbEncoder.getVel() > 0) || (cantClose() && m_climbEncoder.getVel() < 0)){
+    //         stop();
+    //     }
 
-        if(ClimbConst.DEBUG_MODE){
-            log();
-        }
+    //     if(ClimbConst.DEBUG_MODE){
+    //         log();
+    //     }
 
-    }
+    // }
 
     //TODO: need to see if the condition is right for both limit switches
 

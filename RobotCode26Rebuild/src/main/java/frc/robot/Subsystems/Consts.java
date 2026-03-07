@@ -31,7 +31,7 @@ public interface Consts {
 
                 // TODO: change all place holder to real values
 
-                public static final boolean DEBUG_MODE = false;
+                public static final boolean DEBUG_MODE = true;
                 // speed values
                 public static final double MAX_NORMAL_DRIVE_SPEED = 6; // m/s
                 public static final double MAX_TURBO_DRIVE_SPEED = 8;
@@ -70,15 +70,15 @@ public interface Consts {
                                 DL_DRIVE_ENCODER = new EverTalonFXInternalEncoder(DL_DRIVE_MOTOR),
                                 DR_DRIVE_ENCODER = new EverTalonFXInternalEncoder(DR_DRIVE_MOTOR);
 
-                public static final EverSparkInternalEncoder 
-                                TL_STEER_ENCODER = new EverSparkInternalEncoder(TL_STEER_MOTOR),
-                                TR_STEER_ENCODER = new EverSparkInternalEncoder(TR_STEER_MOTOR),
-                                DL_STEER_ENCODER = new EverSparkInternalEncoder(DL_STEER_MOTOR),
-                                DR_STEER_ENCODER = new EverSparkInternalEncoder(DR_STEER_MOTOR);
+                public static final EverDutyCycleEncoder 
+                                TL_STEER_ENCODER = new EverDutyCycleEncoder(3),
+                                TR_STEER_ENCODER = new EverDutyCycleEncoder(1),
+                                DL_STEER_ENCODER = new EverDutyCycleEncoder(4),
+                                DR_STEER_ENCODER = new EverDutyCycleEncoder(2);
 
                 public static final EverTalonFXInternalEncoder[] DRIVE_ENCODERS = { TL_DRIVE_ENCODER, TR_DRIVE_ENCODER,
                                 DL_DRIVE_ENCODER, DR_DRIVE_ENCODER };
-                public static final EverSparkInternalEncoder[] STEER_ENCODERS = { TL_STEER_ENCODER, TR_STEER_ENCODER,
+                public static final EverDutyCycleEncoder[] STEER_ENCODERS = { TL_STEER_ENCODER, TR_STEER_ENCODER,
                                 DL_STEER_ENCODER, DR_STEER_ENCODER };
 
                 // swerve module pid controllers
@@ -100,22 +100,23 @@ public interface Consts {
                                 TR_ANGLE_CONTROLLER, DL_ANGLE_CONTROLLER, DR_ANGLE_CONTROLLER };
 
                 // chassis encoders
-                public static final EverDutyCycleEncoder TL_ABS_ENCODER = new EverDutyCycleEncoder(3),
-                                TR_ABS_ENCODER = new EverDutyCycleEncoder(1),
-                                DL_ABS_ENCODER = new EverDutyCycleEncoder(4),
-                                DR_ABS_ENCODER = new EverDutyCycleEncoder(2);
+                public static final EverDutyCycleEncoder 
+                                TL_ABS_ENCODER = TL_STEER_ENCODER,
+                                TR_ABS_ENCODER = TR_STEER_ENCODER,
+                                DL_ABS_ENCODER = DL_STEER_ENCODER,
+                                DR_ABS_ENCODER = DR_STEER_ENCODER;
 
                 public static final EverAbsEncoder[] ABS_ENCODERS = { TL_ABS_ENCODER, TR_ABS_ENCODER, DL_ABS_ENCODER,
                                 DR_ABS_ENCODER };
 
                 // swerve module velocity pidf values
-                public static final double WHEEL_VELOCITY_KP = 0.05, WHEEL_VELOCITY_KI = 0.0, WHEEL_VELOCITY_KD = 0.00,
-                                WHEEL_VELOCITY_KV = 0.75 / 2.81, WHEEL_VELOCITY_KS = 0;
+                public static final double WHEEL_VELOCITY_KP = 0.00, WHEEL_VELOCITY_KI = 0.0, WHEEL_VELOCITY_KD = 0.00,
+                                WHEEL_VELOCITY_KV = 0 / 2.81, WHEEL_VELOCITY_KS = 0;
                 // swerve module wheel angle pid values
-                public static final double WHEEL_ANGLE_KP = 0.01, WHEEL_ANGLE_KI = 0.0, WHEEL_ANGLE_KD = 0.000;
+                public static final double WHEEL_ANGLE_KP = 0.1, WHEEL_ANGLE_KI = 0.0, WHEEL_ANGLE_KD = 0.000;
 
                 // swerve dimensions
-                public static final double CHASSIS_WIDTH = 0.75, CHASSIS_LENGTH = 0.75;
+                public static final double CHASSIS_WIDTH = 0.67, CHASSIS_LENGTH = 0.67;
                 public static final double BUMPERS_THICKNESS = 0.06;
 
                 public static final double ROBOT_BOUNDING_CIRCLE_PERIMETER = Math.PI * Math.sqrt(
@@ -172,10 +173,10 @@ public interface Consts {
                                 absEncoder.setPosConversionFactor(360.0);
                         }
 
-                        ABS_ENCODERS[0].setOffset(81.474609375);// 80.507); //80.5078125
-                        ABS_ENCODERS[1].setOffset(138.1640625);// 137.37); //-42.275394439697266
-                        ABS_ENCODERS[2].setOffset(-150);// -149.150); //-149.50196838378906
-                        ABS_ENCODERS[3].setOffset(-31.11328125);// -27.509); //-34.8046875
+                        ABS_ENCODERS[0].setOffset(0);
+                        ABS_ENCODERS[1].setOffset(0);
+                        ABS_ENCODERS[2].setOffset(0);
+                        ABS_ENCODERS[3].setOffset(0);
 
                         for (EverTalonFXPIDController velocityController : WHEEL_VELOCITY_CONTROLLERS) {
                                 Slot0Configs configs = new Slot0Configs();
@@ -255,7 +256,7 @@ public interface Consts {
                 public static final EverTalonFXPIDController SHOOTING_PID_CONTROLLER = new EverTalonFXPIDController(
                                 LEFT_MOTOR);
 
-                public static final boolean DEBUG_MODE = true;
+                public static final boolean DEBUG_MODE = false;
                 public static final double DELIVERY_ANGLE = 45;
 
                 // TODO: make the cases for different shooting speeds and their corresponding
@@ -342,7 +343,7 @@ public interface Consts {
                 public static final EverTalonFXInternalEncoder CLIMB_ENCODER = new EverTalonFXInternalEncoder(
                                 CLIMB_MOTOR);
 
-                public static final DigitalInput BOTTOM_LM = new DigitalInput(5), TOP_LM = new DigitalInput(4);
+                //public static final DigitalInput BOTTOM_LM = new DigitalInput(6), TOP_LM = new DigitalInput(4);
 
                 public static final boolean DEBUG_MODE = false;
 

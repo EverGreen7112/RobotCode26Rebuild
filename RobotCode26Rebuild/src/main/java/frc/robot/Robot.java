@@ -11,6 +11,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.ctre.phoenix6.swerve.SwerveModule;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,11 +20,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Subsystems.AutoOperationsController;
 import frc.robot.Subsystems.Consts.ShooterConsts;
+import frc.robot.Subsystems.Consts.SwerveConsts;
 import frc.robot.Subsystems.Shooter.Shooter;
+import frc.robot.Subsystems.Swerve.Swerve;
 //import frc.robot.Utils.GamePieceDetector;
 import frc.robot.Utils.EverKit.Periodic;
 //import frc.robot.Utils.GamePieceCamera.GamePieceType
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
+import frc.robot.Utils.Math.Vector2d;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -32,8 +37,6 @@ public class Robot extends LoggedRobot {
   public static ArrayList<Periodic> autonomousPeriodicFuncs = new ArrayList<Periodic>();
   public static ArrayList<Periodic> simulationPeriodicFuncs = new ArrayList<Periodic>();
   private RobotContainer m_robotContainer;
-
-  private EverTalonFX motor = new EverTalonFX(14);
 
   public static Alliance m_alliance;
   
@@ -61,12 +64,10 @@ public class Robot extends LoggedRobot {
         m_alliance = Alliance.Blue;
     else      m_alliance = Alliance.Red;
 
-    Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
-    AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
+    //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
+    //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
 
-
-
-    SmartDashboard.putNumber("angle",ShooterConsts.ANGLE_MOTOR.getControllerInstance().getAbsoluteEncoder().getPosition());
+    Swerve.getInstance().log();
 
   }
 
@@ -100,12 +101,15 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    motor.set(0.3);
+    //SwerveConsts.TL_STEER_MOTOR.set(0.3);
+
+
 
   }
 
   @Override
   public void teleopPeriodic() {
+    //Swerve.getInstance().testModule(0,5, 90);
 
   }
 
