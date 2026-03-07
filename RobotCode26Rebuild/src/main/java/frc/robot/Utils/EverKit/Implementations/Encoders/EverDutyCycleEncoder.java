@@ -17,7 +17,7 @@ public class EverDutyCycleEncoder extends EverAbsEncoder {
 
     @Override
     public double getAbsPos() {
-        return (m_dutyCycleEncoder.get() - m_offSet) * 360 * m_posConversionFactor;
+        return ((m_dutyCycleEncoder.get() - m_offSet) * 360 * m_posConversionFactor) % 360;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class EverDutyCycleEncoder extends EverAbsEncoder {
 
     @Override
     public double getPos() {
-        return (m_dutyCycleEncoder.get() - m_offSet) * 360;
+        return ((m_dutyCycleEncoder.get() - m_offSet) * 360) % 360;
     }
 
     //under contruction

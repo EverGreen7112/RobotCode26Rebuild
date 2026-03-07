@@ -9,10 +9,12 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Utils.EverKit.EverAbsEncoder;
+import frc.robot.Utils.EverKit.EverAnalogToDigitalLimitSwitch;
 import frc.robot.Utils.EverKit.EverEncoder;
 import frc.robot.Utils.EverKit.EverMotorController;
 import frc.robot.Utils.EverKit.EverMotorController.IdleMode;
 import frc.robot.Utils.EverKit.Implementations.Encoders.EverCANCoder;
+import frc.robot.Utils.EverKit.Implementations.Encoders.EverDutyCycleEncoder;
 import frc.robot.Utils.EverKit.Implementations.Encoders.EverSparkInternalAbsEncoder;
 import frc.robot.Utils.EverKit.Implementations.Encoders.EverSparkInternalEncoder;
 import frc.robot.Utils.EverKit.Implementations.Encoders.EverTalonFXInternalEncoder;
@@ -98,10 +100,10 @@ public interface Consts {
                                 TR_ANGLE_CONTROLLER, DL_ANGLE_CONTROLLER, DR_ANGLE_CONTROLLER };
 
                 // chassis encoders
-                public static final EverSparkInternalAbsEncoder TL_ABS_ENCODER = new EverSparkInternalAbsEncoder(STEER_MOTORS[0]),
-                                TR_ABS_ENCODER = new EverSparkInternalAbsEncoder(STEER_MOTORS[1]),
-                                DL_ABS_ENCODER = new EverSparkInternalAbsEncoder(STEER_MOTORS[2]),
-                                DR_ABS_ENCODER = new EverSparkInternalAbsEncoder(STEER_MOTORS[3]);
+                public static final EverDutyCycleEncoder TL_ABS_ENCODER = new EverDutyCycleEncoder(3),
+                                TR_ABS_ENCODER = new EverDutyCycleEncoder(1),
+                                DL_ABS_ENCODER = new EverDutyCycleEncoder(4),
+                                DR_ABS_ENCODER = new EverDutyCycleEncoder(2);
 
                 public static final EverAbsEncoder[] ABS_ENCODERS = { TL_ABS_ENCODER, TR_ABS_ENCODER, DL_ABS_ENCODER,
                                 DR_ABS_ENCODER };
@@ -238,7 +240,7 @@ public interface Consts {
                                 TARGET_RPM = 2024, // change this for the real target shooting rpm
                                 DELIVERY_RPM = 1000; // change this for the real delivery rpm
 
-                public static final EverSparkInternalAbsEncoder ANGLE_ABS_ENCODER = new EverSparkInternalAbsEncoder(ANGLE_MOTOR);
+                public static final EverDutyCycleEncoder ANGLE_ABS_ENCODER = new EverDutyCycleEncoder(0);
 
                 public static final double SPEED_KP = 0, // change this for the real KP of the shooter
                                 SPEED_KI = 0, // change this for the real KI of the shooter
@@ -301,8 +303,8 @@ public interface Consts {
                 public static final EverTalonFXInternalEncoder EXTENSION_ENCODER = new EverTalonFXInternalEncoder(
                                 EXTENSION_MOTOR);
 
-                public static final DigitalInput RETRACTION_LM = new DigitalInput(0),
-                                EXTENSION_LM = new DigitalInput(3);
+                public static final EverAnalogToDigitalLimitSwitch RETRACTION_LM = new EverAnalogToDigitalLimitSwitch(0),
+                                EXTENSION_LM = new EverAnalogToDigitalLimitSwitch(3);
 
                 public final double EXTENSION_SPEED = 0.25, PICKUP_SPEED = 0.6;
                 public final boolean DEBUG_MODE = false;
@@ -322,8 +324,8 @@ public interface Consts {
                 public final static double FEEDER_MAX_STALL_TIME = 2, FEEDING_SPEED = 0.4; // motor power
                                                                                               
 
-                public static final DigitalInput ENTER_LEFT_LM = new DigitalInput(2),
-                                                 ENTER_RIGHT_LM = new DigitalInput(1);
+                public static final EverAnalogToDigitalLimitSwitch ENTER_LEFT_LM = new EverAnalogToDigitalLimitSwitch(0),
+                                                 ENTER_RIGHT_LM = new EverAnalogToDigitalLimitSwitch(1);
 
                 public static final double FEEDING_TIME = 0.15; // place holder (in seconds)
 

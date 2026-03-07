@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Consts.IntakeConsts;
+import frc.robot.Utils.EverKit.EverAnalogToDigitalLimitSwitch;
 import frc.robot.Utils.EverKit.EverEncoder;
 import frc.robot.Utils.EverKit.EverMotorController;
 
@@ -15,7 +16,7 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
     private EverMotorController m_pickupMotor, m_extensionMotor;
     private EverEncoder m_extensionEncoder;
 
-    private DigitalInput m_retractionLM, m_extensionLM; 
+    private EverAnalogToDigitalLimitSwitch m_retractionLM, m_extensionLM; 
 
     private Intake(){
 

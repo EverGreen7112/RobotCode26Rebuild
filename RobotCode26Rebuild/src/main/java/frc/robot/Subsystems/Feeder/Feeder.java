@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Consts.FeedAndConveyConsts;
 import frc.robot.Utils.DeltaTime;
+import frc.robot.Utils.EverKit.EverAnalogToDigitalLimitSwitch;
 import frc.robot.Utils.EverKit.EverMotorController;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 
@@ -16,7 +17,7 @@ public class Feeder extends SubsystemBase implements Consts.FeedAndConveyConsts{
 
     private EverMotorController m_feedingMotor;
 
-    private DigitalInput m_enterLeftLM, m_enterRightLM;
+    private EverAnalogToDigitalLimitSwitch m_enterLeftLM, m_enterRightLM;
 
     private DeltaTime m_counter;
 

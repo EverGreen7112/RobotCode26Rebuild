@@ -2,15 +2,19 @@ package frc.robot.Utils.EverKit;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 
-public class AnalogToDigitalLimitSwitch {
+public class EverAnalogToDigitalLimitSwitch {
     private AnalogInput m_analogInput;
     private double m_digitalThreshHold;
 
-    public AnalogToDigitalLimitSwitch(int port){
+    public EverAnalogToDigitalLimitSwitch(int port){
         m_analogInput = new AnalogInput(port);
     }
 
-    public boolean getDigital(){
+    /**
+     * get analog sensor as digital
+     * @return 
+     */
+    public boolean get(){
         return m_analogInput.getAverageVoltage() > m_digitalThreshHold;
     }
 

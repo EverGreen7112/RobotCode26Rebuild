@@ -22,6 +22,7 @@ import frc.robot.Subsystems.Shooter.Shooter;
 //import frc.robot.Utils.GamePieceDetector;
 import frc.robot.Utils.EverKit.Periodic;
 //import frc.robot.Utils.GamePieceCamera.GamePieceType
+import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -31,6 +32,8 @@ public class Robot extends LoggedRobot {
   public static ArrayList<Periodic> autonomousPeriodicFuncs = new ArrayList<Periodic>();
   public static ArrayList<Periodic> simulationPeriodicFuncs = new ArrayList<Periodic>();
   private RobotContainer m_robotContainer;
+
+  private EverTalonFX motor = new EverTalonFX(14);
 
   public static Alliance m_alliance;
   
@@ -97,7 +100,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    //ShooterConsts.ANGLE_MOTOR.set(-0.2);
+    motor.set(0.3);
 
   }
 
