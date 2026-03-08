@@ -67,8 +67,6 @@ public class Robot extends LoggedRobot {
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
 
-    Swerve.getInstance().log();
-
   }
 
   @Override
@@ -101,15 +99,14 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    //SwerveConsts.TL_STEER_MOTOR.set(0.3);
-
-
-
+    
   }
 
   @Override
   public void teleopPeriodic() {
-    //Swerve.getInstance().testModule(0,5, 90);
+    Vector2d testVec = new Vector2d(RobotContainer.chassis.getLeftX(), RobotContainer.chassis.getLeftY());
+    //Swerve.getInstance().testModule(0, testVec.theta(), testVec.mag());
+    
 
   }
 

@@ -81,7 +81,7 @@ public class Swerve extends SubsystemBase implements Consts.SwerveConsts{
     }
 
     public double getGyroOrientedAngle(){
-        return m_gyro.getYaw() * SwerveConsts.GYRO_DIRECTION;
+        return m_gyro.getYaw() * SwerveConsts.GYRO_DIRECTION + SwerveConsts.GYRO_OFFSET;
     }
 
     public SwerveModule[] getModules(){
@@ -208,7 +208,17 @@ public class Swerve extends SubsystemBase implements Consts.SwerveConsts{
         SmartDashboard.putString("velocity", getRobotOrientedVelocity().toString());
         SmartDashboard.putNumber("angular velocity", getAngularVelocity());
         SmartDashboard.putNumber("gyro angle", m_gyro.getYaw());
-       
+
+        SmartDashboard.putNumber("TL abs", m_modules[0].getAbsAngle());
+        SmartDashboard.putNumber("TR abs", m_modules[1].getAbsAngle());
+        SmartDashboard.putNumber("DL abs", m_modules[2].getAbsAngle());
+        SmartDashboard.putNumber("DR abs", m_modules[3].getAbsAngle());
+
+        SmartDashboard.putNumber("TL speed", m_modules[0].getSpeed());
+        SmartDashboard.putNumber("TR speed", m_modules[1].getSpeed());
+        SmartDashboard.putNumber("DL speed", m_modules[2].getSpeed());
+        SmartDashboard.putNumber("DR speed", m_modules[3].getSpeed());
+        
 
 
     }

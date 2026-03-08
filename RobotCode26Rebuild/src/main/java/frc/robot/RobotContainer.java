@@ -52,7 +52,9 @@ public class RobotContainer {
   public static final Trigger chassisLT = chassis.leftTrigger();
   public static final Trigger chassisPovUp = chassis.povUp();
   public static final Trigger chassisPovDown = chassis.povDown();
-  //public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
+  public static final Trigger chassisPovLeft = chassis.povLeft();
+  public static final Trigger chassisPovRight = chassis.povRight();
+  public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
 
   public RobotContainer() {
     registerNamedCommands();
@@ -66,11 +68,12 @@ public class RobotContainer {
   private void configureBindings() {
 
     //chassis
-    //Swerve.getInstance().setDefaultCommand(teleopCommand);
-    //chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
-    //chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
-    chassisA.whileTrue(new ConveyCommand());
-    chassisB.whileTrue(new FeedCommand());
+    Swerve.getInstance().setDefaultCommand(teleopCommand);
+    chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
+    chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
+    chassisBack.onTrue(new InstantCommand(() -> Swerve.getInstance().resetGyro()));
+    //chassisA.whileTrue(new ConveyCommand());
+    //chassisB.whileTrue(new FeedCommand());
 
     //chassisX.whileTrue(new ScoreCommand());
 

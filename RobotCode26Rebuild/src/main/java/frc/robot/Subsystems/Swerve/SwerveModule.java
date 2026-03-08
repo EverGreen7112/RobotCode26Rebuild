@@ -57,7 +57,7 @@ public class SwerveModule extends SubsystemBase implements Consts.SwerveConsts{
         this(velocityController, driveMotor, driveEncoder,
              angleController, steerMotor, steerEncoder);
         m_absSteerEncoder = absSteerEncoder;
-        //m_steerEncoder.setPos(getAbsAngle());
+        m_steerEncoder.setPos(getAbsAngle());
         
     }
 
@@ -166,6 +166,7 @@ public class SwerveModule extends SubsystemBase implements Consts.SwerveConsts{
 
     @Override
     public void periodic() {
+        
     }
 
     public void setDrive(double output){

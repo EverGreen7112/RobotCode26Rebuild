@@ -31,13 +31,13 @@ public interface Consts {
 
                 // TODO: change all place holder to real values
 
-                public static final boolean DEBUG_MODE = true;
+                public static final boolean DEBUG_MODE = false;
                 // speed values
-                public static final double MAX_NORMAL_DRIVE_SPEED = 6; // m/s
-                public static final double MAX_TURBO_DRIVE_SPEED = 8;
-                public static final double MAX_SLOW_DRIVE_SPEED = 0.45;
+                public static final double MAX_NORMAL_DRIVE_SPEED = 3.5; // m/s
+                public static final double MAX_TURBO_DRIVE_SPEED = 5;
+                public static final double MAX_SLOW_DRIVE_SPEED = 2;
                 public static final double MAX_ANGULAR_SPEED = 180; // deg/s/
-                public static final double MIN_SPEED = 0.0;
+                public static final double MIN_SPEED = 0.4;
 
                 public static final double GYRO_DIRECTION = -1; // decide the direction of the gyro(counter clock wise
                                                                 // should be
@@ -51,7 +51,6 @@ public interface Consts {
                                 TR_DRIVE_MOTOR = new EverTalonFX(1), // 5
                                 DL_DRIVE_MOTOR = new EverTalonFX(2), // 1
                                 DR_DRIVE_MOTOR = new EverTalonFX(0);// 3 TL - TR - DL -DR
-
                 public static final EverSparkMax 
                                 TL_STEER_MOTOR = new EverSparkMax(11), // 8
                                 TR_STEER_MOTOR = new EverSparkMax(10), // 6
@@ -70,15 +69,15 @@ public interface Consts {
                                 DL_DRIVE_ENCODER = new EverTalonFXInternalEncoder(DL_DRIVE_MOTOR),
                                 DR_DRIVE_ENCODER = new EverTalonFXInternalEncoder(DR_DRIVE_MOTOR);
 
-                public static final EverDutyCycleEncoder 
-                                TL_STEER_ENCODER = new EverDutyCycleEncoder(3),
-                                TR_STEER_ENCODER = new EverDutyCycleEncoder(1),
-                                DL_STEER_ENCODER = new EverDutyCycleEncoder(4),
-                                DR_STEER_ENCODER = new EverDutyCycleEncoder(2);
+                public static final EverSparkInternalEncoder 
+                                TL_STEER_ENCODER = new EverSparkInternalEncoder(TL_STEER_MOTOR),
+                                TR_STEER_ENCODER = new EverSparkInternalEncoder(TR_STEER_MOTOR),
+                                DL_STEER_ENCODER = new EverSparkInternalEncoder(DL_STEER_MOTOR),
+                                DR_STEER_ENCODER = new EverSparkInternalEncoder(DR_STEER_MOTOR);
 
                 public static final EverTalonFXInternalEncoder[] DRIVE_ENCODERS = { TL_DRIVE_ENCODER, TR_DRIVE_ENCODER,
                                 DL_DRIVE_ENCODER, DR_DRIVE_ENCODER };
-                public static final EverDutyCycleEncoder[] STEER_ENCODERS = { TL_STEER_ENCODER, TR_STEER_ENCODER,
+                public static final EverSparkInternalEncoder[] STEER_ENCODERS = { TL_STEER_ENCODER, TR_STEER_ENCODER,
                                 DL_STEER_ENCODER, DR_STEER_ENCODER };
 
                 // swerve module pid controllers
@@ -101,19 +100,19 @@ public interface Consts {
 
                 // chassis encoders
                 public static final EverDutyCycleEncoder 
-                                TL_ABS_ENCODER = TL_STEER_ENCODER,
-                                TR_ABS_ENCODER = TR_STEER_ENCODER,
-                                DL_ABS_ENCODER = DL_STEER_ENCODER,
-                                DR_ABS_ENCODER = DR_STEER_ENCODER;
+                                TL_ABS_ENCODER = new EverDutyCycleEncoder(3),
+                                TR_ABS_ENCODER = new EverDutyCycleEncoder(1),
+                                DL_ABS_ENCODER = new EverDutyCycleEncoder(4),
+                                DR_ABS_ENCODER = new EverDutyCycleEncoder(2);
 
                 public static final EverAbsEncoder[] ABS_ENCODERS = { TL_ABS_ENCODER, TR_ABS_ENCODER, DL_ABS_ENCODER,
                                 DR_ABS_ENCODER };
 
                 // swerve module velocity pidf values
-                public static final double WHEEL_VELOCITY_KP = 0.00, WHEEL_VELOCITY_KI = 0.0, WHEEL_VELOCITY_KD = 0.00,
-                                WHEEL_VELOCITY_KV = 0 / 2.81, WHEEL_VELOCITY_KS = 0;
+                public static final double WHEEL_VELOCITY_KP = 0.1, WHEEL_VELOCITY_KI = 0.0, WHEEL_VELOCITY_KD = 0.00,
+                                WHEEL_VELOCITY_KV = 1 / 8.5, WHEEL_VELOCITY_KS = 0;
                 // swerve module wheel angle pid values
-                public static final double WHEEL_ANGLE_KP = 0.1, WHEEL_ANGLE_KI = 0.0, WHEEL_ANGLE_KD = 0.000;
+                public static final double WHEEL_ANGLE_KP = 0.01, WHEEL_ANGLE_KI = 0.0, WHEEL_ANGLE_KD = 0.000;
 
                 // swerve dimensions
                 public static final double CHASSIS_WIDTH = 0.67, CHASSIS_LENGTH = 0.67;
@@ -126,17 +125,19 @@ public interface Consts {
                 public static final double WHEEL_PERIMETER = Math.PI * 0.09;
 
                 // module gear ratios
-                public static final double DRIVE_GEAR_RATIO = 1 / 6.75, STEER_GEAR_RATIO = 1 / 12.8;
+                public static final double DRIVE_GEAR_RATIO = 1 / 6.75, STEER_GEAR_RATIO =  7.0 / 150.0;
+
+                public static final double GYRO_OFFSET = 90;
 
                 // swerve vectors
                 public static final Vector2d TR = new Vector2d((CHASSIS_WIDTH / 2),
-                                (CHASSIS_LENGTH / 2)),
+                                (CHASSIS_LENGTH / 2)).rotate(Math.toRadians(90)),
                                 TL = new Vector2d(-(CHASSIS_WIDTH / 2),
-                                                (CHASSIS_LENGTH / 2)),
+                                                (CHASSIS_LENGTH / 2)).rotate(Math.toRadians(270)),
                                 DR = new Vector2d(CHASSIS_WIDTH / 2,
-                                                -(CHASSIS_LENGTH / 2)),
+                                                -(CHASSIS_LENGTH / 2)).rotate(Math.toRadians(270)),
                                 DL = new Vector2d(-(CHASSIS_WIDTH / 2),
-                                                -(CHASSIS_LENGTH / 2));
+                                                -(CHASSIS_LENGTH / 2)).rotate(Math.toRadians(90));
 
                 // array of physical module vectors
                 public static final Vector2d[] modulesPositions = { 
@@ -147,11 +148,13 @@ public interface Consts {
                 };// array of vectors from robot center to swerves module
 
                 public static void config() {
+
                         for (EverMotorController driveMotor : DRIVE_MOTORS) {
                                 driveMotor.restoreFactoryDefaults();
                                 driveMotor.setInverted(false);
                                 driveMotor.setIdleMode(IdleMode.kCoast);
                         }
+                        TL_DRIVE_MOTOR.setInverted(true);
 
                         for (EverMotorController steerMotor : STEER_MOTORS) {
                                 steerMotor.restoreFactoryDefaults();
@@ -159,7 +162,7 @@ public interface Consts {
                         }
 
                         for (EverEncoder driveEncoder : DRIVE_ENCODERS) {
-                                driveEncoder.setVelConversionFactor(DRIVE_GEAR_RATIO * WHEEL_PERIMETER * (1.0 / 60.0));
+                                driveEncoder.setVelConversionFactor(DRIVE_GEAR_RATIO * WHEEL_PERIMETER);
                                 driveEncoder.setPosConversionFactor(DRIVE_GEAR_RATIO * WHEEL_PERIMETER);
                         }
 
@@ -173,11 +176,10 @@ public interface Consts {
                                 absEncoder.setPosConversionFactor(360.0);
                         }
 
-                        ABS_ENCODERS[0].setOffset(0);
-                        ABS_ENCODERS[1].setOffset(0);
-                        ABS_ENCODERS[2].setOffset(0);
-                        ABS_ENCODERS[3].setOffset(0);
-
+                        ABS_ENCODERS[0].setOffset(69.9);
+                        ABS_ENCODERS[1].setOffset(166.48);
+                        ABS_ENCODERS[2].setOffset(52.311);
+                        ABS_ENCODERS[3].setOffset(103.16);
                         for (EverTalonFXPIDController velocityController : WHEEL_VELOCITY_CONTROLLERS) {
                                 Slot0Configs configs = new Slot0Configs();
                                 configs.kP = WHEEL_VELOCITY_KP;
@@ -185,8 +187,7 @@ public interface Consts {
                                 configs.kD = WHEEL_VELOCITY_KD;
                                 configs.kS = WHEEL_VELOCITY_KS;
                                 configs.kV = WHEEL_VELOCITY_KV;
-                                velocityController.setPIDF(WHEEL_ANGLE_KP, WHEEL_ANGLE_KI, WHEEL_ANGLE_KD,
-                                                WHEEL_VELOCITY_KV);
+                                velocityController.setPID(configs);
                         }
 
                         for (EverSparkMaxPIDController angleController : WHEEL_ANGLE_CONTROLLERS) {
@@ -256,7 +257,7 @@ public interface Consts {
                 public static final EverTalonFXPIDController SHOOTING_PID_CONTROLLER = new EverTalonFXPIDController(
                                 LEFT_MOTOR);
 
-                public static final boolean DEBUG_MODE = false;
+                public static final boolean DEBUG_MODE = true;
                 public static final double DELIVERY_ANGLE = 45;
 
                 // TODO: make the cases for different shooting speeds and their corresponding
