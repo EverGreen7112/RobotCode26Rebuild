@@ -16,6 +16,7 @@ import frc.robot.Utils.EverKit.EverEncoder;
 import frc.robot.Utils.EverKit.EverMotorController;
 import frc.robot.Utils.EverKit.EverPIDController;
 import frc.robot.Utils.EverKit.EverPIDController.ControlType;
+import frc.robot.Utils.EverKit.Implementations.Encoders.EverDutyCycleEncoder;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverMotorControllerGroup;
 import frc.robot.Utils.Math.Funcs;
 import frc.robot.Utils.Math.Vector2d;
@@ -54,6 +55,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     private EverMotorController m_smallMotor, m_bigMotor;
 
+    private double m_filteredBigShootingSpeed, m_filteredSmallShootingSpeed, m_prevFilteredBigShootingSpeed, m_prevFilteredSmallShootingSpeed;
+
     private Shooter() {
         ShooterConsts.config();
         m_smallMotor = ShooterConsts.LEFT_MOTOR;
@@ -79,6 +82,9 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_targetHub = ShooterConsts.BLUE_HUB_POSE;
 
         m_staticShootingPose = ShooterConsts.STATIC_SHOOT_POSE_BLUE;
+
+        m_prevFilteredBigShootingSpeed = 0;
+        m_prevFilteredSmallShootingSpeed = 0;
     }
 
     public static Shooter getInstance() {
@@ -163,9 +169,9 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     @Override
     public void periodic() {
 
-        if ((m_angleEncoder.getPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0)) {
+        if (((EverDutyCycleEncoder)m_angleEncoder).getAbsPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0) {
             m_angleMotor.stop();
-        } else if (m_angleEncoder.getPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0) {
+        } else if (((EverDutyCycleEncoder)m_angleEncoder).getAbsPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0) {
             m_angleMotor.stop();
         }
 
@@ -226,11 +232,19 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     }
 
     public void log() {
-        SmartDashboard.putNumber("Shooter Target Angle", m_targetAngle);
-        SmartDashboard.putNumber("Shooter Current Angle", m_angleEncoder.getPos());
+        SmartDashboard.putNumber("Shooter Current Angle", ((EverDutyCycleEncoder)m_angleEncoder).getAbsPos());
         SmartDashboard.putNumber("Ball speed", m_predictedBallV0);
         SmartDashboard.putNumber("Big Wheel Shooting Speed", m_bigShootingEncoder.getVel());
         SmartDashboard.putNumber("Small Wheel Shooting Speed", m_smallShootingEncoder.getVel());
+
+        SmartDashboard.putNumber("Spar internal encoder angle", ShooterConsts.ANGLE_MOTOR.getControllerInstance().getEncoder().getPosition());
+
+        m_filteredBigShootingSpeed = 0.8 * m_prevFilteredBigShootingSpeed + 0.2 * m_bigShootingEncoder.getVel();
+        m_filteredSmallShootingSpeed = 0.8 * m_prevFilteredSmallShootingSpeed + 0.2 * m_smallShootingEncoder.getVel();
+        m_prevFilteredBigShootingSpeed = m_filteredBigShootingSpeed;
+        m_prevFilteredSmallShootingSpeed = m_filteredSmallShootingSpeed;
+        SmartDashboard.putNumber("Filtered Big Wheel Speed", m_filteredBigShootingSpeed);
+        SmartDashboard.putNumber("Filtered Small Wheel Speed", m_filteredSmallShootingSpeed);
     }
 
     public void bigShootingRpm(double mps) {
@@ -239,6 +253,10 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     public void smallShootingRpm(double mps) {
         m_smallWheelshootingController.activate(mps, ControlType.kVel);
+    }
+
+    public void anglePos(double angle) {
+        m_anglePID.activate(angle, ControlType.kPos);
     }
 
 }

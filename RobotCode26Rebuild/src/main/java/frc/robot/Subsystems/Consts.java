@@ -22,6 +22,7 @@ import frc.robot.Utils.EverKit.Implementations.Encoders.EverTalonFXInternalEncod
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkFlex;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkMax;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
+import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverExternalMotorPIDController;
 import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverSparkMaxPIDController;
 import frc.robot.Utils.EverKit.Implementations.PIDControllers.EverTalonFXPIDController;
 import frc.robot.Utils.Math.Vector2d;
@@ -224,7 +225,7 @@ public interface Consts {
                 public static final EverTalonFXInternalEncoder BIG_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
                 public static final EverTalonFXInternalEncoder SMALL_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(RIGHT_MOTOR);
 
-                public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/22.234, SHOOTING_GEAR_RATIO = 1;
+                public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/(1/22.234), SHOOTING_GEAR_RATIO = 1;
 
                 public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d());
                 public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d());
@@ -238,10 +239,10 @@ public interface Consts {
 
                                 SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT,
 
-                                MAX_ANGLE = 60, // change this for the real max angle of the shooter (in degrees)
-                                MIN_ANGLE = 0, // change this for the real min angle of the shooter (in degrees)
+                                MAX_ANGLE = 11, // change this for the real max angle of the shooter (in degrees)
+                                MIN_ANGLE = 4.06, // change this for the real min angle of the shooter (in degrees)
 
-                                TARGET_RPM = 2000, // change this for the real target shooting rpm
+                                TARGET_RPM = 2000, // cChange this for the real target shooting rpm
                                 DELIVERY_RPM = 1000; // change this for the real delivery rpm
 
                 public static final EverDutyCycleEncoder ANGLE_ABS_ENCODER = new EverDutyCycleEncoder(0);
@@ -257,16 +258,16 @@ public interface Consts {
                                 SMALL_SPEED_KD = 0.00002,
                                 SMALL_SPEED_KV = 1.0 / (339.0 / 60.0), 
 
-                                ANGLE_KP = 0, // change this for the real KP of the shooter
+                                ANGLE_KP = 0.01, // change this for the real KP of the shooter
                                 ANGLE_KI = 0, // change this for the real KI of the shooter
                                 ANGLE_KD = 0; // change this for the real KD of the shooter
 
-                public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
+                public static final EverExternalMotorPIDController ANGLE_PID_CONTROLLER = new EverExternalMotorPIDController(ANGLE_MOTOR);
                 public static final EverTalonFXPIDController LEFT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(LEFT_MOTOR);
                 public static final EverTalonFXPIDController RIGHT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(RIGHT_MOTOR);
 
                 public static final boolean DEBUG_MODE = true;
-                public static final double DELIVERY_ANGLE = 45;
+                public static final double DELIVERY_ANGLE = 7;
 
                 // TODO: make the cases for different shooting speeds and their corresponding
                 // initial velocity of the ball
@@ -288,10 +289,11 @@ public interface Consts {
                 public static void config() {
 
                         ANGLE_ABS_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
-                        ANGLE_ABS_ENCODER.setOffset(348.1875957217596);
+                        ANGLE_ABS_ENCODER.setOffset(271.82322546358046);
 
                         LEFT_MOTOR.setInverted(true);
                         RIGHT_MOTOR.setInverted(true);
+                        ANGLE_MOTOR.setInverted(false);
 
                         BIG_SHOOTING_ENCODER.setVelConversionFactor((SHOOTING_GEAR_RATIO * 60)); 
                         SMALL_SHOOTING_ENCODER.setVelConversionFactor((SHOOTING_GEAR_RATIO * 60)); 
