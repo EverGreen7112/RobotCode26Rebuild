@@ -19,10 +19,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Subsystems.AutoOperationsController;
+import frc.robot.Subsystems.Consts.IntakeConsts;
 import frc.robot.Subsystems.Consts.ShooterConsts;
 import frc.robot.Subsystems.Consts.SwerveConsts;
+import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Utils.DeltaTime;
 //import frc.robot.Utils.GamePieceDetector;
 import frc.robot.Utils.EverKit.Periodic;
 //import frc.robot.Utils.GamePieceCamera.GamePieceType
@@ -62,11 +65,16 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putBoolean("setAlliance", SmartDashboard.getBoolean("setAlliance", true));
     if(SmartDashboard.getBoolean("setAlliance", true))
         m_alliance = Alliance.Blue;
-    else      m_alliance = Alliance.Red;
+    else      
+        m_alliance = Alliance.Red;
 
+    
+    Shooter.getInstance().log();
+    SmartDashboard.putNumber("angle", ShooterConsts.ANGLE_ABS_ENCODER.getAbsPos());
+    //SmartDashboard.putNumber("big shooting encoder", ShooterConsts.BIG_SHOOTING_ENCODER.getVel());
+    SmartDashboard.putNumber("small shooting encoder", ShooterConsts.SMALL_SHOOTING_ENCODER.getVel());
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
-
   }
 
   @Override
@@ -99,15 +107,38 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
+    //double bigYhao = 0.05 / 0.023;
+
+    //ShooterConsts.LEFT_MOTOR.set(-0.4);
+    //ShooterConsts.RIGHT_MOTOR.set(-0.4 * bigYhao);
+
+    //Shooter.getInstance().bigShootingRpm(ShooterConsts.TARGET_RPM);
+    Shooter.getInstance().smallShootingRpm(ShooterConsts.TARGET_RPM);
+    //ShooterConsts.RIGHT_MOTOR.setVoltage(1);
     
   }
 
   @Override
   public void teleopPeriodic() {
-    Vector2d testVec = new Vector2d(RobotContainer.chassis.getLeftX(), RobotContainer.chassis.getLeftY());
-    //Swerve.getInstance().testModule(0, testVec.theta(), testVec.mag());
-    
 
+    /*DeltaTime dt = new DeltaTime();
+
+    boolean last1 = false, last2 = false;
+    double speed = 0, dist = 4.5;
+    if(lm1.get() && !last1){
+      dt.setNow();
+      last1 = true;
+    }
+    if(lm2.get() && !last2){
+      double time = dt.get();
+      last2 = true;
+      speed = dist / time;
+      SmartDashboard.putNumber("V0", speed);
+    }
+    else if(!lm1.get() && !lm2.get() && last1 && last2){
+      last1 = false;
+      last2 = false;
+    }*/
   }
 
   @Override

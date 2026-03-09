@@ -16,7 +16,7 @@ public class FeedCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Feeder.getInstance().getIsEmpty();
+        return false;//Feeder.getInstance().getIsEmpty();
     }
 
     @Override

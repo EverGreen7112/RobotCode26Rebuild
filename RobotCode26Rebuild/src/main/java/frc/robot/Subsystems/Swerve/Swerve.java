@@ -199,7 +199,7 @@ public class Swerve extends SubsystemBase implements Consts.SwerveConsts{
         m_modules[moduleIdx].setState(targetSpeed, targetAngle);
     }
 
-    public void log(){
+    private void log(){
         SmartDashboard.putNumber("TL", m_modules[0].getAngle());
         SmartDashboard.putNumber("TR", m_modules[1].getAngle());
         SmartDashboard.putNumber("DL", m_modules[2].getAngle());

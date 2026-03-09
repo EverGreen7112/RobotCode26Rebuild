@@ -131,6 +131,16 @@ public class Funcs {
         return SpeedInMPS * 60 / (wheelRadius * 2 * Math.PI * gearRatio); // convert m/s to rpm
     }
 
+    /**
+    * converts from m/s to rotations per second based on the radius of the wheel
+    * @param wheelRadius
+    * @param SpeedInMPS
+    * @return
+    */
+    public static double convertMPStoRotationsPerSecond(double wheelRadius, double SpeedInMPS){
+        return SpeedInMPS / (wheelRadius * 2 * Math.PI); // convert m/s to rotations per second
+    }
+
 
     /**
      * converts from rpm to m/s based on the radius of the wheel

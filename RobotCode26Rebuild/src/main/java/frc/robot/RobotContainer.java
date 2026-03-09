@@ -68,7 +68,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     //chassis
-    Swerve.getInstance().setDefaultCommand(teleopCommand);
+    //Swerve.getInstance().setDefaultCommand(teleopCommand);
     chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
     chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
     chassisBack.onTrue(new InstantCommand(() -> Swerve.getInstance().resetGyro()));

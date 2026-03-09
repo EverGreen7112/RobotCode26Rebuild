@@ -220,42 +220,49 @@ public interface Consts {
                 public static final EverTalonFX LEFT_MOTOR = new EverTalonFX(5), RIGHT_MOTOR = new EverTalonFX(19);
                 public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(3);
 
-                public static final EverTalonFXInternalEncoder SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
+                public static final EverTalonFXInternalEncoder BIG_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
+                public static final EverTalonFXInternalEncoder SMALL_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(RIGHT_MOTOR);
 
-                public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/21.093, SHOOTING_GEAR_RATIO = 1;
+                public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/21.09, SHOOTING_GEAR_RATIO = 1;
 
                 public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d());
                 public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d());
 
-                public static final double WHEEL_RADIUS = 0.05, // (in m)
+                public static final double WHEEL_RADIUS = 0.05 ,SMALL_WHEEL_RADIUS = 0.028, WHEELS_RATIO = WHEEL_RADIUS / SMALL_WHEEL_RADIUS,  // (in m)
 
                                 GRAVITY = 9.81, // (in m/s^2)
 
                                 HUB_HEIGHT = 1.8,
-                                MECHANISM_HEIGHT = 0.346,// (iN meters) //can be a bit off
+                                MECHANISM_HEIGHT = 0.351,// (iN meters) //can be a bit off
 
                                 SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT,
 
                                 MAX_ANGLE = 60, // change this for the real max angle of the shooter (in degrees)
                                 MIN_ANGLE = 0, // change this for the real min angle of the shooter (in degrees)
 
-                                TARGET_RPM = 2024, // change this for the real target shooting rpm
+                                TARGET_RPM = 2000, // change this for the real target shooting rpm
                                 DELIVERY_RPM = 1000; // change this for the real delivery rpm
 
                 public static final EverDutyCycleEncoder ANGLE_ABS_ENCODER = new EverDutyCycleEncoder(0);
 
-                public static final double SPEED_KP = 0, // change this for the real KP of the shooter
-                                SPEED_KI = 0, // change this for the real KI of the shooter
-                                SPEED_KD = 0, // change this for the real KD of the shooter
+                public static final double 
+                                BIG_SPEED_KP = 3.5, // change this for the real KP of the shooter 1.3
+                                BIG_SPEED_KI = 0.0, // change this for the real KI of the shooter
+                                BIG_SPEED_KD = 0.0,
+                                BIG_SPEED_KF = 0.0, // change this for the real KD of the shooter
+
+                                SMALL_SPEED_KP = 1.2,//1.9, // change this for the real KP of the shooter
+                                SMALL_SPEED_KI = 0, // change this for the real KI of the shooter
+                                SMALL_SPEED_KD = 0.005,
+                                SMALL_SPEED_KF = 1 / (350 / 60.0), // change this for the real KD of the shooter
 
                                 ANGLE_KP = 0, // change this for the real KP of the shooter
                                 ANGLE_KI = 0, // change this for the real KI of the shooter
                                 ANGLE_KD = 0; // change this for the real KD of the shooter
 
-                public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(
-                                ANGLE_MOTOR);
-                public static final EverTalonFXPIDController SHOOTING_PID_CONTROLLER = new EverTalonFXPIDController(
-                                LEFT_MOTOR);
+                public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
+                public static final EverTalonFXPIDController LEFT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(LEFT_MOTOR);
+                public static final EverTalonFXPIDController RIGHT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(RIGHT_MOTOR);
 
                 public static final boolean DEBUG_MODE = true;
                 public static final double DELIVERY_ANGLE = 45;
@@ -280,12 +287,19 @@ public interface Consts {
                 public static void config() {
 
                         ANGLE_ABS_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
-                        ANGLE_ABS_ENCODER.setOffset(0);
+                        ANGLE_ABS_ENCODER.setOffset(348.1875957217596);
 
-                        SHOOTING_ENCODER.setVelConversionFactor((2 * Math.PI * WHEEL_RADIUS) / (SHOOTING_GEAR_RATIO * 60)); // convert to m/s
+                        LEFT_MOTOR.setInverted(true);
+                        RIGHT_MOTOR.setInverted(true);
+
+                        BIG_SHOOTING_ENCODER.setVelConversionFactor((SHOOTING_GEAR_RATIO * 60)); 
+                        SMALL_SHOOTING_ENCODER.setVelConversionFactor((SHOOTING_GEAR_RATIO * 60)); 
+
 
                         ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
-                        SHOOTING_PID_CONTROLLER.setPID(SPEED_KP, SPEED_KI, SPEED_KD);
+                        LEFT_SHOOTING_PID_CONTROLLER_.setPIDF(BIG_SPEED_KP, BIG_SPEED_KI, BIG_SPEED_KD, BIG_SPEED_KF);
+                        // RIGHT_SHOOTING_PID_CONTROLLER_.setPID(SMALL_SPEED_KP, SMALL_SPEED_KI, SMALL_SPEED_KD);
+                        RIGHT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(SMALL_SPEED_KP).withKI(SMALL_SPEED_KI).withKD(SMALL_SPEED_KD).withKV(SMALL_SPEED_KF));
 
                         for (int i = 0; i < BALL_V0_DATA.length; i++) {
                                 SHOOTER_TO_BALL_SPEED_TABLE.put(SHOOTER_SPEED[i], BALL_V0_DATA[i]);
@@ -301,7 +315,7 @@ public interface Consts {
 
                 public static final EverTalonFX PICKUP_MOTOR = new EverTalonFX(14);
 
-                public static final EverTalonFX EXTENSION_MOTOR = new EverTalonFX(1);
+                public static final EverTalonFX EXTENSION_MOTOR = new EverTalonFX(15);
                 public static final EverTalonFXInternalEncoder EXTENSION_ENCODER = new EverTalonFXInternalEncoder(
                                 EXTENSION_MOTOR);
 
@@ -318,18 +332,18 @@ public interface Consts {
 
                 public final static boolean DEBUG_MOD = false;
 
-                public final static double CONVEYING_SPEED = -0.5; // motor power, place holder
+                public final static double CONVEYING_SPEED = -0.6; // motor power, place holder
 
                 public final static EverTalonFX CONVEY_MOTOR = new EverTalonFX(17), FEEDING_MOTOR =
                  new EverTalonFX(16);
 
-                public final static double FEEDER_MAX_STALL_TIME = 2, FEEDING_SPEED = 0.4; // motor power
+                public final static double FEEDER_MAX_STALL_TIME = 6, FEEDING_SPEED = 0.8; // motor power
                                                                                               
 
                 public static final EverAnalogToDigitalLimitSwitch ENTER_LEFT_LM = new EverAnalogToDigitalLimitSwitch(0),
                                                  ENTER_RIGHT_LM = new EverAnalogToDigitalLimitSwitch(1);
 
-                public static final double FEEDING_TIME = 0.15; // place holder (in seconds)
+                public static final double FEEDING_TIME = 0.15; // (in seconds)
 
         }
 
