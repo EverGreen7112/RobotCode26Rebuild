@@ -222,10 +222,13 @@ public interface Consts {
                 public static final EverTalonFX LEFT_MOTOR = new EverTalonFX(5), RIGHT_MOTOR = new EverTalonFX(19);
                 public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(3);
 
+                public static final EverSparkInternalEncoder ANGLE_ENCODER = new EverSparkInternalEncoder(ANGLE_MOTOR);
+                
+
                 public static final EverTalonFXInternalEncoder BIG_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
                 public static final EverTalonFXInternalEncoder SMALL_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(RIGHT_MOTOR);
 
-                public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/(1/22.234), SHOOTING_GEAR_RATIO = 1;
+                public static final double SHOOTER_ANGLE_GEAR_RATIO = 194.59, SHOOTING_GEAR_RATIO = 1;
 
                 public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d());
                 public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d());
@@ -245,7 +248,7 @@ public interface Consts {
                                 TARGET_RPM = 2000, // cChange this for the real target shooting rpm
                                 DELIVERY_RPM = 1000; // change this for the real delivery rpm
 
-                public static final EverDutyCycleEncoder ANGLE_ABS_ENCODER = new EverDutyCycleEncoder(0);
+                public static final EverDutyCycleEncoder ANGLE_ABS_ENCODER = new EverDutyCycleEncoder(5);
 
                 public static final double 
                                 BIG_SPEED_KP = 0.00008, // change this for the real KP of the shooter 1.3
@@ -262,7 +265,7 @@ public interface Consts {
                                 ANGLE_KI = 0, // change this for the real KI of the shooter
                                 ANGLE_KD = 0; // change this for the real KD of the shooter
 
-                public static final EverExternalMotorPIDController ANGLE_PID_CONTROLLER = new EverExternalMotorPIDController(ANGLE_MOTOR);
+                public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
                 public static final EverTalonFXPIDController LEFT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(LEFT_MOTOR);
                 public static final EverTalonFXPIDController RIGHT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(RIGHT_MOTOR);
 
@@ -288,8 +291,11 @@ public interface Consts {
 
                 public static void config() {
 
-                        ANGLE_ABS_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
-                        ANGLE_ABS_ENCODER.setOffset(271.82322546358046);
+                        ANGLE_ABS_ENCODER.setPosConversionFactor( SHOOTER_ANGLE_GEAR_RATIO * 360);
+                        ANGLE_ABS_ENCODER.setOffset(358.79002977601004);
+
+                        ANGLE_ENCODER.setPos(0);
+                        ANGLE_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
 
                         LEFT_MOTOR.setInverted(true);
                         RIGHT_MOTOR.setInverted(true);

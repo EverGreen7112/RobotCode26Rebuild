@@ -62,7 +62,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_smallMotor = ShooterConsts.LEFT_MOTOR;
         m_bigMotor = ShooterConsts.RIGHT_MOTOR;
         m_angleMotor = ShooterConsts.ANGLE_MOTOR;
-        m_angleEncoder = ShooterConsts.ANGLE_ABS_ENCODER;
+        m_angleEncoder = ShooterConsts.ANGLE_ENCODER;
         m_bigShootingEncoder = ShooterConsts.BIG_SHOOTING_ENCODER;
         m_smallShootingEncoder = ShooterConsts.SMALL_SHOOTING_ENCODER;
 
@@ -169,9 +169,9 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     @Override
     public void periodic() {
 
-        if (((EverDutyCycleEncoder)m_angleEncoder).getAbsPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0) {
+        if (m_angleEncoder.getPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0) {
             m_angleMotor.stop();
-        } else if (((EverDutyCycleEncoder)m_angleEncoder).getAbsPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0) {
+        } else if (m_angleEncoder.getPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0) {
             m_angleMotor.stop();
         }
 
@@ -232,7 +232,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     }
 
     public void log() {
-        SmartDashboard.putNumber("Shooter Current Angle", ((EverDutyCycleEncoder)m_angleEncoder).getAbsPos());
+        SmartDashboard.putNumber("Shooter Current Angle", m_angleEncoder.getPos());
         SmartDashboard.putNumber("Ball speed", m_predictedBallV0);
         SmartDashboard.putNumber("Big Wheel Shooting Speed", m_bigShootingEncoder.getVel());
         SmartDashboard.putNumber("Small Wheel Shooting Speed", m_smallShootingEncoder.getVel());
