@@ -58,7 +58,7 @@ public class Robot extends LoggedRobot {
       Logger.start();
     }
 
-
+    double prevVel = 0;
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
@@ -68,11 +68,16 @@ public class Robot extends LoggedRobot {
     else      
         m_alliance = Alliance.Red;
 
+  
     
-    Shooter.getInstance().log();
+
+    double filterd = 0.8 * prevVel + 0.2 * ShooterConsts.BIG_SHOOTING_ENCODER.getVel();
+    prevVel = filterd;
+    SmartDashboard.putNumber("filtered big shooting ", filterd);
     SmartDashboard.putNumber("angle", ShooterConsts.ANGLE_ABS_ENCODER.getAbsPos());
     //SmartDashboard.putNumber("big shooting encoder", ShooterConsts.BIG_SHOOTING_ENCODER.getVel());
     SmartDashboard.putNumber("small shooting encoder", ShooterConsts.SMALL_SHOOTING_ENCODER.getVel());
+    Shooter.getInstance().log();
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
   }
@@ -112,33 +117,18 @@ public class Robot extends LoggedRobot {
     //ShooterConsts.LEFT_MOTOR.set(-0.4);
     //ShooterConsts.RIGHT_MOTOR.set(-0.4 * bigYhao);
 
-    //Shooter.getInstance().bigShootingRpm(ShooterConsts.TARGET_RPM);
-    Shooter.getInstance().smallShootingRpm(ShooterConsts.TARGET_RPM);
-    //ShooterConsts.RIGHT_MOTOR.setVoltage(1);
+    Shooter.getInstance().bigShootingRpm(ShooterConsts.TARGET_RPM);
+    //Shooter.getInstance().smallShootingRpm(ShooterConsts.TARGET_RPM);
+    //ShooterConsts.LEFT_MOTOR.setVoltage(1);
+
+    //IntakeConsts.EXTENSION_MOTOR.set(0.2);
+
+    //Intake.PICKUP_MOTOR.set(-0.3);
     
   }
 
   @Override
   public void teleopPeriodic() {
-
-    /*DeltaTime dt = new DeltaTime();
-
-    boolean last1 = false, last2 = false;
-    double speed = 0, dist = 4.5;
-    if(lm1.get() && !last1){
-      dt.setNow();
-      last1 = true;
-    }
-    if(lm2.get() && !last2){
-      double time = dt.get();
-      last2 = true;
-      speed = dist / time;
-      SmartDashboard.putNumber("V0", speed);
-    }
-    else if(!lm1.get() && !lm2.get() && last1 && last2){
-      last1 = false;
-      last2 = false;
-    }*/
   }
 
   @Override

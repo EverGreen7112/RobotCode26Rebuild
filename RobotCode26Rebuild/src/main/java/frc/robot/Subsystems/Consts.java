@@ -2,6 +2,7 @@ package frc.robot.Subsystems;
 
 import frc.robot.Subsystems.Swerve.SwerveModule;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -246,15 +247,15 @@ public interface Consts {
                 public static final EverDutyCycleEncoder ANGLE_ABS_ENCODER = new EverDutyCycleEncoder(0);
 
                 public static final double 
-                                BIG_SPEED_KP = 3.5, // change this for the real KP of the shooter 1.3
-                                BIG_SPEED_KI = 0.0, // change this for the real KI of the shooter
-                                BIG_SPEED_KD = 0.0,
-                                BIG_SPEED_KF = 0.0, // change this for the real KD of the shooter
+                                BIG_SPEED_KP = 0.00008, // change this for the real KP of the shooter 1.3
+                                BIG_SPEED_KI = 0.000, // change this for the real KI of the shooter
+                                BIG_SPEED_KD = 0.00002,
+                                BIG_SPEED_KV = 1.0 / (373 / 60.0), // change this for the real KD of the shooter
 
-                                SMALL_SPEED_KP = 1.2,//1.9, // change this for the real KP of the shooter
-                                SMALL_SPEED_KI = 0, // change this for the real KI of the shooter
-                                SMALL_SPEED_KD = 0.005,
-                                SMALL_SPEED_KF = 1 / (350 / 60.0), // change this for the real KD of the shooter
+                                SMALL_SPEED_KP = 1.9,//1.9, 
+                                SMALL_SPEED_KI = 0, 
+                                SMALL_SPEED_KD = 0.0,
+                                SMALL_SPEED_KV = 1.0 / (339.0 / 60.0), 
 
                                 ANGLE_KP = 0, // change this for the real KP of the shooter
                                 ANGLE_KI = 0, // change this for the real KI of the shooter
@@ -297,9 +298,9 @@ public interface Consts {
 
 
                         ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
-                        LEFT_SHOOTING_PID_CONTROLLER_.setPIDF(BIG_SPEED_KP, BIG_SPEED_KI, BIG_SPEED_KD, BIG_SPEED_KF);
+                        LEFT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(SMALL_SPEED_KP).withKI(SMALL_SPEED_KI).withKD(SMALL_SPEED_KD).withKV(SMALL_SPEED_KV));
                         // RIGHT_SHOOTING_PID_CONTROLLER_.setPID(SMALL_SPEED_KP, SMALL_SPEED_KI, SMALL_SPEED_KD);
-                        RIGHT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(SMALL_SPEED_KP).withKI(SMALL_SPEED_KI).withKD(SMALL_SPEED_KD).withKV(SMALL_SPEED_KF));
+                        RIGHT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(SMALL_SPEED_KP).withKI(SMALL_SPEED_KI).withKD(SMALL_SPEED_KD).withKV(SMALL_SPEED_KV));
 
                         for (int i = 0; i < BALL_V0_DATA.length; i++) {
                                 SHOOTER_TO_BALL_SPEED_TABLE.put(SHOOTER_SPEED[i], BALL_V0_DATA[i]);

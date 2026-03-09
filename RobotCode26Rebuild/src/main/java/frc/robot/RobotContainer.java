@@ -54,7 +54,7 @@ public class RobotContainer {
   public static final Trigger chassisPovDown = chassis.povDown();
   public static final Trigger chassisPovLeft = chassis.povLeft();
   public static final Trigger chassisPovRight = chassis.povRight();
-  public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
+  //public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
 
   public RobotContainer() {
     registerNamedCommands();
