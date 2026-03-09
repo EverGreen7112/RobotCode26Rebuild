@@ -224,7 +224,7 @@ public interface Consts {
                 public static final EverTalonFXInternalEncoder BIG_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
                 public static final EverTalonFXInternalEncoder SMALL_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(RIGHT_MOTOR);
 
-                public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/21.09, SHOOTING_GEAR_RATIO = 1;
+                public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/22.234, SHOOTING_GEAR_RATIO = 1;
 
                 public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d());
                 public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d());
@@ -248,13 +248,13 @@ public interface Consts {
 
                 public static final double 
                                 BIG_SPEED_KP = 0.00008, // change this for the real KP of the shooter 1.3
-                                BIG_SPEED_KI = 0.000, // change this for the real KI of the shooter
+                                BIG_SPEED_KI = 0.0, // change this for the real KI of the shooter
                                 BIG_SPEED_KD = 0.00002,
                                 BIG_SPEED_KV = 1.0 / (373 / 60.0), // change this for the real KD of the shooter
 
-                                SMALL_SPEED_KP = 1.9,//1.9, 
+                                SMALL_SPEED_KP = 0.00008,//1.9, 
                                 SMALL_SPEED_KI = 0, 
-                                SMALL_SPEED_KD = 0.0,
+                                SMALL_SPEED_KD = 0.00002,
                                 SMALL_SPEED_KV = 1.0 / (339.0 / 60.0), 
 
                                 ANGLE_KP = 0, // change this for the real KP of the shooter
