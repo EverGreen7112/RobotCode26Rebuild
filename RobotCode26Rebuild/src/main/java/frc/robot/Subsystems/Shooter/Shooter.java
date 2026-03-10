@@ -19,6 +19,9 @@ import frc.robot.Utils.EverKit.EverPIDController.ControlType;
 import frc.robot.Utils.EverKit.Implementations.Encoders.EverDutyCycleEncoder;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverMotorControllerGroup;
 import frc.robot.Utils.Math.Funcs;
+import com.revrobotics.spark.config.MAXMotionConfig;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
+
 import frc.robot.Utils.Math.Vector2d;
 
 public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
@@ -39,9 +42,9 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     private EverMotorController m_angleMotor;
 
-    private EverPIDController m_anglePID, m_bigWheelshootingController, m_smallWheelshootingController;
+    private EverPIDController m_anglePID, m_frontShootingController, m_backShootingController;
     
-    private EverEncoder m_angleEncoder, m_bigShootingEncoder, m_smallShootingEncoder;
+    private EverEncoder m_angleEncoder, m_frontShootingEncoder, m_backShootingEncoder;
 
     private Pose2d m_targetHub;
 
@@ -53,26 +56,26 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     private Pose2d m_staticShootingPose;
 
-    private EverMotorController m_smallMotor, m_bigMotor;
+    private EverMotorController m_backMotor, m_frontMotor;
 
-    private double m_filteredBigShootingSpeed, m_filteredSmallShootingSpeed, m_prevFilteredBigShootingSpeed, m_prevFilteredSmallShootingSpeed;
+    private double m_filteredFrontShootingSpeed, m_filteredBackShootingSpeed, m_prevFilteredFrontShootingSpeed, m_prevFilteredBackShootingSpeed;
 
     private Shooter() {
         ShooterConsts.config();
-        m_smallMotor = ShooterConsts.LEFT_MOTOR;
-        m_bigMotor = ShooterConsts.RIGHT_MOTOR;
+        m_backMotor = ShooterConsts.LEFT_MOTOR;
+        m_frontMotor = ShooterConsts.RIGHT_MOTOR;
         m_angleMotor = ShooterConsts.ANGLE_MOTOR;
         m_angleEncoder = ShooterConsts.ANGLE_ENCODER;
-        m_bigShootingEncoder = ShooterConsts.BIG_SHOOTING_ENCODER;
-        m_smallShootingEncoder = ShooterConsts.SMALL_SHOOTING_ENCODER;
+        m_frontShootingEncoder = ShooterConsts.FRONT_SHOOTING_ENCODER;
+        m_backShootingEncoder = ShooterConsts.BACK_SHOOTING_ENCODER;
 
         m_targetSpeed = Funcs.convertRPMtoMS(ShooterConsts.WHEEL_RADIUS, ShooterConsts.TARGET_RPM);
 
         m_deltaTime = new DeltaTime();
 
         m_anglePID = ShooterConsts.ANGLE_PID_CONTROLLER;
-        m_bigWheelshootingController = ShooterConsts.LEFT_SHOOTING_PID_CONTROLLER_;
-        m_smallWheelshootingController = ShooterConsts.RIGHT_SHOOTING_PID_CONTROLLER_;
+        m_frontShootingController = ShooterConsts.LEFT_SHOOTING_PID_CONTROLLER_;
+        m_backShootingController = ShooterConsts.RIGHT_SHOOTING_PID_CONTROLLER_;
 
         m_shooterState = ShooterState.kStop;
         m_previousShooterState = ShooterState.kStop;
@@ -83,8 +86,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
         m_staticShootingPose = ShooterConsts.STATIC_SHOOT_POSE_BLUE;
 
-        m_prevFilteredBigShootingSpeed = 0;
-        m_prevFilteredSmallShootingSpeed = 0;
+        m_prevFilteredFrontShootingSpeed = 0;
+        m_prevFilteredBackShootingSpeed = 0;
     }
 
     public static Shooter getInstance() {
@@ -115,7 +118,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
      * @return the predicted shooter speed in m/s
      */
     private double calcPredictedShooterSpeed() {
-        double currentSpeed = m_bigShootingEncoder.getVel();
+        double currentSpeed = m_frontShootingEncoder.getVel();
         double deltaSpeed = m_targetSpeed - currentSpeed;
         return currentSpeed + (deltaSpeed / m_deltaTime.get()) * Consts.FeedAndConveyConsts.FEEDING_TIME; 
     }
@@ -133,11 +136,11 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         double shootingDistance = getShootingDistance();
         double verticalVelocity = Math.pow(shootingSpeed, 2) -
                 Math.sqrt(Math.pow(shootingSpeed, 4)
-                        - ShooterConsts.GRAVITY * (ShooterConsts.GRAVITY * Math.pow(shootingDistance, 2)
-                                + 2 * ShooterConsts.SHOOTING_HEIGHT * Math.pow(shootingSpeed, 2)));
+                        - GRAVITY * (GRAVITY * Math.pow(shootingDistance, 2)
+                                + 2 * SHOOTING_HEIGHT * Math.pow(shootingSpeed, 2)));
 
-        double horizontalForce = ShooterConsts.GRAVITY * shootingDistance;
-        return Math.toDegrees(Math.atan(verticalVelocity / horizontalForce));
+        double horizontalForce = GRAVITY * shootingDistance;
+        return Math.toDegrees(Math.atan(verticalVelocity / horizontalForce)) - SHOOTING_OFFSET_FROM_GROUND;
     }
 
     /**
@@ -183,20 +186,20 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                     calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
                 SwerveAngleController.getInstance().start(calcRobotShootingOffsetAngle(SwerveLocalizer.getInstance().getCurrentPoint()));
                 m_anglePID.activate(m_targetAngle, ControlType.kPos);
-                m_bigWheelshootingController.activate(ShooterConsts.TARGET_RPM, ControlType.kVel);
-                m_smallWheelshootingController.activate(ShooterConsts.TARGET_RPM * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
+                m_frontShootingController.activate(ShooterConsts.TARGET_RPM, ControlType.kVel);
+                m_backShootingController.activate(ShooterConsts.TARGET_RPM * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
                 break;
 
             case kDelivery:
-                m_bigWheelshootingController.activate(ShooterConsts.DELIVERY_RPM, ControlType.kVel);
-                m_smallWheelshootingController.activate(ShooterConsts.DELIVERY_RPM * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
+                m_frontShootingController.activate(ShooterConsts.DELIVERY_RPM, ControlType.kVel);
+                m_backShootingController.activate(ShooterConsts.DELIVERY_RPM * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
                 m_anglePID.activate(ShooterConsts.DELIVERY_ANGLE, ControlType.kPos);
                 SwerveAngleController.getInstance().stop();
                 break;
 
                 
             case kClose:
-                m_bigWheelshootingController.stop();
+                m_frontShootingController.stop();
                 m_anglePID.activate(ShooterConsts.MIN_ANGLE, ControlType.kPos);
                 SwerveAngleController.getInstance().stop();
                 break;
@@ -208,16 +211,16 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                     calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
                 SwerveAngleController.getInstance().start(calcRobotShootingOffsetAngle(m_staticShootingPose));
                 m_anglePID.activate(m_targetAngle, ControlType.kPos);
-                m_bigWheelshootingController.activate(ShooterConsts.TARGET_RPM, ControlType.kVel);
-                m_smallWheelshootingController.activate(ShooterConsts.TARGET_RPM * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
+                m_frontShootingController.activate(ShooterConsts.TARGET_RPM, ControlType.kVel);
+                m_backShootingController.activate(ShooterConsts.TARGET_RPM * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
                     break;
             case kStop:
                 if (m_previousShooterState != ShooterState.kStop) {
-                    m_bigWheelshootingController.stop();
-                    m_smallWheelshootingController.stop();
+                    m_frontShootingController.stop();
+                    m_backShootingController.stop();
                     m_anglePID.stop();
-                    m_bigMotor.stop();
-                    m_smallMotor.stop();
+                    m_frontMotor.stop();
+                    m_backMotor.stop();
                     SwerveAngleController.getInstance().stop(); 
                 }
                 break;
@@ -234,25 +237,25 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     public void log() {
         SmartDashboard.putNumber("Shooter Current Angle", m_angleEncoder.getPos());
         SmartDashboard.putNumber("Ball speed", m_predictedBallV0);
-        SmartDashboard.putNumber("Big Wheel Shooting Speed", m_bigShootingEncoder.getVel());
-        SmartDashboard.putNumber("Small Wheel Shooting Speed", m_smallShootingEncoder.getVel());
+        SmartDashboard.putNumber("Front Wheel Shooting Speed", m_frontShootingEncoder.getVel());
+        SmartDashboard.putNumber("Back Wheel Shooting Speed", m_backShootingEncoder.getVel());
 
         SmartDashboard.putNumber("Spar internal encoder angle", ShooterConsts.ANGLE_MOTOR.getControllerInstance().getEncoder().getPosition());
 
-        m_filteredBigShootingSpeed = 0.8 * m_prevFilteredBigShootingSpeed + 0.2 * m_bigShootingEncoder.getVel();
-        m_filteredSmallShootingSpeed = 0.8 * m_prevFilteredSmallShootingSpeed + 0.2 * m_smallShootingEncoder.getVel();
-        m_prevFilteredBigShootingSpeed = m_filteredBigShootingSpeed;
-        m_prevFilteredSmallShootingSpeed = m_filteredSmallShootingSpeed;
-        SmartDashboard.putNumber("Filtered Big Wheel Speed", m_filteredBigShootingSpeed);
-        SmartDashboard.putNumber("Filtered Small Wheel Speed", m_filteredSmallShootingSpeed);
+        m_filteredFrontShootingSpeed = 0.8 * m_prevFilteredFrontShootingSpeed + 0.2 * m_frontShootingEncoder.getVel();
+        m_filteredBackShootingSpeed = 0.8 * m_prevFilteredBackShootingSpeed + 0.2 * m_backShootingEncoder.getVel();
+        m_prevFilteredFrontShootingSpeed = m_filteredFrontShootingSpeed;
+        m_prevFilteredBackShootingSpeed = m_filteredBackShootingSpeed;
+        SmartDashboard.putNumber("Filtered Big Wheel Speed", m_filteredFrontShootingSpeed);
+        SmartDashboard.putNumber("Filtered Back Wheel Speed", m_filteredBackShootingSpeed);
     }
 
     public void bigShootingRpm(double mps) {
-        m_bigWheelshootingController.activate(mps, ControlType.kVel);
+        m_frontShootingController.activate(mps, ControlType.kVel);
     }
 
-    public void smallShootingRpm(double mps) {
-        m_smallWheelshootingController.activate(mps, ControlType.kVel);
+    public void BackShootingRpm(double mps) {
+        m_backShootingController.activate(mps, ControlType.kVel);
     }
 
     public void anglePos(double angle) {

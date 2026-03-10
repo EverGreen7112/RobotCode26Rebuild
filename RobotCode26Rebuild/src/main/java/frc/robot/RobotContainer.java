@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Conveyor.ConveyCommand;
 import frc.robot.Commands.Feeder.FeedCommand;
+import frc.robot.Commands.Shooter.DeliverCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Commands.Swerve.ManualDrive.ChangeTeleopSpeedModeCommand;
 import frc.robot.Commands.Swerve.ManualDrive.TeleopDriveCommand;
@@ -75,7 +76,7 @@ public class RobotContainer {
     //chassisA.whileTrue(new ConveyCommand());
     //chassisB.whileTrue(new FeedCommand());
 
-    //chassisX.whileTrue(new ScoreCommand());
+    //chassisX.whileTrue(new DeliverCommand());
 
 
   }

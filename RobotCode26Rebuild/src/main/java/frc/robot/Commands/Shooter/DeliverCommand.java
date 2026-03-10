@@ -13,7 +13,6 @@ public class DeliverCommand extends Command {
     @Override
     public void initialize() {
         Shooter.getInstance().setShooterState(ShooterState.kDelivery);
-        m_feed = new FeedCommand();
     }
 
 
