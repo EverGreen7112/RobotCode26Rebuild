@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Climb;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Commands.ResetRobotCommand;
 import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Consts.ClimbConst;
 import frc.robot.Utils.EverKit.EverEncoder;
@@ -38,13 +39,17 @@ public class Climb extends SubsystemBase implements Consts.ClimbConst{
         m_climbMotor.stop();
     }
 
-    private boolean cantClose(){
+    public boolean cantClose(){
         return m_bottomLimitSwitch.get();
     }
-
     
     @Override
     public void periodic() {
+
+        if(ResetRobotCommand.resetting){
+            close();
+        }
+
         if(cantClose()){
             m_climbEncoder.setPos(0);
         }

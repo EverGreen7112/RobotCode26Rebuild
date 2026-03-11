@@ -43,7 +43,7 @@ public class Feeder extends SubsystemBase implements Consts.FeedAndConveyConsts{
     }
 
     public void stopFeed(){
-        m_feedingMotor.set(0);
+        m_feedingMotor.stop();
     }
 
     // public boolean getIsEmpty(){

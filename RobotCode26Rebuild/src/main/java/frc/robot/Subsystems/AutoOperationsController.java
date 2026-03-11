@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Commands.Climb.CloseClimbCommand;
-import frc.robot.Commands.Conveyor.ConveyCommand;
+import frc.robot.Commands.Conveyor.ConveyIntakeCommand;
 import frc.robot.Commands.Shooter.CloseShooterCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Subsystems.Consts.AutoConsts;
@@ -24,7 +24,7 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
     private boolean m_shouldCloseForTrench, m_prevShouldCloseForTrench;
     private boolean m_ShouldShootAuto, m_prevShouldShootAuto;
 
-    private ConveyCommand m_conveyCommand;
+    private ConveyIntakeCommand m_conveyCommand;
 
     private Pose2d m_robotPose;
 
@@ -42,7 +42,7 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
 
         m_alliance = Alliance.Blue;
 
-        m_conveyCommand = new ConveyCommand();
+        m_conveyCommand = new ConveyIntakeCommand();
         m_autoMode = true;
 
         m_conveyCommand.schedule();
@@ -99,7 +99,7 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
 
         if(m_shouldCloseForTrench)
             return false;
-        return isInScoringZone && isNotEmpty;
+        return isInScoringZone;
     }
 
     public void setAutoMode(boolean isOn){

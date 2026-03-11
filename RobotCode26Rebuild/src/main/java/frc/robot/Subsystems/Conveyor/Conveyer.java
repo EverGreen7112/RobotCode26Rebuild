@@ -22,8 +22,8 @@ public class Conveyer extends SubsystemBase implements Consts.FeedAndConveyConst
         return m_instance;
     }
 
-    public void startConveying(){
-        m_conveyingMotor.set(FeedAndConveyConsts.CONVEYING_SPEED);
+    public void startConveying(double speed){
+        m_conveyingMotor.set(speed);
     }
 
     public void stopConveying(){

@@ -8,9 +8,12 @@ import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.Conveyor.ConveyCommand;
+import frc.robot.Commands.ResetRobotCommand;
+import frc.robot.Commands.Conveyor.ConveyIntakeCommand;
+import frc.robot.Commands.Conveyor.ConveyToFeederCommand;
 import frc.robot.Commands.Feeder.FeedCommand;
 import frc.robot.Commands.Shooter.DeliverCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
@@ -57,6 +60,9 @@ public class RobotContainer {
   public static final Trigger chassisPovRight = chassis.povRight();
   //public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
 
+
+  private ParallelCommandGroup m_shooterCommands = new ParallelCommandGroup(new ConveyToFeederCommand(), new FeedCommand());
+  
   public RobotContainer() {
     registerNamedCommands();
     configureBindings();

@@ -1,7 +1,7 @@
 package frc.robot.Commands.Shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Commands.Conveyor.ConveyCommand;
+import frc.robot.Commands.Conveyor.ConveyIntakeCommand;
 import frc.robot.Commands.Feeder.FeedCommand;
 import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Shooter.Shooter;
@@ -9,11 +9,8 @@ import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
 
 public class ScoreCommand extends Command{
 
-    FeedCommand m_feed;
-
     public ScoreCommand(){
-        addRequirements(Shooter.getInstance());
-        m_feed = new FeedCommand();   
+        addRequirements(Shooter.getInstance());  
     }
 
     @Override

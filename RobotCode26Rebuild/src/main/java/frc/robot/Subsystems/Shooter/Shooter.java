@@ -6,6 +6,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Commands.ResetRobotCommand;
 import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Consts.ShooterConsts;
 import frc.robot.Subsystems.Swerve.Swerve;
@@ -168,14 +169,26 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         return m_shooterState;
     }
 
+    public boolean isClosed(){
+        return !ANGLE_MOTOR.getControllerInstance().getReverseLimitSwitch().isPressed();
+    }
+
 
     @Override
     public void periodic() {
 
+        if(ResetRobotCommand.resetting){
+            m_shooterState = ShooterState.kClose;
+        }
+
         if (m_angleEncoder.getPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0) {
             m_angleMotor.stop();
-        } else if (m_angleEncoder.getPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0) {
+        } else if (m_angleEncoder.getPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0 && isClosed()) {
             m_angleMotor.stop();
+        }
+
+        if(isClosed()){
+            m_angleEncoder.setPos(0);
         }
 
         switch (m_shooterState) {
@@ -200,7 +213,12 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                 
             case kClose:
                 m_frontShootingController.stop();
-                m_anglePID.activate(ShooterConsts.MIN_ANGLE, ControlType.kPos);
+                if(m_previousShooterState != ShooterState.kClose && !isClosed()){
+                    m_angleMotor.set(-0.2);
+                }
+                else if(isClosed()){
+                    m_angleMotor.stop();
+                }
                 SwerveAngleController.getInstance().stop();
                 break;
                 
@@ -231,6 +249,10 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         if (ShooterConsts.DEBUG_MODE) {
             log();
         }
+
+    }
+
+    public void reset(){
 
     }
 

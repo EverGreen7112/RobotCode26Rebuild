@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Intake;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Commands.ResetRobotCommand;
 import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Consts.IntakeConsts;
 import frc.robot.Utils.EverKit.EverAnalogToDigitalLimitSwitch;
@@ -52,8 +53,16 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
         m_pickupMotor.stop();
     }
 
+    public boolean isClosed(){
+        return m_retractionLM.get();
+    }
+
     @Override
     public void periodic() {
+
+        if(ResetRobotCommand.resetting){
+            startRetracting();
+        }
 
         if((m_extensionLM.get() && m_extensionMotor.get() > 0) || (m_retractionLM.get() && m_extensionMotor.get() < 0)){
             stopExtending();

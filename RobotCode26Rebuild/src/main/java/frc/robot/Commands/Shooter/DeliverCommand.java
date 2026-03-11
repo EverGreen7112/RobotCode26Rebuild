@@ -1,14 +1,12 @@
 package frc.robot.Commands.Shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Commands.Conveyor.ConveyCommand;
+import frc.robot.Commands.Conveyor.ConveyIntakeCommand;
 import frc.robot.Commands.Feeder.FeedCommand;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
 
 public class DeliverCommand extends Command {
-
-    FeedCommand m_feed;
 
     @Override
     public void initialize() {

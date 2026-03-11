@@ -1,6 +1,8 @@
 package frc.robot.Subsystems;
 
 import frc.robot.Subsystems.Swerve.SwerveModule;
+
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.ResetMode;
@@ -229,7 +231,6 @@ public interface Consts {
                 public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(3);
 
                 public static final EverSparkInternalEncoder ANGLE_ENCODER = new EverSparkInternalEncoder(ANGLE_MOTOR);
-                
 
                 public static final EverTalonFXInternalEncoder FRONT_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
                 public static final EverTalonFXInternalEncoder BACK_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(RIGHT_MOTOR);
@@ -344,13 +345,21 @@ public interface Consts {
                 public final boolean DEBUG_MODE = false;
                 public final double MAX_EXTENDING_ROTATIONS = 0;
 
+                public TalonFXConfiguration MOTOR_CONFIGS = new TalonFXConfiguration();
+
+                public static void config(){
+                        MOTOR_CONFIGS.MotionMagic.MotionMagicAcceleration = 100.0;
+                        MOTOR_CONFIGS.MotionMagic.MotionMagicJerk = 50.0;
+                        PICKUP_MOTOR.getControllerInstance().getConfigurator().apply(MOTOR_CONFIGS);
+                }
+
         }
 
         public interface FeedAndConveyConsts {
 
                 public final static boolean DEBUG_MOD = false;
 
-                public final static double CONVEYING_SPEED = -0.6; // motor power, place holder
+                public final static double CONVEYING_TO_FEEDER_SPEED = -0.6, INTAKE_CONVEY_SPEED = -0.4; // motor power, place holder
 
                 public final static EverTalonFX CONVEY_MOTOR = new EverTalonFX(17), FEEDING_MOTOR =
                  new EverTalonFX(16);
@@ -373,10 +382,9 @@ public interface Consts {
 
                 public static final EverTalonFX CLIMB_MOTOR = new EverTalonFX(6);
 
-                public static final EverTalonFXInternalEncoder CLIMB_ENCODER = new EverTalonFXInternalEncoder(
-                                CLIMB_MOTOR);
+                public static final EverTalonFXInternalEncoder CLIMB_ENCODER = new EverTalonFXInternalEncoder(CLIMB_MOTOR);
 
-                //public static final DigitalInput BOTTOM_LM = new DigitalInput(6), TOP_LM = new DigitalInput(4);
+                public static final DigitalInput BOTTOM_LM = new DigitalInput(6);
 
                 public static final boolean DEBUG_MODE = false;
 
