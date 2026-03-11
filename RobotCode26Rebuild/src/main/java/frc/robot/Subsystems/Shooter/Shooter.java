@@ -261,5 +261,4 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     public void anglePos(double angle) {
         m_anglePID.activate(angle, ControlType.kPos);
     }
-
 }

@@ -18,8 +18,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Commands.Feeder.FeedCommand;
-import frc.robot.Commands.Shooter.DeliverCommand;
 import frc.robot.Subsystems.AutoOperationsController;
 import frc.robot.Subsystems.Consts.IntakeConsts;
 import frc.robot.Subsystems.Consts.ShooterConsts;
@@ -70,9 +68,6 @@ public class Robot extends LoggedRobot {
         m_alliance = Alliance.Red;
 
     Shooter.getInstance().log();
-
-    SmartDashboard.putBoolean("bla",ShooterConsts.ANGLE_MOTOR.getControllerInstance().getForwardLimitSwitch().isPressed());
-    //SmartDashboard.putNumber("offSet", SmartDashboard.putBoolean("offSet", Con) );
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
   }
@@ -112,7 +107,7 @@ public class Robot extends LoggedRobot {
     //ShooterConsts.LEFT_MOTOR.set(-0.4);
     //ShooterConsts.RIGHT_MOTOR.set(-0.4 * bigYhao);
 
-    //Shooter.getInstance().anglePos(ShooterConsts.DELIVERY_ANGLE);
+    Shooter.getInstance().anglePos(ShooterConsts.DELIVERY_ANGLE);
     //Shooter.getInstance().smallShootingRpm(ShooterConsts.TARGET_RPM);
     //ShooterConsts.LEFT_MOTOR.setVoltage(1);
 
@@ -124,10 +119,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopPeriodic() {
-    FeedCommand feed = new FeedCommand();
-    DeliverCommand shoot = new DeliverCommand();
-    feed.schedule();
-    shoot.schedule();
   }
 
   @Override

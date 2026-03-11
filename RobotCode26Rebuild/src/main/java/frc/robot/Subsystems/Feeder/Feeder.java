@@ -17,20 +17,20 @@ public class Feeder extends SubsystemBase implements Consts.FeedAndConveyConsts{
 
     private EverMotorController m_feedingMotor;
 
-    private EverAnalogToDigitalLimitSwitch m_enterLeftLM, m_enterRightLM;
+    //private EverAnalogToDigitalLimitSwitch m_enterLeftLM, m_enterRightLM;
 
     private DeltaTime m_counter;
 
-    private boolean m_isEmpty;
+    //private boolean m_isEmpty;
 
     private Feeder(){
         m_feedingMotor = FeedAndConveyConsts.FEEDING_MOTOR;
-        m_enterLeftLM = FeedAndConveyConsts.ENTER_LEFT_LM;
-        m_enterRightLM = FeedAndConveyConsts.ENTER_RIGHT_LM;
+        // m_enterLeftLM = FeedAndConveyConsts.ENTER_LEFT_LM;
+        // m_enterRightLM = FeedAndConveyConsts.ENTER_RIGHT_LM;
         
-        m_counter = new DeltaTime();
+        // m_counter = new DeltaTime();
 
-        m_isEmpty = true;
+        // m_isEmpty = true;
 
     }
 
@@ -46,35 +46,39 @@ public class Feeder extends SubsystemBase implements Consts.FeedAndConveyConsts{
         m_feedingMotor.set(0);
     }
 
-    public boolean getIsEmpty(){
-        return m_isEmpty;
-    }
+    // public boolean getIsEmpty(){
+    //     return m_isEmpty;
+    // }
 
     @Override
     public void periodic(){
 
-        double time = m_counter.get();
-        SmartDashboard.putNumber("time", time);
+        // double time = m_counter.get();
+        // SmartDashboard.putNumber("time", time);
 
-        if(!m_enterLeftLM.get() || !m_enterRightLM.get()){
-            m_counter.setNow();
-            m_isEmpty = false;
-        }
+        // if(!m_enterLeftLM.get() || !m_enterRightLM.get()){
+        //     m_counter.setNow();
+        //     m_isEmpty = false;
+        // }
 
-        if(time > FeedAndConveyConsts.FEEDER_MAX_STALL_TIME){
-            m_isEmpty = true;
-        }
+        // if(time > FeedAndConveyConsts.FEEDER_MAX_STALL_TIME){
+        //     m_isEmpty = true;
+        // }
 
         if(FeedAndConveyConsts.DEBUG_MOD)
             log();
 
     }
 
+    public boolean isConnected(){
+        return m_feedingMotor.isConnected();
+    }
+
     private void log(){
         SmartDashboard.putNumber("Feeder Motor Speed", m_feedingMotor.get());
-        SmartDashboard.putBoolean("Feeder Left LM", !m_enterLeftLM.get());
-        SmartDashboard.putBoolean("Feeder Right LM", !m_enterRightLM.get());
-        SmartDashboard.putNumber("delta Time", m_counter.get());
+        // SmartDashboard.putBoolean("Feeder Left LM", !m_enterLeftLM.get());
+        // SmartDashboard.putBoolean("Feeder Right LM", !m_enterRightLM.get());
+        // SmartDashboard.putNumber("delta Time", m_counter.get());
     }
 
 }

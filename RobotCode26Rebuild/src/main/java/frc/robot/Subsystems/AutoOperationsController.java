@@ -96,7 +96,6 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
             isInScoringZone = x > AutoConsts.RED_ALLIANCE_ZONE_X;
         }
 
-        boolean isNotEmpty = Feeder.getInstance().getIsEmpty();
 
         if(m_shouldCloseForTrench)
             return false;
@@ -112,30 +111,30 @@ public class AutoOperationsController implements Periodic, Consts.AutoConsts {
     @Override
     public void periodic(){
 
-        m_robotPose = SwerveLocalizer.getInstance().getCurrentPoint();
+        // m_robotPose = SwerveLocalizer.getInstance().getCurrentPoint();
         
-        //trench mode
-        m_shouldCloseForTrench = shouldCloseForTrench();
-        if(m_shouldCloseForTrench && !m_prevShouldCloseForTrench){
-            startRobotTrenchMode();
-        }
-        else if(!m_shouldCloseForTrench && m_prevShouldCloseForTrench){
-            stopRobotTrenchMode();
-        }
-        m_prevShouldCloseForTrench = m_shouldCloseForTrench;
+        // //trench mode
+        // m_shouldCloseForTrench = shouldCloseForTrench();
+        // if(m_shouldCloseForTrench && !m_prevShouldCloseForTrench){
+        //     startRobotTrenchMode();
+        // }
+        // else if(!m_shouldCloseForTrench && m_prevShouldCloseForTrench){
+        //     stopRobotTrenchMode();
+        // }
+        // m_prevShouldCloseForTrench = m_shouldCloseForTrench;
         
-        if(m_autoMode){
+        // if(m_autoMode){
 
-            //auto scoring
-            m_ShouldShootAuto = shouldScore();
-            if(m_ShouldShootAuto && !m_prevShouldShootAuto){
-                m_autoShootCommand.schedule();
-            }
-            else if(!m_ShouldShootAuto && m_prevShouldShootAuto){
-                m_autoShootCommand.cancel();
-            }
-            m_prevShouldShootAuto = m_ShouldShootAuto;
-        }
+        //     //auto scoring
+        //     m_ShouldShootAuto = shouldScore();
+        //     if(m_ShouldShootAuto && !m_prevShouldShootAuto){
+        //         m_autoShootCommand.schedule();
+        //     }
+        //     else if(!m_ShouldShootAuto && m_prevShouldShootAuto){
+        //         m_autoShootCommand.cancel();
+        //     }
+        //     m_prevShouldShootAuto = m_ShouldShootAuto;
+        // }
 
     }
 
