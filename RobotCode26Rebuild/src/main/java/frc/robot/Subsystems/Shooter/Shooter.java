@@ -272,12 +272,12 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         SmartDashboard.putNumber("Filtered Back Wheel Speed", m_filteredBackShootingSpeed);
     }
 
-    public void bigShootingRpm(double mps) {
-        m_frontShootingController.activate(mps, ControlType.kVel);
+    public void frontShootingRpm(double rpm) {
+        m_frontShootingController.activate(rpm, ControlType.kVel);
     }
 
-    public void BackShootingRpm(double mps) {
-        m_backShootingController.activate(mps, ControlType.kVel);
+    public void backShootingRpm(double rpm) {
+        m_backShootingController.activate(rpm, ControlType.kVel);
     }
 
     public void anglePos(double angle) {

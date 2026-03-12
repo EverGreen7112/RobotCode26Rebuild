@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Subsystems.AutoOperationsController;
+import frc.robot.Subsystems.Consts.FeedAndConveyConsts;
 import frc.robot.Subsystems.Consts.IntakeConsts;
 import frc.robot.Subsystems.Consts.ShooterConsts;
 import frc.robot.Subsystems.Consts.SwerveConsts;
@@ -102,18 +103,13 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    //double bigYhao = 0.05 / 0.023;
-
-    //ShooterConsts.LEFT_MOTOR.set(-0.4);
-    //ShooterConsts.RIGHT_MOTOR.set(-0.4 * bigYhao);
-
-    Shooter.getInstance().anglePos(ShooterConsts.DELIVERY_ANGLE);
-    //Shooter.getInstance().smallShootingRpm(ShooterConsts.TARGET_RPM);
-    //ShooterConsts.LEFT_MOTOR.setVoltage(1);
-
-    //IntakeConsts.EXTENSION_MOTOR.set(0.2);
-
-    //Intake.PICKUP_MOTOR.set(-0.3);
+    
+    //FeedAndConveyConsts.CONVEY_MOTOR.set(-0.5);
+    FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
+    //ShooterConsts.LEFT_MOTOR.set(0.25);
+    //ShooterConsts.RIGHT_MOTOR.set(0.2);
+    Shooter.getInstance().frontShootingRpm(ShooterConsts.DELIVERY_RPM );
+    Shooter.getInstance().backShootingRpm(ShooterConsts.DELIVERY_RPM * ShooterConsts.WHEELS_RATIO);
     
   }
 

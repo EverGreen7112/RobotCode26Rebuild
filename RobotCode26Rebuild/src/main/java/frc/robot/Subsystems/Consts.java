@@ -253,7 +253,7 @@ public interface Consts {
                                 MIN_ANGLE = 0.1, //  (in degrees)
 
                                 TARGET_RPM = 2000, 
-                                DELIVERY_RPM = 2040,
+                                DELIVERY_RPM = 1900,
                                 
                                 MIN_SHOOTING_DIST = 2.67,
                                 SHOOTING_OFFSET_FROM_GROUND = 12.8; 
@@ -296,7 +296,7 @@ public interface Consts {
 
                 public static void config() {
 
-                        ANGLE_ABS_ENCODER.setPosConversionFactor( SHOOTER_ANGLE_GEAR_RATIO * 360);
+                        ANGLE_ABS_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
                         ANGLE_ABS_ENCODER.setOffset(358.79002977601004);
 
                         ANGLE_ENCODER.setPos(0);
@@ -312,8 +312,8 @@ public interface Consts {
                         ANGLE_MOTOR.setInverted(false);
                         ANGLE_MOTOR.setIdleMode(IdleMode.kBrake);
 
-                        FRONT_SHOOTING_ENCODER.setVelConversionFactor((SHOOTING_GEAR_RATIO * 60)); 
-                        BACK_SHOOTING_ENCODER.setVelConversionFactor((SHOOTING_GEAR_RATIO * 60)); 
+                        FRONT_SHOOTING_ENCODER.setVelConversionFactor(SHOOTING_GEAR_RATIO * 60.0); 
+                        BACK_SHOOTING_ENCODER.setVelConversionFactor(SHOOTING_GEAR_RATIO * 60.0); 
 
                         ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
                         LEFT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(SMALL_SPEED_KP).withKI(SMALL_SPEED_KI).withKD(SMALL_SPEED_KD).withKV(SMALL_SPEED_KV));
