@@ -108,8 +108,8 @@ public class Robot extends LoggedRobot {
     
     //FeedAndConveyConsts.CONVEY_MOTOR.set(-0.5);
     //FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
-    //ShooterConsts.LEFT_MOTOR.set(0.25);
-    //ShooterConsts.RIGHT_MOTOR.set(0.2);
+    // ShooterConsts.BACK_MOTOR.setVoltage(1);
+    // ShooterConsts.FRONT_MOTOR.setVoltage(1);
     //Shooter.getInstance().frontShootingRpm(1000 );
     //Shooter.getInstance().backShootingRpm(1000 * ShooterConsts.WHEELS_RATIO);
     

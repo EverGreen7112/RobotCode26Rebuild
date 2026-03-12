@@ -145,11 +145,11 @@ public class Funcs {
     /**
      * converts from rpm to m/s based on the radius of the wheel
      * @param wheelRadius
-     * @param SpeedInRPM
+     * @param SpeedInRPS
      * @return
      */
-    public static double convertRPMtoMS(double wheelRadius, double SpeedInRPM){
-        return SpeedInRPM * wheelRadius * 2 * Math.PI / 60; // convert rpm to m/s
+    public static double convertRPStoMS(double wheelRadius, double SpeedInRPS){
+        return SpeedInRPS * wheelRadius * 2 * Math.PI; // convert rps to m/s
     }
     
     /**

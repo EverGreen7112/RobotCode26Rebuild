@@ -9,6 +9,7 @@ import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Climb.Climb;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
+import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
 
 public class ResetRobotCommand extends Command implements Consts{
 
@@ -23,6 +24,7 @@ public class ResetRobotCommand extends Command implements Consts{
     @Override
     public void initialize(){
         resetting = true;
+        Shooter.getInstance().setShooterState(ShooterState.kClose);
     }
     
     @Override

@@ -245,32 +245,29 @@ public interface Consts {
                                 GRAVITY = 9.81, // (in m/s^2)
 
                                 HUB_HEIGHT = 1.8,
-                                MECHANISM_HEIGHT = 0.351,// (iN meters) //can be a bit off
+                                MECHANISM_HEIGHT = 0.351,// (in meters) // not exact
 
-                                SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT,
+                                SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT, // (in meters)
 
                                 MAX_ANGLE = 22.0, // (in degrees)
                                 MIN_ANGLE = 0.1, //  (in degrees)
 
-                                TARGET_RPM = 2000, 
-                                DELIVERY_RPM = 1900,
+                                TARGET_RPS = 33.333, // (in RPS)
+                                DELIVERY_RPS = 25, // (in RPS)
                                 
-                                MIN_SHOOTING_DIST = 2.67,
-                                SHOOTING_OFFSET_FROM_GROUND = 12.8; 
-                                
-
-                public static final EverDutyCycleEncoder ANGLE_ABS_ENCODER = new EverDutyCycleEncoder(5);
+                                MIN_SHOOTING_DIST = 2.67, //(in meters)
+                                SHOOTING_OFFSET_FROM_GROUND = 12.8; // (in degrees)
 
                 public static final double 
                                 FRONT_SPEED_KP = 0.00008,
                                 FRONT_SPEED_KI = 0.0, 
                                 FRONT_SPEED_KD = 0.00002,
-                                FRONT_SPEED_KV = 1.0 / (373 / 60.0), 
+                                FRONT_SPEED_KV = 1.0 / (6.060546875), 
 
                                 BACK_SPEED_KP = 0.00008, 
                                 BACK_SPEED_KI = 0, 
                                 BACK_SPEED_KD = 0.00002,
-                                BACK_SPEED_KV = 1.0 / (339.0 / 60.0), 
+                                BACK_SPEED_KV = 1.0 / (6.001953125), 
 
                                 ANGLE_KP = 0.68, 
                                 ANGLE_KI = 0, 
@@ -281,7 +278,7 @@ public interface Consts {
                 public static final EverTalonFXPIDController BACK_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(BACK_MOTOR);
 
                 public static final boolean DEBUG_MODE = true;
-                public static final double DELIVERY_ANGLE = 10;
+                public static final double DELIVERY_ANGLE = 10; // (in degrees)
 
                 public static final double[] BALL_V0_DATA = { 8.309, 12.62, 0, 0, 0 }; // initial velocity of the ball(in m/s)
 
@@ -296,9 +293,6 @@ public interface Consts {
 
                 public static void config() {
 
-                        ANGLE_ABS_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
-                        ANGLE_ABS_ENCODER.setOffset(358.79002977601004);
-
                         ANGLE_ENCODER.setPos(0);
                         ANGLE_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
 
@@ -311,9 +305,6 @@ public interface Consts {
                         BACK_MOTOR.setInverted(true);
                         ANGLE_MOTOR.setInverted(false);
                         ANGLE_MOTOR.setIdleMode(IdleMode.kBrake);
-
-                        FRONT_SHOOTING_ENCODER.setVelConversionFactor(SHOOTING_GEAR_RATIO * 60.0); 
-                        BACK_SHOOTING_ENCODER.setVelConversionFactor(SHOOTING_GEAR_RATIO * 60.0); 
 
                         ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
                         FRONT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(FRONT_SPEED_KP).withKI(FRONT_SPEED_KI).withKD(FRONT_SPEED_KD).withKV(FRONT_SPEED_KV));
