@@ -32,7 +32,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         kScoring,
         kDelivery,
         kClose,
-        kStaticPoint
+        kStaticPoint,
+        kTest
     }
 
     private static Shooter m_instance = new Shooter();
@@ -63,20 +64,20 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     private Shooter() {
         ShooterConsts.config();
-        m_backMotor = ShooterConsts.LEFT_MOTOR;
-        m_frontMotor = ShooterConsts.RIGHT_MOTOR;
+        m_backMotor = ShooterConsts.FRONT_MOTOR;
+        m_frontMotor = ShooterConsts.BACK_MOTOR;
         m_angleMotor = ShooterConsts.ANGLE_MOTOR;
         m_angleEncoder = ShooterConsts.ANGLE_ENCODER;
         m_frontShootingEncoder = ShooterConsts.FRONT_SHOOTING_ENCODER;
         m_backShootingEncoder = ShooterConsts.BACK_SHOOTING_ENCODER;
 
-        m_targetSpeed = Funcs.convertRPMtoMS(ShooterConsts.WHEEL_RADIUS, ShooterConsts.TARGET_RPM);
+        m_targetSpeed = Funcs.convertRPMtoMS(ShooterConsts.FRONT_WHEEL_RADIUS, ShooterConsts.TARGET_RPM);
 
         m_deltaTime = new DeltaTime();
 
         m_anglePID = ShooterConsts.ANGLE_PID_CONTROLLER;
-        m_frontShootingController = ShooterConsts.LEFT_SHOOTING_PID_CONTROLLER_;
-        m_backShootingController = ShooterConsts.RIGHT_SHOOTING_PID_CONTROLLER_;
+        m_frontShootingController = ShooterConsts.FRONT_SHOOTING_PID_CONTROLLER_;
+        m_backShootingController = ShooterConsts.BACK_SHOOTING_PID_CONTROLLER_;
 
         m_shooterState = ShooterState.kStop;
         m_previousShooterState = ShooterState.kStop;
@@ -242,6 +243,9 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                     SwerveAngleController.getInstance().stop(); 
                 }
                 break;
+            case kTest:
+                frontShootingRpm(DELIVERY_RPM);
+                backShootingRpm(DELIVERY_RPM * WHEELS_RATIO);
         }
 
         m_previousShooterState = m_shooterState;
@@ -270,6 +274,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_prevFilteredBackShootingSpeed = m_filteredBackShootingSpeed;
         SmartDashboard.putNumber("Filtered Big Wheel Speed", m_filteredFrontShootingSpeed);
         SmartDashboard.putNumber("Filtered Back Wheel Speed", m_filteredBackShootingSpeed);
+
+        SmartDashboard.putString("shooter state", m_shooterState + "");
     }
 
     public void frontShootingRpm(double rpm) {

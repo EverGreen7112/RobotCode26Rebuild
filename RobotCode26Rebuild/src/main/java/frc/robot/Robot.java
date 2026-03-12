@@ -25,6 +25,7 @@ import frc.robot.Subsystems.Consts.ShooterConsts;
 import frc.robot.Subsystems.Consts.SwerveConsts;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
+import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Utils.DeltaTime;
 //import frc.robot.Utils.GamePieceDetector;
@@ -103,13 +104,14 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
+    Shooter.getInstance().setShooterState(ShooterState.kTest);
     
     //FeedAndConveyConsts.CONVEY_MOTOR.set(-0.5);
-    FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
+    //FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
     //ShooterConsts.LEFT_MOTOR.set(0.25);
     //ShooterConsts.RIGHT_MOTOR.set(0.2);
-    Shooter.getInstance().frontShootingRpm(ShooterConsts.DELIVERY_RPM );
-    Shooter.getInstance().backShootingRpm(ShooterConsts.DELIVERY_RPM * ShooterConsts.WHEELS_RATIO);
+    //Shooter.getInstance().frontShootingRpm(1000 );
+    //Shooter.getInstance().backShootingRpm(1000 * ShooterConsts.WHEELS_RATIO);
     
   }
 

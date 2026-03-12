@@ -227,20 +227,20 @@ public interface Consts {
 
                 // TODO: change all place holder to real values
 
-                public static final EverTalonFX LEFT_MOTOR = new EverTalonFX(5), RIGHT_MOTOR = new EverTalonFX(19);
+                public static final EverTalonFX FRONT_MOTOR = new EverTalonFX(5), BACK_MOTOR = new EverTalonFX(19);
                 public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(3);
 
                 public static final EverSparkInternalEncoder ANGLE_ENCODER = new EverSparkInternalEncoder(ANGLE_MOTOR);
 
-                public static final EverTalonFXInternalEncoder FRONT_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(LEFT_MOTOR);
-                public static final EverTalonFXInternalEncoder BACK_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(RIGHT_MOTOR);
+                public static final EverTalonFXInternalEncoder FRONT_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(FRONT_MOTOR);
+                public static final EverTalonFXInternalEncoder BACK_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(BACK_MOTOR);
 
                 public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/23.51351, SHOOTING_GEAR_RATIO = 1;
 
                 public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d());
                 public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d());
 
-                public static final double WHEEL_RADIUS = 0.05 ,SMALL_WHEEL_RADIUS = 0.028, WHEELS_RATIO = WHEEL_RADIUS / SMALL_WHEEL_RADIUS,  // (in m)
+                public static final double FRONT_WHEEL_RADIUS = 0.05 , BACK_WHEEL_RADIUS = 0.028, WHEELS_RATIO = FRONT_WHEEL_RADIUS / BACK_WHEEL_RADIUS,  // (in m)
 
                                 GRAVITY = 9.81, // (in m/s^2)
 
@@ -262,23 +262,23 @@ public interface Consts {
                 public static final EverDutyCycleEncoder ANGLE_ABS_ENCODER = new EverDutyCycleEncoder(5);
 
                 public static final double 
-                                BIG_SPEED_KP = 0.00008, // change this for the real KP of the shooter 1.3
-                                BIG_SPEED_KI = 0.0, // change this for the real KI of the shooter
-                                BIG_SPEED_KD = 0.00002,
-                                BIG_SPEED_KV = 1.0 / (373 / 60.0), // change this for the real KD of the shooter
+                                FRONT_SPEED_KP = 0.00008,
+                                FRONT_SPEED_KI = 0.0, 
+                                FRONT_SPEED_KD = 0.00002,
+                                FRONT_SPEED_KV = 1.0 / (373 / 60.0), 
 
-                                SMALL_SPEED_KP = 0.00008,//1.9, 
-                                SMALL_SPEED_KI = 0, 
-                                SMALL_SPEED_KD = 0.00002,
-                                SMALL_SPEED_KV = 1.0 / (339.0 / 60.0), 
+                                BACK_SPEED_KP = 0.00008, 
+                                BACK_SPEED_KI = 0, 
+                                BACK_SPEED_KD = 0.00002,
+                                BACK_SPEED_KV = 1.0 / (339.0 / 60.0), 
 
-                                ANGLE_KP = 0.68, // change this for the real KP of the shooter
-                                ANGLE_KI = 0, // change this for the real KI of the shooter
-                                ANGLE_KD = 0; // change this for the real KD of the shooter
+                                ANGLE_KP = 0.68, 
+                                ANGLE_KI = 0, 
+                                ANGLE_KD = 0; 
 
                 public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
-                public static final EverTalonFXPIDController LEFT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(LEFT_MOTOR);
-                public static final EverTalonFXPIDController RIGHT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(RIGHT_MOTOR);
+                public static final EverTalonFXPIDController FRONT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(FRONT_MOTOR);
+                public static final EverTalonFXPIDController BACK_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(BACK_MOTOR);
 
                 public static final boolean DEBUG_MODE = true;
                 public static final double DELIVERY_ANGLE = 10;
@@ -307,8 +307,8 @@ public interface Consts {
                         ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.allowedProfileError(0.001);
 
                         ANGLE_MOTOR.getControllerInstance().configure(ANGLE_MOTOR_MOTION_CONFIG, ResetMode.kNoResetSafeParameters, null);
-                        LEFT_MOTOR.setInverted(true);
-                        RIGHT_MOTOR.setInverted(true);
+                        FRONT_MOTOR.setInverted(true);
+                        BACK_MOTOR.setInverted(true);
                         ANGLE_MOTOR.setInverted(false);
                         ANGLE_MOTOR.setIdleMode(IdleMode.kBrake);
 
@@ -316,9 +316,8 @@ public interface Consts {
                         BACK_SHOOTING_ENCODER.setVelConversionFactor(SHOOTING_GEAR_RATIO * 60.0); 
 
                         ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
-                        LEFT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(SMALL_SPEED_KP).withKI(SMALL_SPEED_KI).withKD(SMALL_SPEED_KD).withKV(SMALL_SPEED_KV));
-                        // RIGHT_SHOOTING_PID_CONTROLLER_.setPID(SMALL_SPEED_KP, SMALL_SPEED_KI, SMALL_SPEED_KD);
-                        RIGHT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(SMALL_SPEED_KP).withKI(SMALL_SPEED_KI).withKD(SMALL_SPEED_KD).withKV(SMALL_SPEED_KV));
+                        FRONT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(FRONT_SPEED_KP).withKI(FRONT_SPEED_KI).withKD(FRONT_SPEED_KD).withKV(FRONT_SPEED_KV));
+                        BACK_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(BACK_SPEED_KP).withKI(BACK_SPEED_KI).withKD(BACK_SPEED_KD).withKV(BACK_SPEED_KV));
 
                         for (int i = 0; i < BALL_V0_DATA.length; i++) {
                                 SHOOTER_TO_BALL_SPEED_TABLE.put(SHOOTER_SPEED[i], BALL_V0_DATA[i]);
