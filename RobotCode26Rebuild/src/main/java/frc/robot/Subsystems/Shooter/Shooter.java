@@ -19,6 +19,7 @@ import frc.robot.Utils.EverKit.EverPIDController;
 import frc.robot.Utils.EverKit.EverPIDController.ControlType;
 import frc.robot.Utils.EverKit.Implementations.Encoders.EverDutyCycleEncoder;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverMotorControllerGroup;
+import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 import frc.robot.Utils.Math.Funcs;
 import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
@@ -255,17 +256,11 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     public void log() {
         SmartDashboard.putNumber("Shooter Current Angle", m_angleEncoder.getPos());
         SmartDashboard.putNumber("Ball speed", m_predictedBallV0);
+
         SmartDashboard.putNumber("Front Wheel Shooting Speed", m_frontShootingEncoder.getVel());
         SmartDashboard.putNumber("Back Wheel Shooting Speed", m_backShootingEncoder.getVel());
 
         SmartDashboard.putNumber("Spar internal encoder angle", ShooterConsts.ANGLE_MOTOR.getControllerInstance().getEncoder().getPosition());
-
-        m_filteredFrontShootingSpeed = 0.8 * m_prevFilteredFrontShootingSpeed + 0.2 * m_frontShootingEncoder.getVel();
-        m_filteredBackShootingSpeed = 0.8 * m_prevFilteredBackShootingSpeed + 0.2 * m_backShootingEncoder.getVel();
-        m_prevFilteredFrontShootingSpeed = m_filteredFrontShootingSpeed;
-        m_prevFilteredBackShootingSpeed = m_filteredBackShootingSpeed;
-        SmartDashboard.putNumber("Filtered Big Wheel Speed", m_filteredFrontShootingSpeed);
-        SmartDashboard.putNumber("Filtered Back Wheel Speed", m_filteredBackShootingSpeed);
 
         SmartDashboard.putString("shooter state", m_shooterState + "");
     }

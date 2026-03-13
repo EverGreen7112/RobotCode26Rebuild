@@ -25,8 +25,8 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
         m_extensionMotor = IntakeConsts.EXTENSION_MOTOR;
         m_extensionEncoder = IntakeConsts.EXTENSION_ENCODER;
 
-        m_retractionLM = IntakeConsts.RETRACTION_LM;
-        m_extensionLM = IntakeConsts.EXTENSION_LM;
+        // m_retractionLM = IntakeConsts.RETRACTION_LM;
+        // m_extensionLM = IntakeConsts.EXTENSION_LM;
     }
 
     public static Intake getInstance(){
@@ -64,9 +64,9 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
             startRetracting();
         }
 
-        if((m_extensionLM.get() && m_extensionMotor.get() > 0) || (m_retractionLM.get() && m_extensionMotor.get() < 0)){
-            stopExtending();
-        }
+        // if((m_extensionLM.get() && m_extensionMotor.get() > 0) || (m_retractionLM.get() && m_extensionMotor.get() < 0)){
+        //     stopExtending();
+        // }
 
         if(m_retractionLM.get()){
             m_extensionEncoder.setPos(0);

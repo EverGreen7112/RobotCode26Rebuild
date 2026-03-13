@@ -253,21 +253,21 @@ public interface Consts {
                                 MIN_ANGLE = 0.1, //  (in degrees)
 
                                 TARGET_RPS = 33.333, // (in RPS)
-                                DELIVERY_RPS = 25, // (in RPS)
+                                DELIVERY_RPS = 30, // (in RPS)
                                 
                                 MIN_SHOOTING_DIST = 2.67, //(in meters)
                                 SHOOTING_OFFSET_FROM_GROUND = 12.8; // (in degrees)
 
                 public static final double 
-                                FRONT_SPEED_KP = 0.00008,
-                                FRONT_SPEED_KI = 0.0, 
-                                FRONT_SPEED_KD = 0.00002,
-                                FRONT_SPEED_KV = 1.0 / (6.060546875), 
+                                FRONT_SPEED_KP = 0.3,//0.3
+                                FRONT_SPEED_KI = 0.00009, 
+                                FRONT_SPEED_KD = 0.001,
+                                FRONT_SPEED_KV = 4.04 / (30.857421875), 
 
-                                BACK_SPEED_KP = 0.00008, 
-                                BACK_SPEED_KI = 0, 
-                                BACK_SPEED_KD = 0.00002,
-                                BACK_SPEED_KV = 1.0 / (6.001953125), 
+                                BACK_SPEED_KP = 1.7 * (1/WHEELS_RATIO), 
+                                BACK_SPEED_KI = 0.00009, 
+                                BACK_SPEED_KD = 0.0097 ,
+                                BACK_SPEED_KV = (4.04 / 30.857421875) * (1/WHEELS_RATIO), 
 
                                 ANGLE_KP = 0.68, 
                                 ANGLE_KI = 0, 
@@ -328,8 +328,8 @@ public interface Consts {
                 public static final EverTalonFXInternalEncoder EXTENSION_ENCODER = new EverTalonFXInternalEncoder(
                                 EXTENSION_MOTOR);
 
-                public static final EverAnalogToDigitalLimitSwitch RETRACTION_LM = new EverAnalogToDigitalLimitSwitch(0),
-                                EXTENSION_LM = new EverAnalogToDigitalLimitSwitch(3);
+                // public static final EverAnalogToDigitalLimitSwitch RETRACTION_LM = new EverAnalogToDigitalLimitSwitch(0),
+                //                 EXTENSION_LM = new EverAnalogToDigitalLimitSwitch(3);
 
                 public final double EXTENSION_SPEED = 0.25, PICKUP_SPEED = 0.6;
                 public final boolean DEBUG_MODE = false;

@@ -70,6 +70,8 @@ public class Robot extends LoggedRobot {
         m_alliance = Alliance.Red;
 
     Shooter.getInstance().log();
+
+    SmartDashboard.putNumber("volt",ShooterConsts.FRONT_MOTOR.getControllerInstance().getMotorVoltage().getValueAsDouble());
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
   }
@@ -106,17 +108,20 @@ public class Robot extends LoggedRobot {
 
     Shooter.getInstance().setShooterState(ShooterState.kTest);
     
-    //FeedAndConveyConsts.CONVEY_MOTOR.set(-0.5);
-    //FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
-    // ShooterConsts.BACK_MOTOR.setVoltage(1);
-    // ShooterConsts.FRONT_MOTOR.setVoltage(1);
+    FeedAndConveyConsts.CONVEY_MOTOR.set(-0.7);
+    FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
+    // ShooterConsts.BACK_MOTOR.setVoltage(4.04);
+    //  ShooterConsts.FRONT_MOTOR.setVoltage(4
+    //  );
     //Shooter.getInstance().frontShootingRpm(1000 );
     //Shooter.getInstance().backShootingRpm(1000 * ShooterConsts.WHEELS_RATIO);
+    //IntakeConsts.EXTENSION_MOTOR.set(0.3);
     
   }
 
   @Override
   public void teleopPeriodic() {
+
   }
 
   @Override
