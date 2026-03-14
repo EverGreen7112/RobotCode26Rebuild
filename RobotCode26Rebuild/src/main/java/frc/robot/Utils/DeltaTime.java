@@ -5,7 +5,7 @@ import frc.robot.Utils.EverKit.Periodic;
 
 public class DeltaTime {
 
-    private double m_lastTime;
+    private double lastTime;
 
     private Timer timer;
 
@@ -13,11 +13,11 @@ public class DeltaTime {
     
     public DeltaTime(){
         timer = new Timer();
-        m_lastTime = timer.getFPGATimestamp();
+        lastTime = timer.getFPGATimestamp();
     }
 
     public void setNow(){
-        m_lastTime = timer.getFPGATimestamp();
+        lastTime = timer.getFPGATimestamp();
     }
 
     /**
@@ -27,7 +27,7 @@ public class DeltaTime {
      */
     public double get(){
         double currentTime = timer.getFPGATimestamp();
-        double deltaTime = (currentTime - m_lastTime); 
+        double deltaTime = (currentTime - lastTime); 
         return Math.max(deltaTime, MIN_TIME); // ensure minimum delta time is not zero  
     }
 

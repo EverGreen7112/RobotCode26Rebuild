@@ -18,11 +18,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Subsystems.AutoOperationsController;
+import frc.robot.Subsystems.Consts.ClimbConst;
 import frc.robot.Subsystems.Consts.FeedAndConveyConsts;
 import frc.robot.Subsystems.Consts.IntakeConsts;
 import frc.robot.Subsystems.Consts.ShooterConsts;
 import frc.robot.Subsystems.Consts.SwerveConsts;
+import frc.robot.Subsystems.Climb.Climb;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
@@ -103,25 +106,23 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopInit() {
     if (m_autonomousCommand != null) {
+      
       m_autonomousCommand.cancel();
     }
 
-    Shooter.getInstance().setShooterState(ShooterState.kTest);
+    Shooter.getInstance().setShooterState(ShooterState.kScoring);
     
-    FeedAndConveyConsts.CONVEY_MOTOR.set(-0.7);
+    FeedAndConveyConsts.CONVEY_MOTOR.set(-0.8);
     FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
-    // ShooterConsts.BACK_MOTOR.setVoltage(4.04);
-    //  ShooterConsts.FRONT_MOTOR.setVoltage(4
-    //  );
-    //Shooter.getInstance().frontShootingRpm(1000 );
-    //Shooter.getInstance().backShootingRpm(1000 * ShooterConsts.WHEELS_RATIO);
-    //IntakeConsts.EXTENSION_MOTOR.set(0.3);
-    
+
+    //Shooter.getInstance().anglePos(5);
+
+    // ClimbConst.CLIMB_MOTOR.set(-0.7);
   }
 
   @Override
   public void teleopPeriodic() {
-
+    Shooter.getInstance().periodic();
   }
 
   @Override

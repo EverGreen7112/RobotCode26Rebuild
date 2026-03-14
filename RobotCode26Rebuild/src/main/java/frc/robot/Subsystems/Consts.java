@@ -238,7 +238,11 @@ public interface Consts {
                 public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/23.51351, SHOOTING_GEAR_RATIO = 1;
 
                 public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d());
-                public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d());
+                public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d(Math.toDegrees(Math.PI)));
+
+                public static final Pose2d DELIVERY_POSES_BLUE = new Pose2d(1.723, 6.5, new Rotation2d(Math.toDegrees(Math.PI)));
+
+                public static final Pose2d DELIVERY_POSES_RED = new Pose2d(15, 6.5, new Rotation2d());
 
                 public static final double FRONT_WHEEL_RADIUS = 0.05 , BACK_WHEEL_RADIUS = 0.028, WHEELS_RATIO = FRONT_WHEEL_RADIUS / BACK_WHEEL_RADIUS,  // (in m)
 
@@ -250,13 +254,13 @@ public interface Consts {
                                 SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT, // (in meters)
 
                                 MAX_ANGLE = 22.0, // (in degrees)
-                                MIN_ANGLE = 0.1, //  (in degrees)
+                                MIN_ANGLE = 0.5, //  (in degrees)
 
-                                TARGET_RPS = 33.333, // (in RPS)
+                                TARGET_RPS = 33.3, // (in RPS)
                                 DELIVERY_RPS = 30, // (in RPS)
                                 
                                 MIN_SHOOTING_DIST = 2.67, //(in meters)
-                                SHOOTING_OFFSET_FROM_GROUND = 12.8; // (in degrees)
+                                SHOOTER_OFFSET_FROM_GROUND = 12.8; // (in degrees)
 
                 public static final double 
                                 FRONT_SPEED_KP = 0.3,//0.3
@@ -280,12 +284,11 @@ public interface Consts {
                 public static final boolean DEBUG_MODE = true;
                 public static final double DELIVERY_ANGLE = 10; // (in degrees)
 
-                public static final double[] BALL_V0_DATA = { 8.309, 12.62, 0, 0, 0 }; // initial velocity of the ball(in m/s)
+                public static final double[] BALL_V0_DATA = { 8.309, 12.62, 0, 0, 0 }; //place holder// initial velocity of the ball(in m/s)
 
                 
-                public static final double[] SHOOTER_SPEED = { 10.63, 14.88, 15.95, 17.01, 18.07, 19.14, 19.67, 20.2, 20.41,
-                                                 20.63, 20.73, 20.84, 21.05, 21.16, 21.26, 21.48, 21.69 }; // Shooter speed (in m/s)
-
+                public static final double[] SHOOTER_SPEED = {3.830 ,4.787 ,5.426 ,6.224 ,7.022 ,7.979,8.618 ,9.256,9.735,10.533,10.638}; // Shooter speed (in m/s)
+  
                 public static final InterpolatingDoubleTreeMap SHOOTER_TO_BALL_SPEED_TABLE = new InterpolatingDoubleTreeMap();
 
                 public static final SparkMaxConfig ANGLE_MOTOR_MOTION_CONFIG = new SparkMaxConfig();
@@ -296,8 +299,8 @@ public interface Consts {
                         ANGLE_ENCODER.setPos(0);
                         ANGLE_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
 
-                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.maxAcceleration(150);
-                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.cruiseVelocity(100);
+                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.maxAcceleration(2);
+                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.cruiseVelocity(2);
                         ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.allowedProfileError(0.001);
 
                         ANGLE_MOTOR.getControllerInstance().configure(ANGLE_MOTOR_MOTION_CONFIG, ResetMode.kNoResetSafeParameters, null);
@@ -368,11 +371,11 @@ public interface Consts {
 
                 // TODO: change all place holder to real values
 
-                public static final double MAX_OPEN = 3000, OPEN_VEL = 0.25;
+                public static final double MAX_OPEN = 3000, OPEN_VEL = -0.8;
 
-                public static final EverTalonFX CLIMB_MOTOR = new EverTalonFX(6);
+                public static final EverSparkMax CLIMB_MOTOR = new EverSparkMax(6);
 
-                public static final EverTalonFXInternalEncoder CLIMB_ENCODER = new EverTalonFXInternalEncoder(CLIMB_MOTOR);
+                public static final EverSparkInternalEncoder CLIMB_ENCODER = new EverSparkInternalEncoder(CLIMB_MOTOR);
 
                 public static final DigitalInput BOTTOM_LM = new DigitalInput(6);
 

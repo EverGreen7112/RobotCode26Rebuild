@@ -29,7 +29,7 @@ public class ResetRobotCommand extends Command implements Consts{
     
     @Override
     public boolean isFinished() {
-        return Shooter.getInstance().isClosed() && Climb.getInstance().cantClose() && Intake.getInstance().isClosed();
+        return  Climb.getInstance().cantClose() && Intake.getInstance().isClosed();
     }
 
     @Override

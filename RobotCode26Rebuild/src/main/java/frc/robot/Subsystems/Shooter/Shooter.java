@@ -41,8 +41,6 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     private double m_targetAngle, m_targetSpeed, m_predictedBallV0;
 
-    private EverMotorControllerGroup m_shootingMotors;
-
     private EverMotorController m_angleMotor;
 
     private EverPIDController m_anglePID, m_frontShootingController, m_backShootingController;
@@ -58,10 +56,10 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     private DeltaTime m_deltaTime;
 
     private Pose2d m_staticShootingPose;
+    
+    private Pose2d m_deliveryPoints;
 
     private EverMotorController m_backMotor, m_frontMotor;
-
-    private double m_filteredFrontShootingSpeed, m_filteredBackShootingSpeed, m_prevFilteredFrontShootingSpeed, m_prevFilteredBackShootingSpeed;
 
     private Shooter() {
         ShooterConsts.config();
@@ -88,9 +86,9 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_targetHub = ShooterConsts.BLUE_HUB_POSE;
 
         m_staticShootingPose = ShooterConsts.STATIC_SHOOT_POSE_BLUE;
+        m_deliveryPoints = DELIVERY_POSES_BLUE;
 
-        m_prevFilteredFrontShootingSpeed = 0;
-        m_prevFilteredBackShootingSpeed = 0;
+        m_targetAngle = 0;
     }
 
     public static Shooter getInstance() {
@@ -100,6 +98,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     public void ConfigureAllianceShootingSetting(boolean isBlue) {
         m_targetHub = isBlue ? ShooterConsts.BLUE_HUB_POSE : ShooterConsts.RED_HUB_POSE;
         m_staticShootingPose = isBlue ? ShooterConsts.STATIC_SHOOT_POSE_BLUE : ShooterConsts.STATIC_SHOOT_POSE_RED;
+        m_deliveryPoints = isBlue ? DELIVERY_POSES_BLUE : DELIVERY_POSES_RED;
+        
     }
 
     public void setShooterState(ShooterState shooterState) {
@@ -112,8 +112,13 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         if(m_shooterState == ShooterState.kStaticPoint){
             locX = m_staticShootingPose.getX();
             locY = m_staticShootingPose.getY();
-        } 
-        return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
+        }
+        else if(m_shooterState == ShooterState.kDelivery){
+            locX = m_deliveryPoints.getX();
+            locY = m_deliveryPoints.getY();
+        }
+        //return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
+        return 2.7;
     }
 
     /**
@@ -124,6 +129,13 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         double currentSpeed = m_frontShootingEncoder.getVel();
         double deltaSpeed = m_targetSpeed - currentSpeed;
         return currentSpeed + (deltaSpeed / m_deltaTime.get()) * Consts.FeedAndConveyConsts.FEEDING_TIME; 
+    }
+
+
+    // TODO: place holder for the real thing
+    private double calcBallV0MS(double predictedShooterSpeedMS){
+        //return m_shooterSpeedToPredictedBallV0.get(MathUtil.clamp(shooterSpeedMS, ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
+        return predictedShooterSpeedMS * (1 - 0.165);
     }
 
     // TODO: need to consider which angle we take. the function return two angles + and -
@@ -143,7 +155,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                                 + 2 * SHOOTING_HEIGHT * Math.pow(shootingSpeed, 2)));
 
         double horizontalForce = GRAVITY * shootingDistance;
-        return Math.toDegrees(Math.atan(verticalVelocity / horizontalForce)) - SHOOTING_OFFSET_FROM_GROUND;
+        SmartDashboard.putNumber("fucking",Math.toDegrees(Math.atan(verticalVelocity / horizontalForce)) - SHOOTER_OFFSET_FROM_GROUND);
+        return Math.toDegrees(Math.atan(verticalVelocity / horizontalForce)) - SHOOTER_OFFSET_FROM_GROUND;
     }
 
     /**
@@ -171,65 +184,53 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         return m_shooterState;
     }
 
-    public boolean isClosed(){
-        return !ANGLE_MOTOR.getControllerInstance().getReverseLimitSwitch().isPressed();
+    private void shootingFunc(){
+        m_predictedBallV0 = calcBallV0MS(calcPredictedShooterSpeed());
+        m_targetAngle = MathUtil.clamp(
+            calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
+        //SwerveAngleController.getInstance().start(calcRobotShootingOffsetAngle(SwerveLocalizer.getInstance().getCurrentPoint()));
     }
-
 
     @Override
     public void periodic() {
 
+        m_deltaTime.setNow();
+
         if (m_angleEncoder.getPos() >= ShooterConsts.MAX_ANGLE && m_angleMotor.get() > 0) {
             m_angleMotor.stop();
-        } else if (m_angleEncoder.getPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0 && isClosed()) {
+        } else if (m_angleEncoder.getPos() <= ShooterConsts.MIN_ANGLE && m_angleMotor.get() < 0) {
             m_angleMotor.stop();
-        }
-
-        if(isClosed()){
-            m_angleEncoder.setPos(0);
         }
 
         switch (m_shooterState) {
             case kScoring:
-                m_predictedBallV0 = m_shooterSpeedToPredictedBallV0.get(MathUtil.clamp(
-                    calcPredictedShooterSpeed(), ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
+                //shootingFunc();
+                m_predictedBallV0 = calcBallV0MS(calcPredictedShooterSpeed());
                 m_targetAngle = MathUtil.clamp(
-                    calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
-                SwerveAngleController.getInstance().start(calcRobotShootingOffsetAngle(SwerveLocalizer.getInstance().getCurrentPoint()));
-                m_anglePID.activate(m_targetAngle, ControlType.kPos);
+                calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
                 m_frontShootingController.activate(ShooterConsts.TARGET_RPS, ControlType.kVel);
                 m_backShootingController.activate(ShooterConsts.TARGET_RPS * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
+                anglePos(m_targetAngle);
                 break;
 
             case kDelivery:
-                m_anglePID.activate(ShooterConsts.DELIVERY_ANGLE, ControlType.kPos);
+                shootingFunc();
                 m_frontShootingController.activate(ShooterConsts.DELIVERY_RPS, ControlType.kVel);
                 m_backShootingController.activate(ShooterConsts.DELIVERY_RPS * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
-                SwerveAngleController.getInstance().stop();
                 break;
 
+            case kStaticPoint:
+                shootingFunc();
+                m_frontShootingController.activate(ShooterConsts.TARGET_RPS, ControlType.kVel);
+                m_backShootingController.activate(ShooterConsts.TARGET_RPS * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
+                break;
                 
             case kClose:
                 m_frontShootingController.stop();
-                if(m_previousShooterState != ShooterState.kClose && !isClosed()){
-                    m_angleMotor.set(-0.2);
-                }
-                else if(isClosed()){
-                    m_angleMotor.stop();
-                }
-                SwerveAngleController.getInstance().stop();
+                m_backShootingController.stop();
+                //SwerveAngleController.getInstance().stop();
                 break;
                 
-            case kStaticPoint:
-                m_predictedBallV0 = m_shooterSpeedToPredictedBallV0.get(MathUtil.clamp(
-                    calcPredictedShooterSpeed(), ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
-                m_targetAngle = MathUtil.clamp(
-                    calcShootingAngle(m_predictedBallV0), ShooterConsts.MIN_ANGLE, ShooterConsts.MAX_ANGLE);
-                SwerveAngleController.getInstance().start(calcRobotShootingOffsetAngle(m_staticShootingPose));
-                m_anglePID.activate(m_targetAngle, ControlType.kPos);
-                m_frontShootingController.activate(ShooterConsts.TARGET_RPS, ControlType.kVel);
-                m_backShootingController.activate(ShooterConsts.TARGET_RPS * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
-                    break;
             case kStop:
                 if (m_previousShooterState != ShooterState.kStop) {
                     m_frontShootingController.stop();
@@ -237,15 +238,18 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                     m_anglePID.stop();
                     m_frontMotor.stop();
                     m_backMotor.stop();
-                    SwerveAngleController.getInstance().stop(); 
+                    //SwerveAngleController.getInstance().stop(); 
                 }
                 break;
             case kTest:
                 frontShootingRpm(DELIVERY_RPS);
                 backShootingRpm(DELIVERY_RPS * WHEELS_RATIO);
+                anglePos(5);
         }
 
         m_previousShooterState = m_shooterState;
+
+        //anglePos(m_targetAngle);
 
         if (ShooterConsts.DEBUG_MODE) {
             log();
@@ -255,12 +259,11 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     public void log() {
         SmartDashboard.putNumber("Shooter Current Angle", m_angleEncoder.getPos());
+        SmartDashboard.putNumber("target angle", m_targetAngle);
         SmartDashboard.putNumber("Ball speed", m_predictedBallV0);
 
         SmartDashboard.putNumber("Front Wheel Shooting Speed", m_frontShootingEncoder.getVel());
         SmartDashboard.putNumber("Back Wheel Shooting Speed", m_backShootingEncoder.getVel());
-
-        SmartDashboard.putNumber("Spar internal encoder angle", ShooterConsts.ANGLE_MOTOR.getControllerInstance().getEncoder().getPosition());
 
         SmartDashboard.putString("shooter state", m_shooterState + "");
     }
