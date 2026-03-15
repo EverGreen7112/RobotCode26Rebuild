@@ -249,7 +249,7 @@ public interface Consts {
                                 GRAVITY = 9.81, // (in m/s^2)
 
                                 HUB_HEIGHT = 1.8,
-                                MECHANISM_HEIGHT = 0.351,// (in meters) // not exact
+                                MECHANISM_HEIGHT = 0.445,// (in meters) // not exact
 
                                 SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT, // (in meters)
 
@@ -273,8 +273,8 @@ public interface Consts {
                                 BACK_SPEED_KD = 0.0097 ,
                                 BACK_SPEED_KV = (4.04 / 30.857421875) * (1/WHEELS_RATIO), 
 
-                                ANGLE_KP = 0.68, 
-                                ANGLE_KI = 0, 
+                                ANGLE_KP = 0.68,//0.68, 
+                                ANGLE_KI = 0.00004, 
                                 ANGLE_KD = 0; 
 
                 public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
@@ -299,7 +299,7 @@ public interface Consts {
                         ANGLE_ENCODER.setPos(0);
                         ANGLE_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
 
-                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.maxAcceleration(2);
+                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.maxAcceleration(1);
                         ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.cruiseVelocity(2);
                         ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.allowedProfileError(0.001);
 
@@ -363,7 +363,7 @@ public interface Consts {
                 public static final EverAnalogToDigitalLimitSwitch ENTER_LEFT_LM = new EverAnalogToDigitalLimitSwitch(0),
                                                  ENTER_RIGHT_LM = new EverAnalogToDigitalLimitSwitch(1);
 
-                public static final double FEEDING_TIME = 0.15; // (in seconds)
+                public static final double FEEDING_TIME = 0.09; // (in seconds)
 
         }
 

@@ -57,6 +57,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
       m_robotContainer = new RobotContainer();
+      // Shooter.getInstance().setShooterState(ShooterState.kStop);
     
       Logger.recordMetadata("RobotCode-ReBuild-26", "29.01");
       Logger.addDataReceiver(new NT4Publisher());
@@ -74,7 +75,6 @@ public class Robot extends LoggedRobot {
 
     Shooter.getInstance().log();
 
-    SmartDashboard.putNumber("volt",ShooterConsts.FRONT_MOTOR.getControllerInstance().getMotorVoltage().getValueAsDouble());
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
   }
@@ -112,17 +112,16 @@ public class Robot extends LoggedRobot {
 
     Shooter.getInstance().setShooterState(ShooterState.kScoring);
     
-    FeedAndConveyConsts.CONVEY_MOTOR.set(-0.8);
-    FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
+    // FeedAndConveyConsts.CONVEY_MOTOR.set(-0.8);
+    // FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
 
     //Shooter.getInstance().anglePos(5);
 
-    // ClimbConst.CLIMB_MOTOR.set(-0.7);
+    //ClimbConst.CLIMB_MOTOR.set(-0.7);
   }
 
   @Override
   public void teleopPeriodic() {
-    Shooter.getInstance().periodic();
   }
 
   @Override
