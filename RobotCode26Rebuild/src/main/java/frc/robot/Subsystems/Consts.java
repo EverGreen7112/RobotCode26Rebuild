@@ -251,12 +251,12 @@ public interface Consts {
                                 HUB_HEIGHT = 1.8,
                                 MECHANISM_HEIGHT = 0.445,// (in meters) // not exact
 
-                                SHOOTING_HEIGHT = HUB_HEIGHT - MECHANISM_HEIGHT, // (in meters)
+                                SHOOTING_HEIGHT = -0.45,//HUB_HEIGHT - MECHANISM_HEIGHT, // (in meters)
 
-                                MAX_ANGLE = 22.0, // (in degrees)
+                                MAX_ANGLE = 20.0, // (in degrees)
                                 MIN_ANGLE = 0.5, //  (in degrees)
 
-                                TARGET_RPS = 33.3, // (in RPS)
+                                TARGET_RPS = 50.75, // (in RPS)
                                 DELIVERY_RPS = 30, // (in RPS)
                                 
                                 MIN_SHOOTING_DIST = 2.67, //(in meters)
@@ -273,8 +273,8 @@ public interface Consts {
                                 BACK_SPEED_KD = 0.0097 ,
                                 BACK_SPEED_KV = (4.04 / 30.857421875) * (1/WHEELS_RATIO), 
 
-                                ANGLE_KP = 0.68,//0.68, 
-                                ANGLE_KI = 0.00004, 
+                                ANGLE_KP = 0.6,//0.68, 
+                                ANGLE_KI = 0.0000, 
                                 ANGLE_KD = 0; 
 
                 public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
@@ -283,6 +283,8 @@ public interface Consts {
 
                 public static final boolean DEBUG_MODE = true;
                 public static final double DELIVERY_ANGLE = 10; // (in degrees)
+
+                public static final double DEAD_ZONE = 1.5;
 
                 public static final double[] BALL_V0_DATA = { 8.309, 12.62, 0, 0, 0 }; //place holder// initial velocity of the ball(in m/s)
 
@@ -363,7 +365,7 @@ public interface Consts {
                 public static final EverAnalogToDigitalLimitSwitch ENTER_LEFT_LM = new EverAnalogToDigitalLimitSwitch(0),
                                                  ENTER_RIGHT_LM = new EverAnalogToDigitalLimitSwitch(1);
 
-                public static final double FEEDING_TIME = 0.09; // (in seconds)
+                public static final double FEEDING_TIME = 0.2; // (in seconds)
 
         }
 
