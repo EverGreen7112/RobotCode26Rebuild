@@ -291,7 +291,7 @@ public interface Consts {
                 
                 public static final double[] SHOOTER_SPEED = {3.830 ,4.787 ,5.426 ,6.224 ,7.022 ,7.979,8.618 ,9.256,9.735,10.533,10.638}; // Shooter speed (in m/s)
   
-                public static final InterpolatingDoubleTreeMap SHOOTER_TO_BALL_SPEED_TABLE = new InterpolatingDoubleTreeMap();
+                public static final InterpolatingDoubleTreeMap BALL_SPEED_TO_SHOOTER_TABLE = new InterpolatingDoubleTreeMap();
 
                 public static final SparkMaxConfig ANGLE_MOTOR_MOTION_CONFIG = new SparkMaxConfig();
                 public static final SparkBaseConfig ANGLE_BASE_MOTOR_MOTION_CONFIG = new SparkMaxConfig();
@@ -316,7 +316,7 @@ public interface Consts {
                         BACK_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(BACK_SPEED_KP).withKI(BACK_SPEED_KI).withKD(BACK_SPEED_KD).withKV(BACK_SPEED_KV));
 
                         for (int i = 0; i < BALL_V0_DATA.length; i++) {
-                                SHOOTER_TO_BALL_SPEED_TABLE.put(SHOOTER_SPEED[i], BALL_V0_DATA[i]);
+                                BALL_SPEED_TO_SHOOTER_TABLE.put(SHOOTER_SPEED[i], BALL_V0_DATA[i]);
                         }
                 }
 

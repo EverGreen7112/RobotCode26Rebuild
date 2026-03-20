@@ -86,7 +86,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_shooterState = ShooterState.kScoring;
         m_previousShooterState = ShooterState.kStop;
 
-        m_shooterSpeedToPredictedBallV0 = ShooterConsts.SHOOTER_TO_BALL_SPEED_TABLE;
+        m_shooterSpeedToPredictedBallV0 = ShooterConsts.BALL_SPEED_TO_SHOOTER_TABLE;
 
         m_targetHub = ShooterConsts.BLUE_HUB_POSE;
 
@@ -132,49 +132,19 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
      * calculates the predicted speed of the shooter when the ball will be fed into the it
      * @return the predicted shooter speed in m/s
      */
-    private double calcPredictedShooterSpeed() {
-        double currentSpeed = Funcs.convertRPStoMS(FRONT_WHEEL_RADIUS, m_frontShootingEncoder.getVel());
-        double deltaSpeed = m_prevSpeed - currentSpeed;
-        m_prevSpeed = currentSpeed;
-        return currentSpeed + (deltaSpeed / m_deltaTime.get()) * Consts.FeedAndConveyConsts.FEEDING_TIME; 
+    private double calcBallV0MS() {
+        return 0;
     }
 
 
     // TODO: place holder for the real thing
-    private double calcBallV0MS(double predictedShooterSpeedMS){
+    private double calcShooterSpeed(double ballV0MS){
         //return m_shooterSpeedToPredictedBallV0.get(MathUtil.clamp(shooterSpeedMS, ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
-        return predictedShooterSpeedMS * (1 - 0.16);
+        return ShooterConsts.BALL_SPEED_TO_SHOOTER_TABLE.get(ballV0MS);
     }
 
-    // TODO: need to consider which angle we take. the function return two angles + and -
-    /**
-     * calculates the shooting angle needed to shoot the ball to the hub
-     * based on the current distance and hight of the shooter
-     * the formula is based on the physics of projectile motion
-     * 
-     * @param shootingSpeed the speed at which the ball will be shot in m/s
-     * @return the shooting angle in degrees
-     */
-    private double calcShootingAngle(double shootingSpeed) {
-        double shootingDistance = getShootingDistance();
-        double verticalVelocity = Math.pow(shootingSpeed, 2) -
-                Math.sqrt(Math.max(Math.pow(shootingSpeed, 4) - GRAVITY * (GRAVITY * Math.pow(shootingDistance, 2)
-                                + 2 * SHOOTING_HEIGHT * Math.pow(shootingSpeed, 2)), 0));
 
-        double horizontalForce = GRAVITY * shootingDistance;
-        SmartDashboard.putNumber("calc shooting angle",Math.toDegrees(Math.atan(verticalVelocity / horizontalForce)) - SHOOTER_OFFSET_FROM_GROUND);
-        return Math.toDegrees(Math.atan(verticalVelocity / horizontalForce)) - SHOOTER_OFFSET_FROM_GROUND;
-    }
 
-    /**
-     * calculates the offset angle of the robot relative to the target hub and the
-     * angle at which the ball will go out of the shooter based on the current speed
-     * and direction of the robot
-     * 
-     * @return the offset angle in degrees that needs to be added to the robot's
-     *         shooting angle to compensate for the robot's movement and
-     *         field-relative orientation
-     */
     public double calcRobotShootingOffsetAngle(Pose2d robotPose) {
         Pose2d pos = robotPose;
         double x = m_targetHub.getX() - pos.getX();
