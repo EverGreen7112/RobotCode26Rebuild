@@ -230,12 +230,10 @@ public interface Consts {
                 public static final EverTalonFX FRONT_MOTOR = new EverTalonFX(5), BACK_MOTOR = new EverTalonFX(19);
                 public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(3);
 
-                public static final EverSparkInternalEncoder ANGLE_ENCODER = new EverSparkInternalEncoder(ANGLE_MOTOR);
-
                 public static final EverTalonFXInternalEncoder FRONT_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(FRONT_MOTOR);
                 public static final EverTalonFXInternalEncoder BACK_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(BACK_MOTOR);
 
-                public static final double SHOOTER_ANGLE_GEAR_RATIO = 1/23.51351, SHOOTING_GEAR_RATIO = 1;
+                public static final double SHOOTING_GEAR_RATIO = 1;
 
                 public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d());
                 public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d(Math.toDegrees(Math.PI)));
@@ -244,7 +242,7 @@ public interface Consts {
 
                 public static final Pose2d DELIVERY_POSES_RED = new Pose2d(15, 6.5, new Rotation2d());
 
-                public static final double FRONT_WHEEL_RADIUS = 0.05 , BACK_WHEEL_RADIUS = 0.028, WHEELS_RATIO = FRONT_WHEEL_RADIUS / BACK_WHEEL_RADIUS,  // (in m)
+                public static final double FRONT_WHEEL_RADIUS = 0.045 , BACK_WHEEL_RADIUS = 0.028, WHEELS_RATIO = FRONT_WHEEL_RADIUS / BACK_WHEEL_RADIUS,  // (in m)
 
                                 GRAVITY = 9.81, // (in m/s^2)
 
@@ -253,31 +251,23 @@ public interface Consts {
 
                                 SHOOTING_HEIGHT = -0.45,//HUB_HEIGHT - MECHANISM_HEIGHT, // (in meters)
 
-                                MAX_ANGLE = 20.0, // (in degrees)
-                                MIN_ANGLE = 0.5, //  (in degrees)
-
                                 TARGET_RPS = 50.75, // (in RPS)
                                 DELIVERY_RPS = 30, // (in RPS)
                                 
                                 MIN_SHOOTING_DIST = 2.67, //(in meters)
-                                SHOOTER_OFFSET_FROM_GROUND = 12.8; // (in degrees)
+                                SHOOTING_ANGLE = 14.9; // (in degrees)
 
                 public static final double 
                                 FRONT_SPEED_KP = 0.3,//0.3
-                                FRONT_SPEED_KI = 0.00009, 
+                                FRONT_SPEED_KI = 0.00035, 
                                 FRONT_SPEED_KD = 0.001,
-                                FRONT_SPEED_KV = 4.04 / (30.857421875), 
+                                FRONT_SPEED_KV = 5.0 / (39.0703125), 
 
-                                BACK_SPEED_KP = 1.7 * (1/WHEELS_RATIO), 
-                                BACK_SPEED_KI = 0.00009, 
-                                BACK_SPEED_KD = 0.0097 ,
-                                BACK_SPEED_KV = (4.04 / 30.857421875) * (1/WHEELS_RATIO), 
+                                BACK_SPEED_KP = 1.3, 
+                                BACK_SPEED_KI = 0.00001, 
+                                BACK_SPEED_KD = 0.001 ,
+                                BACK_SPEED_KV = (10.0 / 78.544921875);
 
-                                ANGLE_KP = 0.6,//0.68, 
-                                ANGLE_KI = 0.0000, 
-                                ANGLE_KD = 0; 
-
-                public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
                 public static final EverTalonFXPIDController FRONT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(FRONT_MOTOR);
                 public static final EverTalonFXPIDController BACK_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(BACK_MOTOR);
 
@@ -286,10 +276,10 @@ public interface Consts {
 
                 public static final double DEAD_ZONE = 1.5;
 
-                public static final double[] BALL_V0_DATA = { 8.309, 12.62, 0, 0, 0 }; //place holder// initial velocity of the ball(in m/s)
+                public static final double[] BALL_V0_DATA = {}; //place holder// initial velocity of the ball(in m/s)
 
                 
-                public static final double[] SHOOTER_SPEED = {3.830 ,4.787 ,5.426 ,6.224 ,7.022 ,7.979,8.618 ,9.256,9.735,10.533,10.638}; // Shooter speed (in m/s)
+                public static final double[] SHOOTER_SPEED = {}; // Shooter speed (in m/s)
   
                 public static final InterpolatingDoubleTreeMap BALL_SPEED_TO_SHOOTER_TABLE = new InterpolatingDoubleTreeMap();
 
@@ -298,9 +288,6 @@ public interface Consts {
 
                 public static void config() {
 
-                        ANGLE_ENCODER.setPos(0);
-                        ANGLE_ENCODER.setPosConversionFactor(SHOOTER_ANGLE_GEAR_RATIO * 360);
-
                         ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.maxAcceleration(1);
                         ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.cruiseVelocity(2);
                         ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.allowedProfileError(0.001);
@@ -308,10 +295,8 @@ public interface Consts {
                         ANGLE_MOTOR.getControllerInstance().configure(ANGLE_MOTOR_MOTION_CONFIG, ResetMode.kNoResetSafeParameters, null);
                         FRONT_MOTOR.setInverted(true);
                         BACK_MOTOR.setInverted(true);
-                        ANGLE_MOTOR.setInverted(false);
                         ANGLE_MOTOR.setIdleMode(IdleMode.kBrake);
 
-                        ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
                         FRONT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(FRONT_SPEED_KP).withKI(FRONT_SPEED_KI).withKD(FRONT_SPEED_KD).withKV(FRONT_SPEED_KV));
                         BACK_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(BACK_SPEED_KP).withKI(BACK_SPEED_KI).withKD(BACK_SPEED_KD).withKV(BACK_SPEED_KV));
 
