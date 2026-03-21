@@ -193,7 +193,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                 }
                 break;
             case kTest:
-                //frontShootingRpm(55);
+                frontShootingRpm(55);
                 backShootingRpm(55 * WHEELS_RATIO);
         }
 

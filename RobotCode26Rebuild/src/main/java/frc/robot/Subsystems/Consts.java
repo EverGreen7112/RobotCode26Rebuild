@@ -2,6 +2,7 @@ package frc.robot.Subsystems;
 
 import frc.robot.Subsystems.Swerve.SwerveModule;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -286,6 +287,8 @@ public interface Consts {
                 public static final SparkMaxConfig ANGLE_MOTOR_MOTION_CONFIG = new SparkMaxConfig();
                 public static final SparkBaseConfig ANGLE_BASE_MOTOR_MOTION_CONFIG = new SparkMaxConfig();
 
+                public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = new CurrentLimitsConfigs();
+
                 public static void config() {
 
                         ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.maxAcceleration(1);
@@ -299,6 +302,15 @@ public interface Consts {
 
                         FRONT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(FRONT_SPEED_KP).withKI(FRONT_SPEED_KI).withKD(FRONT_SPEED_KD).withKV(FRONT_SPEED_KV));
                         BACK_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(BACK_SPEED_KP).withKI(BACK_SPEED_KI).withKD(BACK_SPEED_KD).withKV(BACK_SPEED_KV));
+
+                        CURRENT_LIMITS_CONFIGS.SupplyCurrentLimitEnable = true;
+                        CURRENT_LIMITS_CONFIGS.SupplyCurrentLimit = 60.0;
+                        CURRENT_LIMITS_CONFIGS.SupplyCurrentLowerTime = 0.4;
+                        CURRENT_LIMITS_CONFIGS.SupplyCurrentLowerLimit = 40;
+                        CURRENT_LIMITS_CONFIGS.StatorCurrentLimitEnable = true;
+                        CURRENT_LIMITS_CONFIGS.StatorCurrentLimit = 100.0;
+
+                        FRONT_MOTOR.getControllerInstance().getConfigurator().apply(CURRENT_LIMITS_CONFIGS);                        
 
                         for (int i = 0; i < BALL_V0_DATA.length; i++) {
                                 BALL_SPEED_TO_SHOOTER_TABLE.put(SHOOTER_SPEED[i], BALL_V0_DATA[i]);
@@ -344,7 +356,7 @@ public interface Consts {
                 public final static EverTalonFX CONVEY_MOTOR = new EverTalonFX(17), FEEDING_MOTOR =
                  new EverTalonFX(16);
 
-                public final static double FEEDER_MAX_STALL_TIME = 6, FEEDING_SPEED = 0.8; // motor power
+                public final static double FEEDER_MAX_STALL_TIME = 6, FEEDING_SPEED = 0.5; // motor power
                                                                                               
 
                 public static final EverAnalogToDigitalLimitSwitch ENTER_LEFT_LM = new EverAnalogToDigitalLimitSwitch(0),

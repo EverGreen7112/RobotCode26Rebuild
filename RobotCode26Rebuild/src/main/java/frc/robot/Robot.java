@@ -112,6 +112,8 @@ public class Robot extends LoggedRobot {
 
     // ShooterConsts.BACK_MOTOR.getControllerInstance().setVoltage(10);
     Shooter.getInstance().setShooterState(ShooterState.kTest);
+    FeedAndConveyConsts.CONVEY_MOTOR.set(-0.6);
+    FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
     
   }
 
