@@ -79,8 +79,10 @@ public class RobotContainer {
     chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
     chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
     chassisBack.onTrue(new InstantCommand(() -> Swerve.getInstance().resetGyro()));
-    //chassisA.whileTrue(new ConveyCommand());
-    //chassisB.whileTrue(new FeedCommand());
+
+
+    chassisA.whileTrue(new ConveyToFeederCommand());
+    chassisB.whileTrue(new FeedCommand());
 
     //chassisX.whileTrue(new DeliverCommand());
 

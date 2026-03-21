@@ -14,10 +14,12 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import com.ctre.phoenix6.swerve.SwerveModule;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Commands.Intake.IntakeCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Subsystems.AutoOperationsController;
 import frc.robot.Subsystems.Consts.ClimbConst;
@@ -46,6 +48,8 @@ public class Robot extends LoggedRobot {
   public static ArrayList<Periodic> simulationPeriodicFuncs = new ArrayList<Periodic>();
   private RobotContainer m_robotContainer;
 
+  private static PowerDistribution pdp = new PowerDistribution();
+
   public static Alliance m_alliance;
   
 
@@ -59,9 +63,9 @@ public class Robot extends LoggedRobot {
       m_robotContainer = new RobotContainer();
       // Shooter.getInstance().setShooterState(ShooterState.kStop);
     
-      Logger.recordMetadata("RobotCode-ReBuild-26", "29.01");
-      Logger.addDataReceiver(new NT4Publisher());
-      Logger.start();
+      // Logger.recordMetadata("RobotCode-ReBuild-26", "29.01");
+      // Logger.addDataReceiver(new NT4Publisher());
+      // Logger.start();
     }
 
   @Override
@@ -74,6 +78,11 @@ public class Robot extends LoggedRobot {
         m_alliance = Alliance.Red;
 
     Shooter.getInstance().log();
+
+    SmartDashboard.putNumber("currentOutPut", pdp.getCurrent(16) );
+    SmartDashboard.putNumber("currentInput", FeedAndConveyConsts.FEEDING_MOTOR.getControllerInstance().getStatorCurrent().getValueAsDouble());
+
+    SmartDashboard.putNumber("VEL",FeedAndConveyConsts.FEEDING_MOTOR.getControllerInstance().getVelocity().getValueAsDouble());
 
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
@@ -110,15 +119,18 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    // ShooterConsts.BACK_MOTOR.getControllerInstance().setVoltage(10);
-    Shooter.getInstance().setShooterState(ShooterState.kTest);
-    FeedAndConveyConsts.CONVEY_MOTOR.set(-0.6);
-    FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
+    Shooter.getInstance().setShooterState(ShooterState.kScoring);
+    // FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
+    // FeedAndConveyConsts.CONVEY_MOTOR.set(-0.7);
+    //ShooterConsts.BACK_MOTOR.getControllerInstance().setVoltage(10);
     
+   // IntakeConsts.PICKUP_MOTOR.set(-0.3);
   }
 
   @Override
   public void teleopPeriodic() {
+    //FeedAndConveyConsts.CONVEY_MOTOR.set(-0.6);
+    // IntakeConsts.PICKUP_MOTOR.setVoltage(4);
   }
 
   @Override

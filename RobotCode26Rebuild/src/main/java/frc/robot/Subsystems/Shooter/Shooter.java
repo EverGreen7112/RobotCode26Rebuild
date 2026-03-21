@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Commands.ResetRobotCommand;
 import frc.robot.Subsystems.Consts;
+import frc.robot.Subsystems.Consts.FeedAndConveyConsts;
 import frc.robot.Subsystems.Consts.ShooterConsts;
 import frc.robot.Subsystems.Conveyor.Conveyer;
 import frc.robot.Subsystems.Feeder.Feeder;
@@ -47,9 +48,9 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     private double m_targetAngle, m_targetSpeed, m_predictedBallV0;
 
-    private EverMotorController m_angleMotor;
-
     private EverPIDController m_frontShootingController, m_backShootingController;
+
+    private EverEncoder m_angleEncoder;
     
     private EverEncoder m_frontShootingEncoder, m_backShootingEncoder;
 
@@ -65,11 +66,12 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     private EverMotorController m_backMotor, m_frontMotor;
 
+    private InterpolatingDoubleTreeMap m_ballV0ToRPS;
+
     private Shooter() {
         ShooterConsts.config();
         m_backMotor = ShooterConsts.FRONT_MOTOR;
         m_frontMotor = ShooterConsts.BACK_MOTOR;
-        m_angleMotor = ShooterConsts.ANGLE_MOTOR;
         m_frontShootingEncoder = ShooterConsts.FRONT_SHOOTING_ENCODER;
         m_backShootingEncoder = ShooterConsts.BACK_SHOOTING_ENCODER;
 
@@ -80,13 +82,18 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_frontShootingController = ShooterConsts.FRONT_SHOOTING_PID_CONTROLLER_;
         m_backShootingController = ShooterConsts.BACK_SHOOTING_PID_CONTROLLER_;
 
-        m_shooterState = ShooterState.kStop;
+        m_shooterState = ShooterState.kScoring;
         m_previousShooterState = ShooterState.kStop;
         //14.9;
         m_targetHub = ShooterConsts.BLUE_HUB_POSE;
 
         m_staticShootingPose = ShooterConsts.STATIC_SHOOT_POSE_BLUE;
         m_deliveryPoints = DELIVERY_POSES_BLUE;
+
+        m_angleEncoder = ANGLE_ENCODER;
+        m_angleEncoder.setPos(0);
+
+        m_ballV0ToRPS = BALL_SPEED_TO_SHOOTER_TABLE;
 
     }
 
@@ -117,25 +124,25 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
             locY = m_deliveryPoints.getY();
         }
         //return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
-        return 5;
+        return 6.9;
     }
 
     /**
-     * calculates the predicted speed of the shooter when the ball will be fed into the it
-     * @return the predicted shooter speed in m/s
+     * calculates the fuels speed 
+     * @return speed in m/s
      */
     private double calcBallV0MS() {
-        double robotDistance = getShootingDistance();
+        double robotDistance = 4;//getShootingDistance();
         double mone = GRAVITY * Math.pow(robotDistance,2);
-        double mechana = 2 * (Math.pow(Math.cos(SHOOTING_ANGLE) ,2) * (robotDistance * Math.tan(SHOOTING_ANGLE) - SHOOTING_HEIGHT) );
+        double mechana = Math.max(2 * (Math.pow(Math.cos(Math.toRadians(SHOOTING_ANGLE)) ,2) * (robotDistance * Math.tan(Math.toRadians(SHOOTING_ANGLE)) - SHOOTING_HEIGHT) ), 0.0);
+        SmartDashboard.putNumber("ballMs",Math.sqrt(mone / mechana) );
         return Math.sqrt(mone / mechana);
+        //return 10;
     }
 
 
-    // TODO: place holder for the real thing
     private double calcShooterSpeed(double ballV0MS){
-        //return m_shooterSpeedToPredictedBallV0.get(MathUtil.clamp(shooterSpeedMS, ShooterConsts.SHOOTER_SPEED[0], m_targetSpeed));
-        return ShooterConsts.BALL_SPEED_TO_SHOOTER_TABLE.get(ballV0MS);
+        return MathUtil.clamp(m_ballV0ToRPS.get(ballV0MS), SHOOTER_SPEED[0], SHOOTER_SPEED[SHOOTER_SPEED.length - 1]);
     }
 
 
@@ -158,14 +165,13 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     @Override
     public void periodic() {
+        SmartDashboard.putString("state", m_shooterState + "");
         switch (m_shooterState) {// kScoring is default
             case kScoring:
                 m_targetSpeed = calcShooterSpeed(calcBallV0MS());
-
+                SmartDashboard.putNumber("target", m_targetSpeed);
                 m_frontShootingController.activate(m_targetSpeed, ControlType.kVel);
                 m_backShootingController.activate(m_targetSpeed * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
-                Feeder.getInstance().startFeed();
-                Conveyer.getInstance().startConveying(-0.5);
                 break;
             case kDelivery:
                 m_frontShootingController.activate(ShooterConsts.DELIVERY_RPS, ControlType.kVel);
@@ -193,8 +199,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                 }
                 break;
             case kTest:
-                frontShootingRpm(55);
-                backShootingRpm(55 * WHEELS_RATIO);
+                frontShootingRpm(27);
+                backShootingRpm(27 * WHEELS_RATIO);
         }
 
         m_previousShooterState = m_shooterState;
@@ -206,8 +212,10 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     }
 
     public void log() {
-        SmartDashboard.putNumber("target angle", m_targetAngle);
-        SmartDashboard.putNumber("Ball speed", m_predictedBallV0);
+        SmartDashboard.putNumber("target angle", m_angleEncoder.getPos());
+        SmartDashboard.putNumber("Ball speed", calcBallV0MS());
+
+        SmartDashboard.putNumber("shooter speed", m_targetSpeed);
 
         SmartDashboard.putNumber("Front Wheel Shooting Speed", m_frontShootingEncoder.getVel());
         SmartDashboard.putNumber("Back Wheel Shooting Speed", m_backShootingEncoder.getVel());
@@ -221,6 +229,10 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
     public void backShootingRpm(double rps) {
         m_backShootingController.activate(rps, ControlType.kVel);
+    }
+
+    public void anglePos(double angle){
+        ANGLE_PID_CONTROLLER.activate(angle, ControlType.kPos);
     }
 
 }
