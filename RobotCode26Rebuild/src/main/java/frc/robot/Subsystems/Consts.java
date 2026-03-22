@@ -258,11 +258,12 @@ public interface Consts {
                                 MIN_SHOOTING_DIST = 2.67, //(in meters)
                                 SHOOTING_ANGLE = 30; // (in degrees)
 
+
                 public static final double 
                                 FRONT_SPEED_KP = 0.3,//0.3
                                 FRONT_SPEED_KI = 0.00035, 
                                 FRONT_SPEED_KD = 0.001,
-                                FRONT_SPEED_KV = 5.0 / (39.0703125), 
+                                FRONT_SPEED_KV = 6.0 / (47.712890625), 
 
                                 BACK_SPEED_KP = 1.3, 
                                 BACK_SPEED_KI = 0.00001, 
@@ -278,11 +279,11 @@ public interface Consts {
                 public static final EverTalonFXPIDController BACK_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(BACK_MOTOR);
 
                 public static final boolean DEBUG_MODE = true;
-                public static final double DELIVERY_ANGLE = 10; // (in degrees)
+                public static final double SCORING_ANGLE = 17.4; // (in degrees)
 
                 public static final double DEAD_ZONE = 1.5;
 
-                public static final double[] BALL_V0_DATA = {10.462384,10.5023490, 10.57023940, 10.842304293, 11.452349 ,11.80234,12.2303249}; //place holder// initial velocity of the ball(in m/s)
+                public static final double[] BALL_V0_DATA = {11.80234,12.2303249,10.462384, 10.5023490, 10.57023940, 10.842304293, 11.452349}; //place holder// initial velocity of the ball(in m/s)
 
                 
                 public static final double[] SHOOTER_SPEED = {26 ,28 ,32 , 35, 38, 40, 42}; // Shooter speed (in RPS)

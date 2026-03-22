@@ -82,7 +82,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_frontShootingController = ShooterConsts.FRONT_SHOOTING_PID_CONTROLLER_;
         m_backShootingController = ShooterConsts.BACK_SHOOTING_PID_CONTROLLER_;
 
-        m_shooterState = ShooterState.kStop;
+        m_shooterState = ShooterState.kScoring;
         m_previousShooterState = ShooterState.kStop;
         //14.9;
         m_targetHub = ShooterConsts.BLUE_HUB_POSE;
@@ -132,7 +132,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
      * @return speed in m/s
      */
     private double calcBallV0MS() {
-        double robotDistance = 4;//getShootingDistance();
+        double robotDistance = 5.4;//getShootingDistance();
         double mone = GRAVITY * Math.pow(robotDistance,2);
         double mechana = Math.max(2 * (Math.pow(Math.cos(Math.toRadians(SHOOTING_ANGLE)) ,2) * (robotDistance * Math.tan(Math.toRadians(SHOOTING_ANGLE)) - SHOOTING_HEIGHT) ), 0.0);
         SmartDashboard.putNumber("ballMs",Math.sqrt(mone / mechana) );
@@ -169,7 +169,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         switch (m_shooterState) {// kScoring is default
             case kScoring:
                 m_targetSpeed = calcShooterSpeed(calcBallV0MS());
-                SmartDashboard.putNumber("target", m_targetSpeed);
+                anglePos(SCORING_ANGLE);
                 m_frontShootingController.activate(m_targetSpeed, ControlType.kVel);
                 m_backShootingController.activate(m_targetSpeed * ShooterConsts.WHEELS_RATIO, ControlType.kVel);
                 break;
@@ -199,8 +199,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                 }
                 break;
             case kTest:
-                frontShootingRpm(27);
-                backShootingRpm(27 * WHEELS_RATIO);
+                //frontShootingRpm(40);
+                //anglePos(17.2);
         }
 
         m_previousShooterState = m_shooterState;
