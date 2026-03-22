@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Commands.Intake.IntakeCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Subsystems.AutoOperationsController;
+import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Consts.ClimbConst;
 import frc.robot.Subsystems.Consts.FeedAndConveyConsts;
 import frc.robot.Subsystems.Consts.IntakeConsts;
@@ -79,11 +80,6 @@ public class Robot extends LoggedRobot {
 
     Shooter.getInstance().log();
 
-    SmartDashboard.putNumber("currentOutPut", pdp.getCurrent(16) );
-    SmartDashboard.putNumber("currentInput", FeedAndConveyConsts.FEEDING_MOTOR.getControllerInstance().getStatorCurrent().getValueAsDouble());
-
-    SmartDashboard.putNumber("VEL",FeedAndConveyConsts.FEEDING_MOTOR.getControllerInstance().getVelocity().getValueAsDouble());
-
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
   }
@@ -119,11 +115,11 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    Shooter.getInstance().setShooterState(ShooterState.kScoring);
+    // Shooter.getInstance().setShooterState(ShooterState.kScoring);
     // FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
-    // FeedAndConveyConsts.CONVEY_MOTOR.set(-0.7);
+    // FeedAndConveyConsts.CONVEY_MOTOR.set(-0.4);
     //ShooterConsts.BACK_MOTOR.getControllerInstance().setVoltage(10);
-    
+    // Consts.IntakeConsts.PICKUP_MOTOR.set(-0.6);
    // IntakeConsts.PICKUP_MOTOR.set(-0.3);
   }
 

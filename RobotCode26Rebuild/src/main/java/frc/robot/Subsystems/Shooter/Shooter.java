@@ -82,7 +82,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_frontShootingController = ShooterConsts.FRONT_SHOOTING_PID_CONTROLLER_;
         m_backShootingController = ShooterConsts.BACK_SHOOTING_PID_CONTROLLER_;
 
-        m_shooterState = ShooterState.kScoring;
+        m_shooterState = ShooterState.kStop;
         m_previousShooterState = ShooterState.kStop;
         //14.9;
         m_targetHub = ShooterConsts.BLUE_HUB_POSE;

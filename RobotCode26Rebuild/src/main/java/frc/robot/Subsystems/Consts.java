@@ -155,7 +155,7 @@ public interface Consts {
                                 TL,
                                 TR,
                                 DL,
-                                DR
+                               DR
                 };// array of vectors from robot center to swerves module
 
                 public static void config() {
@@ -165,7 +165,6 @@ public interface Consts {
                                 driveMotor.setInverted(false);
                                 driveMotor.setIdleMode(IdleMode.kCoast);
                         }
-                        TL_DRIVE_MOTOR.setInverted(true);
 
                         for (EverMotorController steerMotor : STEER_MOTORS) {
                                 steerMotor.restoreFactoryDefaults();
@@ -187,10 +186,10 @@ public interface Consts {
                                 absEncoder.setPosConversionFactor(360.0);
                         }
 
-                        ABS_ENCODERS[0].setOffset(69.9);
-                        ABS_ENCODERS[1].setOffset(166.48);
-                        ABS_ENCODERS[2].setOffset(52.311);
-                        ABS_ENCODERS[3].setOffset(103.16);
+                        ABS_ENCODERS[0].setOffset(-289.42);//69.9);
+                        ABS_ENCODERS[1].setOffset(-193.89);//166.48);
+                        ABS_ENCODERS[2].setOffset(-308.72);//52.311);
+                        ABS_ENCODERS[3].setOffset(-254.25);//103.16);
                         for (EverTalonFXPIDController velocityController : WHEEL_VELOCITY_CONTROLLERS) {
                                 Slot0Configs configs = new Slot0Configs();
                                 configs.kP = WHEEL_VELOCITY_KP;
@@ -221,6 +220,7 @@ public interface Consts {
                                         SwerveConsts.DR_DRIVE_ENCODER, SwerveConsts.DR_ANGLE_CONTROLLER,
                                         SwerveConsts.DR_STEER_MOTOR,
                                         SwerveConsts.DR_STEER_ENCODER, SwerveConsts.ABS_ENCODERS[3]);
+
                 }
         }
 
