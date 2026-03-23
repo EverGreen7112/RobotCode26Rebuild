@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -271,8 +272,8 @@ public interface Consts {
                                 BACK_SPEED_KV = (10.0 / 78.544921875),
                                 
                                 ANGLE_KP = 0.6,//0.68, 
-                                ANGLE_KI = 0.0000, 
-                                ANGLE_KD = 0; ;
+                                ANGLE_KI = 0.00035, 
+                                ANGLE_KD = 0.0001; 
 
                 public static final EverSparkMaxPIDController ANGLE_PID_CONTROLLER = new EverSparkMaxPIDController(ANGLE_MOTOR);
                 public static final EverTalonFXPIDController FRONT_SHOOTING_PID_CONTROLLER_ = new EverTalonFXPIDController(FRONT_MOTOR);
@@ -283,54 +284,60 @@ public interface Consts {
 
                 public static final double DEAD_ZONE = 1.5;
 
-                public static final double[] BALL_V0_DATA = {11.80234,12.2303249,10.462384, 10.5023490, 10.57023940, 10.842304293, 11.452349}; //place holder// initial velocity of the ball(in m/s)
+                public static final double[] BALL_V0_DATA = {
+                        10.462384,    // Index 0
+                        10.502349,    // Index 1
+                        10.570239,    // Index 2
+                        10.842304,    // Index 3
+                        11.452349,    // Index 4
+                        11.80234,     // Index 5
+                        12.230324     // Index 6
+                        };
 
                 
-                public static final double[] SHOOTER_SPEED = {26 ,28 ,32 , 35, 38, 40, 42}; // Shooter speed (in RPS)
+                public static final double[] SHOOTER_SPEED = {26.4764674 ,28 ,32 , 35, 38, 40, 42}; // Shooter speed (in RPS)
   
                 public static final InterpolatingDoubleTreeMap BALL_SPEED_TO_SHOOTER_TABLE = new InterpolatingDoubleTreeMap();
 
                 public static final SparkMaxConfig ANGLE_MOTOR_MOTION_CONFIG = new SparkMaxConfig();
-                public static final SparkBaseConfig ANGLE_BASE_MOTOR_MOTION_CONFIG = new SparkMaxConfig();
 
                 public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = new CurrentLimitsConfigs();
 
                 public static final EverSparkInternalEncoder ANGLE_ENCODER = new EverSparkInternalEncoder(ANGLE_MOTOR);
+                public static final double MAX_ANGLE = 18;
+                public static final double MIN_ANGLE = 0.5;
 
                 public static void config() {
 
-                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.maxAcceleration(1);
-                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.cruiseVelocity(2);
-                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.allowedProfileError(0.001);
+                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.maxAcceleration(100);
+                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.cruiseVelocity(0);
+                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.allowedProfileError(2);
+                        ANGLE_MOTOR_MOTION_CONFIG.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
 
-                        ANGLE_MOTOR.getControllerInstance().configure(ANGLE_MOTOR_MOTION_CONFIG, ResetMode.kNoResetSafeParameters, null);
+                        ANGLE_MOTOR.getControllerInstance().configure(ANGLE_MOTOR_MOTION_CONFIG, ResetMode.kNoResetSafeParameters,null);
                         FRONT_MOTOR.setInverted(true);
                         BACK_MOTOR.setInverted(true);
-                        ANGLE_MOTOR.setIdleMode(IdleMode.kBrake);
 
                         FRONT_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(FRONT_SPEED_KP).withKI(FRONT_SPEED_KI).withKD(FRONT_SPEED_KD).withKV(FRONT_SPEED_KV));
                         BACK_SHOOTING_PID_CONTROLLER_.setPID(new Slot0Configs().withKP(BACK_SPEED_KP).withKI(BACK_SPEED_KI).withKD(BACK_SPEED_KD).withKV(BACK_SPEED_KV));
-
-                        ANGLE_MOTOR.getControllerInstance().configure(ANGLE_MOTOR_MOTION_CONFIG, ResetMode.kNoResetSafeParameters, null);
-                        FRONT_MOTOR.setInverted(true);
-                        BACK_MOTOR.setInverted(true);
                         ANGLE_MOTOR.setInverted(false);
                         ANGLE_MOTOR.setIdleMode(IdleMode.kBrake);
 
                         ANGLE_ENCODER.setPosConversionFactor(ANGLE_GEAR_RATIO * 360);
 
+                        
 
                         ANGLE_PID_CONTROLLER.setPID(ANGLE_KP, ANGLE_KI, ANGLE_KD);
 
-                        // CURRENT_LIMITS_CONFIGS.SupplyCurrentLimitEnable = true;
-                        // CURRENT_LIMITS_CONFIGS.SupplyCurrentLimit = 60.0;
-                        // CURRENT_LIMITS_CONFIGS.SupplyCurrentLowerTime = 0.4;
-                        // CURRENT_LIMITS_CONFIGS.SupplyCurrentLowerLimit = 40;
-                        // CURRENT_LIMITS_CONFIGS.StatorCurrentLimitEnable = true;
-                        // CURRENT_LIMITS_CONFIGS.StatorCurrentLimit = 100.0;
+                        CURRENT_LIMITS_CONFIGS.SupplyCurrentLimitEnable = true;
+                        CURRENT_LIMITS_CONFIGS.SupplyCurrentLimit = 50.0;
+                        CURRENT_LIMITS_CONFIGS.SupplyCurrentLowerTime = 0.3;
+                        CURRENT_LIMITS_CONFIGS.SupplyCurrentLowerLimit = 40;
+                        CURRENT_LIMITS_CONFIGS.StatorCurrentLimitEnable = true;
+                        CURRENT_LIMITS_CONFIGS.StatorCurrentLimit = 100.0;
 
-                        // FRONT_MOTOR.getControllerInstance().getConfigurator().apply(CURRENT_LIMITS_CONFIGS); 
-                        // BACK_MOTOR.getControllerInstance().getConfigurator().apply(CURRENT_LIMITS_CONFIGS);                       
+                        FRONT_MOTOR.getControllerInstance().getConfigurator().apply(CURRENT_LIMITS_CONFIGS); 
+                        BACK_MOTOR.getControllerInstance().getConfigurator().apply(CURRENT_LIMITS_CONFIGS);                       
 
                         for (int i = 0; i < BALL_V0_DATA.length; i++) {
                                 BALL_SPEED_TO_SHOOTER_TABLE.put(BALL_V0_DATA[i], SHOOTER_SPEED[i]);
@@ -381,7 +388,7 @@ public interface Consts {
                 public static final EverAnalogToDigitalLimitSwitch ENTER_LEFT_LM = new EverAnalogToDigitalLimitSwitch(0),
                                                  ENTER_RIGHT_LM = new EverAnalogToDigitalLimitSwitch(1);
 
-                public static final double FEEDING_TIME = 0.2; // (in seconds)
+                public static final double FEEDING_TIME = 0.17; // (in seconds)
 
         }
 

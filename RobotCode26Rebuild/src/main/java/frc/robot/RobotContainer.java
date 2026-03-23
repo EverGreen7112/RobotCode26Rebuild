@@ -58,7 +58,7 @@ public class RobotContainer {
   public static final Trigger chassisPovDown = chassis.povDown();
   public static final Trigger chassisPovLeft = chassis.povLeft();
   public static final Trigger chassisPovRight = chassis.povRight();
-  //public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
+  public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
 
 
   private ParallelCommandGroup m_shooterCommands = new ParallelCommandGroup(new ConveyToFeederCommand(), new FeedCommand());
@@ -75,7 +75,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     //chassis
-    //Swerve.getInstance().setDefaultCommand(teleopCommand);
+    Swerve.getInstance().setDefaultCommand(teleopCommand);
     chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
     chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
     chassisBack.onTrue(new InstantCommand(() -> Swerve.getInstance().resetGyro()));

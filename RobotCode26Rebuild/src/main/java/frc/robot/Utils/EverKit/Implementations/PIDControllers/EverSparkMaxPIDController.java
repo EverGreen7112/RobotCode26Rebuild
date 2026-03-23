@@ -32,10 +32,10 @@ public class EverSparkMaxPIDController extends EverPIDController{
     public void activate(double setpoint, ControlType type) {
         switch (type) {
             case kPos:
-                m_internalPIDController.setReference(setpoint, com.revrobotics.spark.SparkBase.ControlType.kPosition);                
+                m_internalPIDController.setSetpoint(setpoint, com.revrobotics.spark.SparkBase.ControlType.kPosition);                
                 break;
             case kVel:
-                m_internalPIDController.setReference(setpoint, com.revrobotics.spark.SparkBase.ControlType.kVelocity);   
+                m_internalPIDController.setSetpoint(setpoint, com.revrobotics.spark.SparkBase.ControlType.kVelocity);   
                 break;
             default:
                 break;
