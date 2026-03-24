@@ -26,7 +26,7 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
     private final boolean DEBUG_MODE = true;  
 
     private static final LocalizationCamera[] CAMS = {
-            new LocalizationCamera("a",
+            new LocalizationCamera("left_cam",
                     AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark),
                     new Transform3d(new Translation3d(-0.2855, 0.2825, 0.43), new Rotation3d(Math.toRadians(-(90 - 74.85)), 0 ,Math.toRadians(90))),
                     VecBuilder.fill(0.0, 0.0, 0), VecBuilder.fill(0.0, 0.0, 0)),
@@ -62,6 +62,8 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
                 Swerve.getInstance().getModulesPositions(),
                 new Pose2d());
 
+        start(PeriodicTime.kRobotPeriodic);
+
     }
 
     public static SwerveLocalizer getInstance() {
@@ -72,7 +74,6 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
     public void periodic() {
         // update odometry
         m_poseEstimator.update(Swerve.getInstance().getGyroRotation2d(), Swerve.getInstance().getModulesPositions());
-
         // update vision
         for (LocalizationCamera cam : m_cams) {
             addCameraVisionMeasurements(cam);
@@ -95,9 +96,13 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
     }
 
     private boolean takeVisionPoseEstimation(Optional<EstimatedRobotPose> est) {
-        if (!est.isPresent() || est == null)
+        SmartDashboard.putBoolean("est present", est.isPresent());
+        if (!est.isPresent() || est == null){
+            SmartDashboard.putBoolean("kushelhaimashelcha", true);
+            SmartDashboard.putBoolean("est present", !est.isPresent());
+            SmartDashboard.putBoolean("est null", est == null);
             return false;
-
+        }
         Pose2d estPos = est.get().estimatedPose.toPose2d();
         double x = estPos.getX();
         double y = estPos.getY();
@@ -137,10 +142,13 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
 
     private void addCameraVisionMeasurements(LocalizationCamera cam) {
         Optional<EstimatedRobotPose> est = cam.getEstimatedGlobalPose();
+        SmartDashboard.putBoolean("big yahu", true);
         if(DEBUG_MODE && est.isPresent())
             SmartDashboard.putString("vision pose", est.get().estimatedPose.toString());
-        if (!takeVisionPoseEstimation(est))
+        if (!takeVisionPoseEstimation(est)){
+            SmartDashboard.putBoolean("biggga", true);
             return;
+        }
         m_poseEstimator.addVisionMeasurement(est.get().estimatedPose.toPose2d(), est.get().timestampSeconds,
                 cam.getEstimationStdDevs());
     }
@@ -154,7 +162,6 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
     }
 
     public void initialize(){
-        start(PeriodicTime.kRobotPeriodic);
     }
 
 }

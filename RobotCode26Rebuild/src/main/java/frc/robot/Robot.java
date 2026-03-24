@@ -68,13 +68,14 @@ public class Robot extends LoggedRobot {
       m_robotContainer = new RobotContainer();
       SwerveLocalizer.getInstance().initialize();
       // Logger.recordMetadata("RobotCode-ReBuild-26", "29.01");
-      // Logger.addDataReceiver(new NT4Publisher());
+      // Logger.addDataReceiver(new NT4Publisher()); 
       // Logger.start();
     }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    SwerveLocalizer.getInstance().periodic();
     SmartDashboard.putBoolean("setAlliance", SmartDashboard.getBoolean("setAlliance", true));
     if(SmartDashboard.getBoolean("setAlliance", true))
         m_alliance = Alliance.Blue;
@@ -110,7 +111,9 @@ public class Robot extends LoggedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+    
+  }
 
   @Override
   public void teleopInit() {
