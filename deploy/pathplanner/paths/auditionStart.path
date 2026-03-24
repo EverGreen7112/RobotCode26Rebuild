@@ -3,6 +3,7 @@
   "waypoints": [
     {
       "anchor": {
+<<<<<<< HEAD:deploy/pathplanner/paths/New Path.path
         "x": 3.70221686746988,
         "y": 5.9473493975903615
       },
@@ -10,18 +11,36 @@
       "nextControl": {
         "x": 4.7022168674698905,
         "y": 5.9473493975903615
+=======
+        "x": 3.508573466476462,
+        "y": 7.392582025677603
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.517641128197846,
+        "y": 7.387895123813924
+>>>>>>> 28961f7 (added audition auto):deploy/pathplanner/paths/auditionStart.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
+<<<<<<< HEAD:deploy/pathplanner/paths/New Path.path
         "x": 2.2597590361445783,
         "y": 3.794590361445783
       },
       "prevControl": {
         "x": 5.480877641854661,
         "y": 1.5404370486870853
+=======
+        "x": 6.5620970042796,
+        "y": 7.392582025677603
+      },
+      "prevControl": {
+        "x": 5.380309783169912,
+        "y": 7.410410396209533
+>>>>>>> 28961f7 (added audition auto):deploy/pathplanner/paths/auditionStart.path
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,11 +60,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 3.0,
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "auditionPaths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

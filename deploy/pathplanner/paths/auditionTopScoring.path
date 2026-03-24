@@ -1,0 +1,65 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.98,
+        "y": 5.232
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.763623395149786,
+        "y": 5.542353780313838
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.8136091298145502,
+        "y": 3.937960057061342
+      },
+      "prevControl": {
+        "x": 1.761854493580599,
+        "y": 5.568231098430814
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.6,
+        "y": 4.05
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.3781228899392283,
+      "maxWaypointRelativePos": 1.0,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "auditionPaths",
+  "idealStartingState": {
+    "velocity": 3.0,
+    "rotation": 178.85
+  },
+  "useDefaultConstraints": true
+}
