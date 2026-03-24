@@ -230,7 +230,7 @@ public interface Consts {
                 // TODO: change all place holder to real values
 
                 public static final EverTalonFX FRONT_MOTOR = new EverTalonFX(5), BACK_MOTOR = new EverTalonFX(19);
-                public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(3);
+                public static final EverSparkMax ANGLE_MOTOR = new EverSparkMax(4);
 
                 public static final EverTalonFXInternalEncoder FRONT_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(FRONT_MOTOR);
                 public static final EverTalonFXInternalEncoder BACK_SHOOTING_ENCODER = new EverTalonFXInternalEncoder(BACK_MOTOR);
@@ -256,7 +256,7 @@ public interface Consts {
                                 TARGET_RPS = 50.75, // (in RPS)
                                 DELIVERY_RPS = 30, // (in RPS)
                                 
-                                MIN_SHOOTING_DIST = 2.67, //(in meters)
+                                CLOSE_SHOOTING_DIST = 4.8, //(in meters)
                                 SHOOTING_ANGLE = 30; // (in degrees)
 
 
@@ -295,9 +295,16 @@ public interface Consts {
                         };
 
                 
-                public static final double[] SHOOTER_SPEED = {26.4764674 ,28 ,32 , 35, 38, 40, 42}; // Shooter speed (in RPS)
-  
+                public static final double[] SHOOTER_SPEED = {26.4764674 ,28.09546 ,32.074 , 35.0987, 38.0535, 40.02, 42.42}; // Shooter speed (in RPS)
+
+                public static final double[] CLOSE_SHOOTING_SPEED = 
+                        {28 ,30, 33.5, 35};
+                public static final double[] CLOSE_SHOOTING_DISTANCE = 
+                        {2.6, 3, 4.2, 4.7};
+
                 public static final InterpolatingDoubleTreeMap BALL_SPEED_TO_SHOOTER_TABLE = new InterpolatingDoubleTreeMap();
+
+                public static final InterpolatingDoubleTreeMap CLOSE_SHOOTING_SPEED_MAP = new InterpolatingDoubleTreeMap();
 
                 public static final SparkMaxConfig ANGLE_MOTOR_MOTION_CONFIG = new SparkMaxConfig();
 
@@ -341,6 +348,10 @@ public interface Consts {
 
                         for (int i = 0; i < BALL_V0_DATA.length; i++) {
                                 BALL_SPEED_TO_SHOOTER_TABLE.put(BALL_V0_DATA[i], SHOOTER_SPEED[i]);
+                        }
+
+                        for (int i = 0; i < CLOSE_SHOOTING_DISTANCE.length; i++) {
+                                CLOSE_SHOOTING_SPEED_MAP.put(CLOSE_SHOOTING_DISTANCE[i], CLOSE_SHOOTING_SPEED[i]);
                         }
                 }
 

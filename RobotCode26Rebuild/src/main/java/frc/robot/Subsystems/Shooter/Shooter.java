@@ -82,7 +82,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_frontShootingController = ShooterConsts.FRONT_SHOOTING_PID_CONTROLLER_;
         m_backShootingController = ShooterConsts.BACK_SHOOTING_PID_CONTROLLER_;
 
-        m_shooterState = ShooterState.kScoring;
+        m_shooterState = ShooterState.kStop;
         m_previousShooterState = ShooterState.kStop;
         //14.9;
         m_targetHub = ShooterConsts.BLUE_HUB_POSE;
@@ -126,7 +126,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
             locY = m_deliveryPoints.getY();
         }
         //return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
-        return 4.2;
+        return 3;
     }
 
     /**
@@ -144,7 +144,11 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
 
     private double calcShooterSpeed(double ballV0MS){
-        return MathUtil.clamp(m_ballV0ToRPS.get(ballV0MS), SHOOTER_SPEED[0], SHOOTER_SPEED[SHOOTER_SPEED.length - 1]);
+        double shootingSpeed = MathUtil.clamp(m_ballV0ToRPS.get(ballV0MS), SHOOTER_SPEED[0], SHOOTER_SPEED[SHOOTER_SPEED.length - 1]);
+        double robotDistance = getShootingDistance();
+        if(robotDistance < CLOSE_SHOOTING_DIST)
+            shootingSpeed = MathUtil.clamp(CLOSE_SHOOTING_SPEED_MAP.get(robotDistance), CLOSE_SHOOTING_SPEED[0], CLOSE_SHOOTING_SPEED[CLOSE_SHOOTING_SPEED.length - 1]);
+        return shootingSpeed;
     }
 
     
@@ -179,7 +183,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
             case kScoring:
                 m_targetSpeed = calcShooterSpeed(calcBallV0MS());
                 m_frontShootingController.activate(m_targetSpeed, ControlType.kVel);
-                m_backShootingController.activate(m_targetSpeed * 1.8, ControlType.kVel);
+                m_backShootingController.activate(m_targetSpeed * WHEELS_RATIO, ControlType.kVel);
                 anglePos(SCORING_ANGLE);
                 break;
             case kDelivery:
@@ -208,8 +212,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                 }
                 break;
             case kTest:
-                frontShootingRpm(40);
-                //anglePos(17.2);
+                frontShootingRpm(28);
+                backShootingRpm(28 * WHEELS_RATIO);
         }
 
         m_previousShooterState = m_shooterState;

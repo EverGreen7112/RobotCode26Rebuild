@@ -49,8 +49,6 @@ public class Robot extends LoggedRobot {
   public static ArrayList<Periodic> simulationPeriodicFuncs = new ArrayList<Periodic>();
   private RobotContainer m_robotContainer;
 
-  private static PowerDistribution pdp = new PowerDistribution();
-
   public static Alliance m_alliance;
   
 
@@ -62,7 +60,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
       m_robotContainer = new RobotContainer();
-      // Shooter.getInstance().setShooterState(ShooterState.kStop);
     
       // Logger.recordMetadata("RobotCode-ReBuild-26", "29.01");
       // Logger.addDataReceiver(new NT4Publisher());
@@ -115,19 +112,17 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    Shooter.getInstance().setShooterState(ShooterState.kScoring);
+    Shooter.getInstance().setShooterState(ShooterState.kTest);
     //ShooterConsts.FRONT_MOTOR.setVoltage(6);
     // FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
     // FeedAndConveyConsts.CONVEY_MOTOR.set(-0.4);
+    //Consts.IntakeConsts.PICKUP_MOTOR.set(-0.6);
     //ShooterConsts.BACK_MOTOR.getControllerInstance().setVoltage(10);
-    // Consts.IntakeConsts.PICKUP_MOTOR.set(-0.6);
-   // IntakeConsts.PICKUP_MOTOR.set(-0.3);
+    // IntakeConsts.PICKUP_MOTOR.set(-0.3);
   }
 
   @Override
   public void teleopPeriodic() {
-    //FeedAndConveyConsts.CONVEY_MOTOR.set(-0.6);
-    // IntakeConsts.PICKUP_MOTOR.setVoltage(4);
   }
 
   @Override
