@@ -4,6 +4,8 @@ package frc.robot.Subsystems.Swerve;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+
+import org.opencv.core.Mat;
 import org.photonvision.EstimatedRobotPose;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -21,20 +23,16 @@ import frc.robot.Utils.LocalizationCamera;
 import frc.robot.Utils.EverKit.Periodic;
 
 public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
-    private final boolean DEBUG_MODE = true;
+    private final boolean DEBUG_MODE = true;  
 
     private static final LocalizationCamera[] CAMS = {
-            new LocalizationCamera("left_cam",
-                    AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark),
-                    new Transform3d(new Translation3d(0.115, 0.055, 0.32), new Rotation3d(0, 0 ,0)),
+            new LocalizationCamera("a",
+                    AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark),
+                    new Transform3d(new Translation3d(-0.2855, 0.2825, 0.43), new Rotation3d(Math.toRadians(-(90 - 74.85)), 0 ,Math.toRadians(90))),
                     VecBuilder.fill(0.0, 0.0, 0), VecBuilder.fill(0.0, 0.0, 0)),
             new LocalizationCamera("right_cam",
-                                        AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark),
-                                        new Transform3d(0.115, -0.155, 0.32, new Rotation3d(0, 0, 0)),
-                                        VecBuilder.fill(0, 0, 0), VecBuilder.fill(0, 0, 0)),
-            new LocalizationCamera("back_cam",
-                                        AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark),
-                                        new Transform3d(-0.27985, -0.295, 0.56, new Rotation3d(Math.toRadians(-1), Math.toRadians(-44), Math.toRadians(180))), //new Rotation3d(Math.toRadians(25), Math.toRadians(1.4), Math.toRadians(180))
+                                        AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark),
+                                        new Transform3d(-0.2395, -0.2675, 0.4195, new Rotation3d(Math.toRadians(-(90-78.15)), 0, Math.toRadians(-2.7 -90))),
                                         VecBuilder.fill(0, 0, 0), VecBuilder.fill(0, 0, 0))
     };
 
@@ -50,7 +48,7 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
 
     private SwerveLocalizer() {
         m_cams = new ArrayList<>(Arrays.asList(CAMS));
-        m_fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+        m_fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
         SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
                 new Translation2d(modulesPositions[0].x, modulesPositions[0].y),
