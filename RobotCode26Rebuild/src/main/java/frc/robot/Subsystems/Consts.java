@@ -112,10 +112,10 @@ public interface Consts {
 
                 // chassis encoders
                 public static final EverDutyCycleEncoder 
-                                TL_ABS_ENCODER = new EverDutyCycleEncoder(3),
+                                TL_ABS_ENCODER = new EverDutyCycleEncoder(2),
                                 TR_ABS_ENCODER = new EverDutyCycleEncoder(1),
                                 DL_ABS_ENCODER = new EverDutyCycleEncoder(4),
-                                DR_ABS_ENCODER = new EverDutyCycleEncoder(2);
+                                DR_ABS_ENCODER = new EverDutyCycleEncoder(3);
 
                 public static final EverAbsEncoder[] ABS_ENCODERS = { TL_ABS_ENCODER, TR_ABS_ENCODER, DL_ABS_ENCODER,
                                 DR_ABS_ENCODER };
@@ -257,7 +257,7 @@ public interface Consts {
                                 DELIVERY_RPS = 30, // (in RPS)
                                 
                                 CLOSE_SHOOTING_DIST = 4.8, //(in meters)
-                                SHOOTING_ANGLE = 30; // (in degrees)
+                                SHOOTING_ANGLE = 77.2; // (in degrees)
 
 
                 public static final double 
@@ -269,7 +269,7 @@ public interface Consts {
                                 BACK_SPEED_KP = 1.3, 
                                 BACK_SPEED_KI = 0.00001, 
                                 BACK_SPEED_KD = 0.001 ,
-                                BACK_SPEED_KV = (10.0 / 78.544921875),
+                                BACK_SPEED_KV = (10.0 / 70.67578125),
                                 
                                 ANGLE_KP = 0.6,//0.68, 
                                 ANGLE_KI = 0.00035, 
@@ -285,22 +285,20 @@ public interface Consts {
                 public static final double DEAD_ZONE = 1.5;
 
                 public static final double[] BALL_V0_DATA = {
-                        10.462384,    // Index 0
-                        10.502349,    // Index 1
-                        10.570239,    // Index 2
-                        10.842304,    // Index 3
-                        11.452349,    // Index 4
-                        11.80234,     // Index 5
-                        12.230324     // Index 6
+                        7.75570809953,
+                        8.57505713829,    // Index 0
+                        9.13261985409, 
+                        9.79856114875,   // Index 1
+                        10.46666489,
+                        10.6803183704,    // Index 2
+                        11.1463813224,    // Index 3
+                        14.463512276,    // Index 4    // Index 6
                         };
 
                 
-                public static final double[] SHOOTER_SPEED = {26.4764674 ,28.09546 ,32.074 , 35.0987, 38.0535, 40.02, 42.42}; // Shooter speed (in RPS)
+                public static final double[] SHOOTER_SPEED = {23.856 ,25.00557 ,28.09546, 29.0654 ,30.09876325 , 32.09835, 33.055, 37.0987}; // Shooter speed (in RPS)
 
-                public static final double[] CLOSE_SHOOTING_SPEED = 
-                        {28 ,30, 33.5, 35};
-                public static final double[] CLOSE_SHOOTING_DISTANCE = 
-                        {2.6, 3, 4.2, 4.7};
+
 
                 public static final InterpolatingDoubleTreeMap BALL_SPEED_TO_SHOOTER_TABLE = new InterpolatingDoubleTreeMap();
 
@@ -350,9 +348,6 @@ public interface Consts {
                                 BALL_SPEED_TO_SHOOTER_TABLE.put(BALL_V0_DATA[i], SHOOTER_SPEED[i]);
                         }
 
-                        for (int i = 0; i < CLOSE_SHOOTING_DISTANCE.length; i++) {
-                                CLOSE_SHOOTING_SPEED_MAP.put(CLOSE_SHOOTING_DISTANCE[i], CLOSE_SHOOTING_SPEED[i]);
-                        }
                 }
 
                 public static Pose2d STATIC_SHOOT_POSE_BLUE = new Pose2d(), STATIC_SHOOT_POSE_RED = new Pose2d();

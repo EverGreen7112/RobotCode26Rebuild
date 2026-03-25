@@ -126,7 +126,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
             locY = m_deliveryPoints.getY();
         }
         //return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
-        return 3;
+        return 6;
     }
 
     /**
@@ -134,7 +134,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
      * @return speed in m/s
      */
     private double calcBallV0MS() {
-        double robotDistance = 4.4;//getShootingDistance();
+        double robotDistance = getShootingDistance();
         double mone = GRAVITY * Math.pow(robotDistance,2);
         double mechana = Math.max(2 * (Math.pow(Math.cos(Math.toRadians(SHOOTING_ANGLE)) ,2) * (robotDistance * Math.tan(Math.toRadians(SHOOTING_ANGLE)) - SHOOTING_HEIGHT) ), 0.0);
         SmartDashboard.putNumber("ballMs",Math.sqrt(mone / mechana) );
@@ -144,11 +144,12 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
 
     private double calcShooterSpeed(double ballV0MS){
-        double shootingSpeed = MathUtil.clamp(m_ballV0ToRPS.get(ballV0MS), SHOOTER_SPEED[0], SHOOTER_SPEED[SHOOTER_SPEED.length - 1]);
-        double robotDistance = getShootingDistance();
-        if(robotDistance < CLOSE_SHOOTING_DIST)
-            shootingSpeed = MathUtil.clamp(CLOSE_SHOOTING_SPEED_MAP.get(robotDistance), CLOSE_SHOOTING_SPEED[0], CLOSE_SHOOTING_SPEED[CLOSE_SHOOTING_SPEED.length - 1]);
-        return shootingSpeed;
+
+        double minInput = BALL_V0_DATA[0];
+        double maxInput = BALL_V0_DATA[BALL_V0_DATA.length - 1];
+
+        double clampedInput = MathUtil.clamp(ballV0MS, minInput, maxInput);
+        return m_ballV0ToRPS.get(clampedInput);
     }
 
     
@@ -181,10 +182,10 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
         switch (m_shooterState) {// kScoring is default
             case kScoring:
-                m_targetSpeed = calcShooterSpeed(calcBallV0MS());
+                m_targetSpeed = calcShooterSpeed(calcBallV0MS()) * 1.05;
                 m_frontShootingController.activate(m_targetSpeed, ControlType.kVel);
-                m_backShootingController.activate(m_targetSpeed * WHEELS_RATIO, ControlType.kVel);
-                anglePos(SCORING_ANGLE);
+                m_backShootingController.activate((m_targetSpeed * WHEELS_RATIO), ControlType.kVel);
+                //anglePos(SCORING_ANGLE);
                 break;
             case kDelivery:
                 m_frontShootingController.activate(ShooterConsts.DELIVERY_RPS, ControlType.kVel);
@@ -212,8 +213,9 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
                 }
                 break;
             case kTest:
-                frontShootingRpm(28);
-                backShootingRpm(28 * WHEELS_RATIO);
+                frontShootingRpm(32);
+                backShootingRpm(32 * WHEELS_RATIO);
+
         }
 
         m_previousShooterState = m_shooterState;

@@ -122,11 +122,11 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    Shooter.getInstance().setShooterState(ShooterState.kTest);
+    //Shooter.getInstance().setShooterState(ShooterState.kScoring);
     //ShooterConsts.FRONT_MOTOR.setVoltage(6);
     // FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
-    // FeedAndConveyConsts.CONVEY_MOTOR.set(-0.4);
-    //Consts.IntakeConsts.PICKUP_MOTOR.set(-0.6);
+    //FeedAndConveyConsts.CONVEY_MOTOR.setVoltage(-1);
+    Consts.IntakeConsts.PICKUP_MOTOR.set(-0.6);
     //ShooterConsts.BACK_MOTOR.getControllerInstance().setVoltage(10);
     // IntakeConsts.PICKUP_MOTOR.set(-0.3);
   }
