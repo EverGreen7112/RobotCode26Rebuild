@@ -360,8 +360,8 @@ public interface Consts {
                 public static final EverTalonFX PICKUP_MOTOR = new EverTalonFX(20);
 
                 public static final EverTalonFX EXTENSION_MOTOR = new EverTalonFX(15);
-                public static final EverTalonFXInternalEncoder EXTENSION_ENCODER = new EverTalonFXInternalEncoder(
-                                EXTENSION_MOTOR);
+                public static final DigitalInput EXTENSION_LM = new DigitalInput(6), 
+                        RETRACTION_LM = new DigitalInput(5);
 
                 // public static final EverAnalogToDigitalLimitSwitch RETRACTION_LM = new EverAnalogToDigitalLimitSwitch(0),
                 //                 EXTENSION_LM = new EverAnalogToDigitalLimitSwitch(3);

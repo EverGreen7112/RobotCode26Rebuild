@@ -13,6 +13,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -52,6 +54,8 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
   private SwerveLocalizer m_Localizer = SwerveLocalizer.getInstance();
   private Field2d m_field = new Field2d();
+  private AddressableLED m_led = new AddressableLED(8); // PWM port 0
+  private AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(37); // 37 LEDs
 
 
   public static Alliance m_alliance;
@@ -67,9 +71,6 @@ public class Robot extends LoggedRobot {
       SmartDashboard.putData("Field", m_field);
       m_robotContainer = new RobotContainer();
       SwerveLocalizer.getInstance().initialize();
-      // Logger.recordMetadata("RobotCode-ReBuild-26", "29.01");
-      // Logger.addDataReceiver(new NT4Publisher()); 
-      // Logger.start();
     }
 
   @Override
@@ -82,9 +83,18 @@ public class Robot extends LoggedRobot {
     else      
         m_alliance = Alliance.Red;
 
-    Shooter.getInstance().log();
     m_field.setRobotPose(SwerveLocalizer.getInstance().getCurrentPoint());
     SmartDashboard.putData("Field", m_field);
+
+      m_led.setLength(m_ledBuffer.getLength());
+      m_led.start();
+      // Set all LEDs to green
+      for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+          m_ledBuffer.setRGB(i, 0, 255, 0); // R=0, G=255, B=0
+      }
+      m_led.setData(m_ledBuffer);
+
+
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
   }
@@ -122,7 +132,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    //Shooter.getInstance().setShooterState(ShooterState.kScoring);
+    Shooter.getInstance().setShooterState(ShooterState.kScoring);
     //ShooterConsts.FRONT_MOTOR.setVoltage(6);
     // FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
     //FeedAndConveyConsts.CONVEY_MOTOR.setVoltage(-1);

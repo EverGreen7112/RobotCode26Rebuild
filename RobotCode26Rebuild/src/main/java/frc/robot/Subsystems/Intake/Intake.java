@@ -17,13 +17,15 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
     private EverMotorController m_pickupMotor, m_extensionMotor;
     private EverEncoder m_extensionEncoder;
 
-    private EverAnalogToDigitalLimitSwitch m_retractionLM, m_extensionLM; 
+    private DigitalInput m_retractionLM, m_extensionLM; 
 
     private Intake(){
 
         m_pickupMotor = IntakeConsts.PICKUP_MOTOR;
         m_extensionMotor = IntakeConsts.EXTENSION_MOTOR;
-        m_extensionEncoder = IntakeConsts.EXTENSION_ENCODER;
+        
+        m_extensionLM = EXTENSION_LM;
+        m_retractionLM = RETRACTION_LM;
 
         // m_retractionLM = IntakeConsts.RETRACTION_LM;
         // m_extensionLM = IntakeConsts.EXTENSION_LM;
@@ -57,6 +59,7 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
         return m_retractionLM.get();
     }
 
+
     @Override
     public void periodic() {
 
@@ -64,17 +67,17 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
             startRetracting();
         }
 
-        // if((m_extensionLM.get() && m_extensionMotor.get() > 0) || (m_retractionLM.get() && m_extensionMotor.get() < 0)){
-        //     stopExtending();
+        if((!m_extensionLM.get() && m_retractionLM.get() && m_extensionMotor.get() > 0) || (!m_retractionLM.get() && m_extensionMotor.get() < 0)){
+            stopExtending();
+        }
+
+        // if(m_retractionLM.get()){
+        //     m_extensionEncoder.setPos(0);
         // }
 
-        if(m_retractionLM.get()){
-            m_extensionEncoder.setPos(0);
-        }
-
-        if(m_extensionEncoder.getPos() > IntakeConsts.MAX_EXTENDING_ROTATIONS){
-            m_extensionMotor.stop();
-        }
+        // if(m_extensionEncoder.getPos() > IntakeConsts.MAX_EXTENDING_ROTATIONS){
+        //     m_extensionMotor.stop();
+        // }
 
         if(IntakeConsts.DEBUG_MODE){
             log();
