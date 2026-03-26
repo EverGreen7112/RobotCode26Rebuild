@@ -36,11 +36,11 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
     }
 
     public void startExtending(){
-        m_extensionMotor.set(IntakeConsts.EXTENSION_SPEED);
+        m_extensionMotor.set(-IntakeConsts.EXTENSION_SPEED);
     }
 
     public void startRetracting(){
-        m_extensionMotor.set(-IntakeConsts.EXTENSION_SPEED);
+        m_extensionMotor.set(IntakeConsts.EXTENSION_SPEED);
     }
 
     public void stopExtending(){
@@ -48,7 +48,7 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
     }
 
     public void startPickup(){
-        m_pickupMotor.set(IntakeConsts.PICKUP_SPEED);
+        m_pickupMotor.set(-IntakeConsts.PICKUP_SPEED);
     }
 
     public void stopPickup(){
@@ -67,17 +67,10 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
             startRetracting();
         }
 
-        if((!m_extensionLM.get() && m_retractionLM.get() && m_extensionMotor.get() > 0) || (!m_retractionLM.get() && m_extensionMotor.get() < 0)){
+        if((!m_extensionLM.get() && m_extensionMotor.get() < 0) || (!m_retractionLM.get() && m_extensionMotor.get() > 0)){
             stopExtending();
         }
 
-        // if(m_retractionLM.get()){
-        //     m_extensionEncoder.setPos(0);
-        // }
-
-        // if(m_extensionEncoder.getPos() > IntakeConsts.MAX_EXTENDING_ROTATIONS){
-        //     m_extensionMotor.stop();
-        // }
 
         if(IntakeConsts.DEBUG_MODE){
             log();

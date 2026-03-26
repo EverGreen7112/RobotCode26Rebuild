@@ -15,12 +15,16 @@ import frc.robot.Commands.ResetRobotCommand;
 import frc.robot.Commands.Conveyor.ConveyIntakeCommand;
 import frc.robot.Commands.Conveyor.ConveyToFeederCommand;
 import frc.robot.Commands.Feeder.FeedCommand;
+import frc.robot.Commands.Intake.IntakeCommand;
+import frc.robot.Commands.Intake.IntakePickupCommand;
+import frc.robot.Commands.Intake.RetractIntakeCommand;
 import frc.robot.Commands.Shooter.DeliverCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Commands.Swerve.ManualDrive.ChangeTeleopSpeedModeCommand;
 import frc.robot.Commands.Swerve.ManualDrive.RotateToCommand;
 import frc.robot.Commands.Swerve.ManualDrive.TeleopDriveCommand;
 import frc.robot.Commands.Swerve.ManualDrive.ChangeTeleopSpeedModeCommand.SpeedMode;
+import frc.robot.Subsystems.Consts.IntakeConsts;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkMax;
@@ -62,8 +66,10 @@ public class RobotContainer {
   public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
 
 
-  private ParallelCommandGroup m_shooterCommands = new ParallelCommandGroup(new ConveyToFeederCommand(), new FeedCommand());
-  
+  private ParallelCommandGroup m_shooterCommands = new ParallelCommandGroup(new ConveyToFeederCommand(), new FeedCommand(), new ScoreCommand());
+  private ParallelCommandGroup m_pickUpCommands = new ParallelCommandGroup(new IntakePickupCommand(), new ConveyIntakeCommand());
+  private ParallelCommandGroup m_close = new ParallelCommandGroup(new RetractIntakeCommand());
+
   public RobotContainer() {
     registerNamedCommands();
     configureBindings();
@@ -81,9 +87,10 @@ public class RobotContainer {
     chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
     chassisBack.onTrue(new InstantCommand(() -> Swerve.getInstance().resetGyro()));
 
-    chassisRT.onTrue(new RotateToCommand(45, true));
-    chassisA.whileTrue(new ConveyToFeederCommand());
-    chassisB.whileTrue(new FeedCommand());
+    chassisRT.whileTrue(new IntakeCommand());
+    chassisLT.whileTrue(m_close);
+    chassisA.whileTrue(m_shooterCommands);
+    chassisB.whileTrue(m_pickUpCommands);
 
     //chassisX.whileTrue(new DeliverCommand());
 

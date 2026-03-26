@@ -366,7 +366,7 @@ public interface Consts {
                 // public static final EverAnalogToDigitalLimitSwitch RETRACTION_LM = new EverAnalogToDigitalLimitSwitch(0),
                 //                 EXTENSION_LM = new EverAnalogToDigitalLimitSwitch(3);
 
-                public final double EXTENSION_SPEED = 0.25, PICKUP_SPEED = 0.6;
+                public final double EXTENSION_SPEED = 0.3, PICKUP_SPEED = 0.6;
                 public final boolean DEBUG_MODE = false;
                 public final double MAX_EXTENDING_ROTATIONS = 0;
 

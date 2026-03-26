@@ -37,6 +37,7 @@ import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveAngleController;
+import frc.robot.Subsystems.Swerve.SwerveAutoController;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
 import frc.robot.Utils.DeltaTime;
 //import frc.robot.Utils.GamePieceDetector;
@@ -55,8 +56,6 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
   private SwerveLocalizer m_Localizer = SwerveLocalizer.getInstance();
   private Field2d m_field = new Field2d();
-  private AddressableLED m_led = new AddressableLED(8); // PWM port 0
-  private AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(37); // 37 LEDs
 
 
   public static Alliance m_alliance;
@@ -72,6 +71,7 @@ public class Robot extends LoggedRobot {
       SmartDashboard.putData("Field", m_field);
       m_robotContainer = new RobotContainer();
       SwerveLocalizer.getInstance().initialize();
+      SwerveAutoController.getInstance().addChoosersToDashboard();
     }
 
   @Override
@@ -87,7 +87,8 @@ public class Robot extends LoggedRobot {
     m_field.setRobotPose(SwerveLocalizer.getInstance().getCurrentPoint());
     SmartDashboard.putData("Field", m_field);
 
-    Swerve.getInstance().log();
+    SmartDashboard.putBoolean("bla 1", IntakeConsts.EXTENSION_LM.get());
+    SmartDashboard.putBoolean("bla 2", IntakeConsts.RETRACTION_LM.get());
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
   }
@@ -104,6 +105,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    m_autonomousCommand = SwerveAutoController.getInstance().getAutoCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -132,7 +135,7 @@ public class Robot extends LoggedRobot {
     // Consts.IntakeConsts.PICKUP_MOTOR.set(-0.6);
     //ShooterConsts.BACK_MOTOR.getControllerInstance().setVoltage(10);
     // IntakeConsts.PICKUP_MOTOR.set(-0.3);
-    SwerveAngleController.getInstance().start(45);
+    //SwerveAngleController.getInstance().start(45);
   }
 
   @Override

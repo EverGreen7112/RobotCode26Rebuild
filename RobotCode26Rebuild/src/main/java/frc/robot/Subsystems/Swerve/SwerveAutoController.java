@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Swerve;
 
+import java.util.jar.Attributes.Name;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -15,6 +17,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Commands.Conveyor.AutoStopConveyCommand;
+import frc.robot.Commands.Conveyor.ConveyIntakeCommand;
+import frc.robot.Commands.Conveyor.ConveyToFeederCommand;
+import frc.robot.Commands.Feeder.FeedCommand;
+import frc.robot.Commands.Intake.AutoIntakePickupCommand;
+import frc.robot.Commands.Intake.AutoIntakeStopPickup;
+import frc.robot.Commands.Intake.IntakeCommand;
+import frc.robot.Commands.Intake.IntakePickupCommand;
+import frc.robot.Commands.Intake.RetractIntakeCommand;
+import frc.robot.Commands.Shooter.ScoreCommand;
 
 public class SwerveAutoController {
 
@@ -30,7 +43,8 @@ public class SwerveAutoController {
     private SendableChooser<Alliance> m_allianceChooser;
 
     private SwerveAutoController(){
-
+        
+        configureCommands(); //configure commands must be registered before the creation of any paths
         RobotConfig config = null;
 
         try{
@@ -57,21 +71,13 @@ public class SwerveAutoController {
             Swerve.getInstance()
         );
 
-        configureCommands(); //configure commands must be registered before the creation of any paths
-        
+    
+        m_allianceChooser.setDefaultOption("Red Alliance", Alliance.Red);
+        m_allianceChooser.addOption("Blue Alliance", Alliance.Blue);
 
-        PathPlannerAuto left = new PathPlannerAuto("left 3 L4");
+        // Set up the Auto Command
 
-        m_autoChooser = new SendableChooser<Command>();
-        m_autoChooser.addOption("middle", new PathPlannerAuto("Middle 1 L4"));
-        m_autoChooser.addOption("right", new PathPlannerAuto("right 3 L4"));
-        m_autoChooser.addOption("left", left);
-        m_autoChooser.addOption("test", new PathPlannerAuto("test"));
-        
-
-        m_allianceChooser = new SendableChooser<Alliance>();
-        m_allianceChooser.addOption("blue", Alliance.Blue);
-        m_allianceChooser.addOption("red", Alliance.Red);
+        m_autoChooser.setDefaultOption("Audition Auto", new PathPlannerAuto("auditionAuto"));
 
     }
 
@@ -102,5 +108,19 @@ public class SwerveAutoController {
     };
 
     public void configureCommands(){
+
+        ParallelCommandGroup m_shooterCommands = new ParallelCommandGroup(new ConveyToFeederCommand(), new FeedCommand(), new ScoreCommand());
+        ParallelCommandGroup m_pickupCommands = new ParallelCommandGroup(new AutoIntakePickupCommand(), new ConveyIntakeCommand());
+        ParallelCommandGroup m_stopPickupCommand = new ParallelCommandGroup(new AutoIntakeStopPickup(), new AutoStopConveyCommand());
+
+
+        NamedCommands.registerCommand("openIntake", new IntakeCommand());
+
+        NamedCommands.registerCommand("startIntake",m_pickupCommands);
+
+        NamedCommands.registerCommand("stopIntake", m_stopPickupCommand);
+
+        NamedCommands.registerCommand("scoring", m_shooterCommands);
+
     }
 }

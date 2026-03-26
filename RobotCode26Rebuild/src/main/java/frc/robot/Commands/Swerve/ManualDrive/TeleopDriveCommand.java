@@ -41,7 +41,7 @@ public class TeleopDriveCommand extends Command implements Consts.SwerveConsts{
         
         double speedX = m_xLimiter.calculate(m_xSpeedInput.get());
         double speedY = m_yLimiter.calculate(m_ySpeedInput.get());
-        double angularVel = m_angularVelocityLimiter.calculate(m_angularVelocityInput.get());
+        double angularVel = m_angularVelocityLimiter.calculate(-m_angularVelocityInput.get());
 
         if(Math.abs(speedX) < DEADZONE)
             speedX = 0;
