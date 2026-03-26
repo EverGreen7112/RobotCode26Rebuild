@@ -36,6 +36,7 @@ import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.Shooter.ShooterState;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Subsystems.Swerve.SwerveAngleController;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
 import frc.robot.Utils.DeltaTime;
 //import frc.robot.Utils.GamePieceDetector;
@@ -86,15 +87,7 @@ public class Robot extends LoggedRobot {
     m_field.setRobotPose(SwerveLocalizer.getInstance().getCurrentPoint());
     SmartDashboard.putData("Field", m_field);
 
-      m_led.setLength(m_ledBuffer.getLength());
-      m_led.start();
-      // Set all LEDs to green
-      for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-          m_ledBuffer.setRGB(i, 0, 255, 0); // R=0, G=255, B=0
-      }
-      m_led.setData(m_ledBuffer);
-
-
+    Swerve.getInstance().log();
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
   }
@@ -132,13 +125,14 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    Shooter.getInstance().setShooterState(ShooterState.kScoring);
+    // Shooter.getInstance().setShooterState(ShooterState.kScoring);
     //ShooterConsts.FRONT_MOTOR.setVoltage(6);
     // FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
     //FeedAndConveyConsts.CONVEY_MOTOR.setVoltage(-1);
-    Consts.IntakeConsts.PICKUP_MOTOR.set(-0.6);
+    // Consts.IntakeConsts.PICKUP_MOTOR.set(-0.6);
     //ShooterConsts.BACK_MOTOR.getControllerInstance().setVoltage(10);
     // IntakeConsts.PICKUP_MOTOR.set(-0.3);
+    SwerveAngleController.getInstance().start(45);
   }
 
   @Override

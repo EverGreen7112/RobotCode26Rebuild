@@ -33,6 +33,7 @@ public class SwerveAngleController implements Periodic{
         m_targetAngle = targetAngle;
         m_isFieldOriented = isFieldOriented;
         m_angleController.reset( (m_isFieldOriented) ? SwerveLocalizer.getInstance().getFieldOrientedAngle() : Swerve.getInstance().getGyroOrientedAngle());
+        initialize();
 
     }
 

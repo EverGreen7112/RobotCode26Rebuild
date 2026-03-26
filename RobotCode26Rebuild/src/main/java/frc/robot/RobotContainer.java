@@ -18,6 +18,7 @@ import frc.robot.Commands.Feeder.FeedCommand;
 import frc.robot.Commands.Shooter.DeliverCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Commands.Swerve.ManualDrive.ChangeTeleopSpeedModeCommand;
+import frc.robot.Commands.Swerve.ManualDrive.RotateToCommand;
 import frc.robot.Commands.Swerve.ManualDrive.TeleopDriveCommand;
 import frc.robot.Commands.Swerve.ManualDrive.ChangeTeleopSpeedModeCommand.SpeedMode;
 import frc.robot.Subsystems.Swerve.Swerve;
@@ -80,7 +81,7 @@ public class RobotContainer {
     chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
     chassisBack.onTrue(new InstantCommand(() -> Swerve.getInstance().resetGyro()));
 
-
+    chassisRT.onTrue(new RotateToCommand(45, true));
     chassisA.whileTrue(new ConveyToFeederCommand());
     chassisB.whileTrue(new FeedCommand());
 

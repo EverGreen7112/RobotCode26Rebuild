@@ -85,10 +85,10 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         m_shooterState = ShooterState.kStop;
         m_previousShooterState = ShooterState.kStop;
         //14.9;
-        m_targetHub = ShooterConsts.BLUE_HUB_POSE;
+        m_targetHub = ShooterConsts.RED_HUB_POSE;
 
-        m_staticShootingPose = ShooterConsts.STATIC_SHOOT_POSE_BLUE;
-        m_deliveryPoints = DELIVERY_POSES_BLUE;
+        m_staticShootingPose = ShooterConsts.STATIC_SHOOT_POSE_RED;
+        m_deliveryPoints = DELIVERY_POSES_RED;
 
         m_angleEncoder = ANGLE_ENCODER;
         m_angleEncoder.setPos(0);
