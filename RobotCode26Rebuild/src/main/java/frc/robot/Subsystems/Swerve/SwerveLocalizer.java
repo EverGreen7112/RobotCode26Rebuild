@@ -1,12 +1,10 @@
-
 package frc.robot.Subsystems.Swerve;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
-
-import org.opencv.core.Mat;
 import org.photonvision.EstimatedRobotPose;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
@@ -21,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Subsystems.Consts;
 import frc.robot.Utils.LocalizationCamera;
 import frc.robot.Utils.EverKit.Periodic;
+import frc.robot.Utils.EverKit.Periodic.PeriodicTime;
 
 public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
     private final boolean DEBUG_MODE = true;  
@@ -28,11 +27,12 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
     private static final LocalizationCamera[] CAMS = {
             new LocalizationCamera("left_cam",
                     AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark),
+                    
                     new Transform3d(new Translation3d(-0.2855, 0.2825, 0.43), new Rotation3d(Math.toRadians(-(90 - 74.85)), 0 ,Math.toRadians(90))),
                     VecBuilder.fill(0.0, 0.0, 0), VecBuilder.fill(0.0, 0.0, 0)),
-            new LocalizationCamera("right_cam",
+            new LocalizationCamera("front_cam",
                                         AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark),
-                                        new Transform3d(-0.2395, -0.2675, 0.4195, new Rotation3d(Math.toRadians(-(90-78.15)), 0, Math.toRadians(-2.7 -90))),
+                                        new Transform3d(-0.2275, -0.2725, 0.530, new Rotation3d(Math.toRadians(-1.7), Math.toRadians(90 - 22.15), 0)),
                                         VecBuilder.fill(0, 0, 0), VecBuilder.fill(0, 0, 0))
     };
 

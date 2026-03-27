@@ -139,7 +139,6 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         double mechana = Math.max(2 * (Math.pow(Math.cos(Math.toRadians(SHOOTING_ANGLE)) ,2) * (robotDistance * Math.tan(Math.toRadians(SHOOTING_ANGLE)) - SHOOTING_HEIGHT) ), 0.0);
         SmartDashboard.putNumber("ballMs",Math.sqrt(mone / mechana) );
         return Math.sqrt(mone / mechana);
-        //return 10;
     }
 
 
@@ -250,4 +249,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         ANGLE_PID_CONTROLLER.activate(angle, ControlType.kPos);
     }
 
+    public boolean areMotorControllersConnected(){
+        return Consts.ShooterConsts.FRONT_MOTOR.isConnected() &&
+               Consts.ShooterConsts.BACK_MOTOR.isConnected();
+    }
 }

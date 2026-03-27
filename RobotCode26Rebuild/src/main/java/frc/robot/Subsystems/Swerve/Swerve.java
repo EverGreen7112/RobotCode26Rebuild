@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Subsystems.Consts;
 import frc.robot.Subsystems.Consts.SwerveConsts;
+import frc.robot.Utils.EverKit.EverMotorController;
+import frc.robot.Utils.EverKit.EverMotorController.IdleMode;
 import frc.robot.Utils.Math.Funcs;
 import frc.robot.Utils.Math.Vector2d;
 
@@ -30,6 +32,16 @@ public class Swerve extends SubsystemBase implements Consts.SwerveConsts{
 
     private Swerve() {
         SwerveConsts.config();
+
+        for (EverMotorController driveMotor : DRIVE_MOTORS) {
+                                driveMotor.setInverted(false);
+                                driveMotor.setIdleMode(IdleMode.kBrake);
+                        }
+
+                        for (EverMotorController steerMotor : STEER_MOTORS) {
+                                steerMotor.setIdleMode(IdleMode.kBrake);
+                        }
+
         m_modules = SwerveConsts.MODULES;
         m_velocity = new Vector2d(0, 0);
         m_angularVelocity = 0;

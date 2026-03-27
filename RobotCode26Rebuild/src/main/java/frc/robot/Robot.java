@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import org.littletonrobotics.junction.LoggedRobot;
@@ -11,6 +12,10 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveModule;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -18,6 +23,7 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -44,7 +50,9 @@ import frc.robot.Subsystems.Swerve.SwerveLocalizer;
 import frc.robot.Utils.DeltaTime;
 //import frc.robot.Utils.GamePieceDetector;
 import frc.robot.Utils.EverKit.Periodic;
+import frc.robot.Utils.EverKit.EverMotorController.IdleMode;
 //import frc.robot.Utils.GamePieceCamera.GamePieceType
+
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverTalonFX;
 import frc.robot.Utils.Math.Vector2d;
 
@@ -59,7 +67,8 @@ public class Robot extends LoggedRobot {
   private SwerveLocalizer m_Localizer = SwerveLocalizer.getInstance();
   private Field2d m_field = new Field2d();
   private UsbCamera m_camera;
-
+  private AddressableLED m_led;
+  private AddressableLEDBuffer m_ledBuffer;
 
   
   // Adjust this to the actual number of LEDs on your strips
@@ -82,9 +91,14 @@ public class Robot extends LoggedRobot {
       m_camera = CameraServer.startAutomaticCapture();
 
         // 2. Set basic settings (Optional but helpful)
-      m_camera.setResolution(900, 900); // Keep it low to save bandwidth
-      m_camera.setFPS(30);
-
+        m_camera.setResolution(900, 900); // Keep it low to save bandwidth
+        m_camera.setFPS(30);
+         
+        m_led = new AddressableLED(8);
+        m_ledBuffer = new AddressableLEDBuffer(40);
+        m_led.setLength(m_ledBuffer.getLength());
+        LEDPattern.solid(edu.wpi.first.wpilibj.util.Color.kGreen).applyTo(m_ledBuffer);
+        m_led.setData(m_ledBuffer);
 
     }
 
@@ -100,9 +114,10 @@ public class Robot extends LoggedRobot {
 
     m_field.setRobotPose(SwerveLocalizer.getInstance().getCurrentPoint());
     SmartDashboard.putData("Field", m_field);
-
+    
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
+    
   }
 
   @Override
@@ -139,7 +154,6 @@ public class Robot extends LoggedRobot {
       
       m_autonomousCommand.cancel();
     }
-
 
   }
 

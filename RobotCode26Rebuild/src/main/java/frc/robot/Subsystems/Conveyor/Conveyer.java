@@ -41,5 +41,9 @@ public class Conveyer extends SubsystemBase implements Consts.FeedAndConveyConst
     private void log(){
         SmartDashboard.putNumber("Conveying Motor Speed", m_conveyingMotor.get());
     }
+
+    public boolean isConnected(){
+        return Consts.FeedAndConveyConsts.CONVEY_MOTOR.isConnected();
+    }
     
 }

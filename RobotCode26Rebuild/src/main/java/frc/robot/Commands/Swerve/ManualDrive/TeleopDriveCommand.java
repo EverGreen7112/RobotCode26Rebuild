@@ -22,8 +22,8 @@ public class TeleopDriveCommand extends Command implements Consts.SwerveConsts{
     private SlewRateLimiter m_xLimiter;
     private SlewRateLimiter m_yLimiter;
     private SlewRateLimiter m_angularVelocityLimiter;
-    private double M_MAX_ACCELARTION = 3;
-    private double M_MAX_ANGULAR_ACCELERATION = 180;
+    private double M_MAX_ACCELARTION = 2;
+    private double M_MAX_ANGULAR_ACCELERATION = 75;
     
     public TeleopDriveCommand(Supplier<Double> xSpeedInput, Supplier<Double> ySpeedInput, Supplier<Double> angularVelocityInput){
         addRequirements(Swerve.getInstance());
@@ -31,17 +31,17 @@ public class TeleopDriveCommand extends Command implements Consts.SwerveConsts{
         m_ySpeedInput = ySpeedInput;
         m_angularVelocityInput = angularVelocityInput;
         maxSpeed = SwerveConsts.MAX_NORMAL_DRIVE_SPEED;
-        // m_xLimiter = new SlewRateLimiter(M_MAX_ACCELARTION);
-        // m_yLimiter = new SlewRateLimiter(M_MAX_ACCELARTION);
-        // m_angularVelocityLimiter = new SlewRateLimiter(M_MAX_ANGULAR_ACCELERATION);
+        m_xLimiter = new SlewRateLimiter(M_MAX_ACCELARTION);
+        m_yLimiter = new SlewRateLimiter(M_MAX_ACCELARTION);
+        m_angularVelocityLimiter = new SlewRateLimiter(M_MAX_ANGULAR_ACCELERATION);
     }
 
     @Override
     public void execute() {
         
-        double speedX = m_xSpeedInput.get();
-        double speedY = m_ySpeedInput.get();
-        double angularVel = -m_angularVelocityInput.get();
+        double speedX = m_xLimiter.calculate(m_xSpeedInput.get());
+        double speedY = m_yLimiter.calculate(m_ySpeedInput.get());
+        double angularVel = m_angularVelocityLimiter.calculate(-m_angularVelocityInput.get());
 
         if(Math.abs(speedX) < DEADZONE)
             speedX = 0;

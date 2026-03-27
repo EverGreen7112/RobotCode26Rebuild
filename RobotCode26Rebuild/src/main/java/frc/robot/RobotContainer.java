@@ -86,10 +86,10 @@ public class RobotContainer {
 
     //chassis
     Swerve.getInstance().setDefaultCommand(teleopCommand);
-    chassisRB.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
-    chassisLB.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
+    chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
+    chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
     chassisBack.onTrue(new InstantCommand(() -> Swerve.getInstance().resetGyro()));
-    chassisRT.whileTrue(new LockSwerveAngleCommand());
+    chassisRB.whileTrue(new LockSwerveAngleCommand());
     
 
     chassisB.whileTrue(m_shooterCommands);

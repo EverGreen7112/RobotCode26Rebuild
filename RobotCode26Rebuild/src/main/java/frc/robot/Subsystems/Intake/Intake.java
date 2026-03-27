@@ -59,6 +59,10 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
         return m_retractionLM.get();
     }
 
+    public boolean isOpen(){
+        return m_extensionLM.get();
+    }
+
 
     @Override
     public void periodic() {
@@ -85,4 +89,8 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
         SmartDashboard.putBoolean("Retraction Limit Switch", m_retractionLM.get());
     }
     
+    public boolean isConnected(){
+        return Consts.IntakeConsts.PICKUP_MOTOR.isConnected() &&
+               Consts.IntakeConsts.EXTENSION_MOTOR.isConnected();
+    }
 }
