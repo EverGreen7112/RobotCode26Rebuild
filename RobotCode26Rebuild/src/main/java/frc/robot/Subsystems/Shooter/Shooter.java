@@ -126,7 +126,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
             locY = m_deliveryPoints.getY();
         }
         //return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
-        return 6;
+        return 1.2;
     }
 
     /**
@@ -182,7 +182,7 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
         switch (m_shooterState) {// kScoring is default
             case kScoring:
-                m_targetSpeed = calcShooterSpeed(calcBallV0MS()) * 1.05;
+                m_targetSpeed = calcShooterSpeed(calcBallV0MS()) * 1.15;
                 m_frontShootingController.activate(m_targetSpeed, ControlType.kVel);
                 m_backShootingController.activate((m_targetSpeed * WHEELS_RATIO), ControlType.kVel);
                 //anglePos(SCORING_ANGLE);

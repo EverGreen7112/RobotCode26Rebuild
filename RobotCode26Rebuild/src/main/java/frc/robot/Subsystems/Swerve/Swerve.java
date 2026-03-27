@@ -55,8 +55,10 @@ public class Swerve extends SubsystemBase implements Consts.SwerveConsts{
         //convert to m/s
         double angularVel = (m_angularVelocity / 360.0) * SwerveConsts.ROBOT_BOUNDING_CIRCLE_PERIMETER;
 
-        if (m_velocity.mag() < SwerveConsts.MIN_SPEED) 
+        if (m_velocity.mag() < SwerveConsts.MIN_SPEED && Math.abs(m_angularVelocity) < 0.04){
             stop();
+            return;
+        }
         
 
         // convert to gyro oriented

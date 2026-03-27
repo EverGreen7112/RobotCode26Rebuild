@@ -21,6 +21,7 @@ import frc.robot.Commands.Intake.RetractIntakeCommand;
 import frc.robot.Commands.Shooter.DeliverCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Commands.Swerve.ManualDrive.ChangeTeleopSpeedModeCommand;
+import frc.robot.Commands.Swerve.ManualDrive.LockSwerveAngleCommand;
 import frc.robot.Commands.Swerve.ManualDrive.RotateToCommand;
 import frc.robot.Commands.Swerve.ManualDrive.TeleopDriveCommand;
 import frc.robot.Commands.Swerve.ManualDrive.ChangeTeleopSpeedModeCommand.SpeedMode;
@@ -59,6 +60,8 @@ public class RobotContainer {
   public static final Trigger chassisX = chassis.x();
   public static final Trigger chassisRT = chassis.rightTrigger();
   public static final Trigger chassisLT = chassis.leftTrigger();
+  public static final Trigger chassisRB = chassis.rightBumper();
+  public static final Trigger chassisLB = chassis.leftBumper();
   public static final Trigger chassisPovUp = chassis.povUp();
   public static final Trigger chassisPovDown = chassis.povDown();
   public static final Trigger chassisPovLeft = chassis.povLeft();
@@ -66,8 +69,8 @@ public class RobotContainer {
   public static final TeleopDriveCommand teleopCommand = new TeleopDriveCommand(chassis::getLeftY, chassis::getLeftX, chassis::getRightX);
 
 
-  private ParallelCommandGroup m_shooterCommands = new ParallelCommandGroup(new ConveyToFeederCommand(), new FeedCommand(), new ScoreCommand());
-  private ParallelCommandGroup m_pickUpCommands = new ParallelCommandGroup(new IntakePickupCommand(), new ConveyIntakeCommand());
+  private ParallelCommandGroup m_shooterCommands = new ParallelCommandGroup(new ConveyToFeederCommand(), new FeedCommand());
+  private ParallelCommandGroup m_pickUpCommands = new ParallelCommandGroup(new IntakePickupCommand());
   private ParallelCommandGroup m_close = new ParallelCommandGroup(new RetractIntakeCommand());
 
   public RobotContainer() {
@@ -83,17 +86,18 @@ public class RobotContainer {
 
     //chassis
     Swerve.getInstance().setDefaultCommand(teleopCommand);
-    chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
-    chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
+    chassisRB.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
+    chassisLB.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
     chassisBack.onTrue(new InstantCommand(() -> Swerve.getInstance().resetGyro()));
+    chassisRT.whileTrue(new LockSwerveAngleCommand());
+    
 
-    chassisRT.whileTrue(new IntakeCommand());
-    chassisLT.whileTrue(m_close);
-    chassisA.whileTrue(m_shooterCommands);
-    chassisB.whileTrue(m_pickUpCommands);
-
-    //chassisX.whileTrue(new DeliverCommand());
-
+    chassisB.whileTrue(m_shooterCommands);
+    
+    operatorA.whileTrue(new ScoreCommand());
+    operatorLB.whileTrue(m_pickUpCommands);
+    operatorRT.whileTrue(new IntakeCommand());
+    operatorLT.whileTrue(m_close);
 
   }
 

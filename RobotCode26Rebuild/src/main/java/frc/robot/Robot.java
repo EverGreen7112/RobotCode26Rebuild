@@ -13,6 +13,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -56,6 +58,11 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
   private SwerveLocalizer m_Localizer = SwerveLocalizer.getInstance();
   private Field2d m_field = new Field2d();
+  private UsbCamera m_camera;
+
+
+  
+  // Adjust this to the actual number of LEDs on your strips
 
 
   public static Alliance m_alliance;
@@ -63,7 +70,6 @@ public class Robot extends LoggedRobot {
 
     public Robot() { 
       m_robotContainer = new RobotContainer();
-  
     }
   
     @Override
@@ -72,6 +78,14 @@ public class Robot extends LoggedRobot {
       m_robotContainer = new RobotContainer();
       SwerveLocalizer.getInstance().initialize();
       SwerveAutoController.getInstance().addChoosersToDashboard();
+
+      m_camera = CameraServer.startAutomaticCapture();
+
+        // 2. Set basic settings (Optional but helpful)
+      m_camera.setResolution(900, 900); // Keep it low to save bandwidth
+      m_camera.setFPS(30);
+
+
     }
 
   @Override
@@ -87,8 +101,6 @@ public class Robot extends LoggedRobot {
     m_field.setRobotPose(SwerveLocalizer.getInstance().getCurrentPoint());
     SmartDashboard.putData("Field", m_field);
 
-    SmartDashboard.putBoolean("bla 1", IntakeConsts.EXTENSION_LM.get());
-    SmartDashboard.putBoolean("bla 2", IntakeConsts.RETRACTION_LM.get());
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
   }
@@ -128,14 +140,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    // Shooter.getInstance().setShooterState(ShooterState.kScoring);
-    //ShooterConsts.FRONT_MOTOR.setVoltage(6);
-    // FeedAndConveyConsts.FEEDING_MOTOR.set(0.8);
-    //FeedAndConveyConsts.CONVEY_MOTOR.setVoltage(-1);
-    // Consts.IntakeConsts.PICKUP_MOTOR.set(-0.6);
-    //ShooterConsts.BACK_MOTOR.getControllerInstance().setVoltage(10);
-    // IntakeConsts.PICKUP_MOTOR.set(-0.3);
-    //SwerveAngleController.getInstance().start(45);
+
   }
 
   @Override

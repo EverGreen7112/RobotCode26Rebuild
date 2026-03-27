@@ -14,7 +14,7 @@ import frc.robot.Utils.Math.Vector2d;
 
 public class TeleopDriveCommand extends Command implements Consts.SwerveConsts{
     
-    private final double DEADZONE = 0.04;
+    private final double DEADZONE = 0.05;
     public static double maxSpeed;
     private Supplier<Double> m_xSpeedInput;
     private Supplier<Double> m_ySpeedInput;
@@ -31,17 +31,17 @@ public class TeleopDriveCommand extends Command implements Consts.SwerveConsts{
         m_ySpeedInput = ySpeedInput;
         m_angularVelocityInput = angularVelocityInput;
         maxSpeed = SwerveConsts.MAX_NORMAL_DRIVE_SPEED;
-        m_xLimiter = new SlewRateLimiter(M_MAX_ACCELARTION);
-        m_yLimiter = new SlewRateLimiter(M_MAX_ACCELARTION);
-        m_angularVelocityLimiter = new SlewRateLimiter(M_MAX_ANGULAR_ACCELERATION);
+        // m_xLimiter = new SlewRateLimiter(M_MAX_ACCELARTION);
+        // m_yLimiter = new SlewRateLimiter(M_MAX_ACCELARTION);
+        // m_angularVelocityLimiter = new SlewRateLimiter(M_MAX_ANGULAR_ACCELERATION);
     }
 
     @Override
     public void execute() {
         
-        double speedX = m_xLimiter.calculate(m_xSpeedInput.get());
-        double speedY = m_yLimiter.calculate(m_ySpeedInput.get());
-        double angularVel = m_angularVelocityLimiter.calculate(-m_angularVelocityInput.get());
+        double speedX = m_xSpeedInput.get();
+        double speedY = m_ySpeedInput.get();
+        double angularVel = -m_angularVelocityInput.get();
 
         if(Math.abs(speedX) < DEADZONE)
             speedX = 0;

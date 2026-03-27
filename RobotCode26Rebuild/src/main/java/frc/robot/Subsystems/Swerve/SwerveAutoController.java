@@ -39,9 +39,10 @@ public class SwerveAutoController {
     private static final double GOAL_END_VELOCITY = 0;
 
     private static SwerveAutoController m_instance = new SwerveAutoController();
-    private SendableChooser<Command> m_autoChooser;
-    private SendableChooser<Alliance> m_allianceChooser;
+private SendableChooser<Command> m_autoChooser = new SendableChooser<>();
+    private SendableChooser<Alliance> m_allianceChooser = new SendableChooser<>();
 
+    
     private SwerveAutoController(){
         
         configureCommands(); //configure commands must be registered before the creation of any paths

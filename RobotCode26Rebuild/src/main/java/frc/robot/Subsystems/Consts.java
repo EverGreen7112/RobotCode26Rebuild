@@ -45,9 +45,9 @@ public interface Consts {
 
                 public static final boolean DEBUG_MODE = false;
                 // speed values
-                public static final double MAX_NORMAL_DRIVE_SPEED = 3.5; // m/s
-                public static final double MAX_TURBO_DRIVE_SPEED = 5;
-                public static final double MAX_SLOW_DRIVE_SPEED = 2;
+                public static final double MAX_NORMAL_DRIVE_SPEED = 2; // m/s
+                public static final double MAX_TURBO_DRIVE_SPEED = 3;
+                public static final double MAX_SLOW_DRIVE_SPEED = 1;
                 public static final double MAX_ANGULAR_SPEED = 180; // deg/s/
                 public static final double MIN_SPEED = 0.4;
 
@@ -121,10 +121,10 @@ public interface Consts {
                                 DR_ABS_ENCODER };
 
                 // swerve module velocity pidf values
-                public static final double WHEEL_VELOCITY_KP = 0.1, WHEEL_VELOCITY_KI = 0.0, WHEEL_VELOCITY_KD = 0.00,
-                                WHEEL_VELOCITY_KV = 1 / 8.5, WHEEL_VELOCITY_KS = 0;
+                public static final double WHEEL_VELOCITY_KP = 0.06, WHEEL_VELOCITY_KI = 0.00003, WHEEL_VELOCITY_KD = 0.00004,
+                                WHEEL_VELOCITY_KV = 1.0 / 9.5, WHEEL_VELOCITY_KS = 0.1132;
                 // swerve module wheel angle pid values
-                public static final double WHEEL_ANGLE_KP = 0.01, WHEEL_ANGLE_KI = 0.0, WHEEL_ANGLE_KD = 0.000;
+                public static final double WHEEL_ANGLE_KP = 0.01, WHEEL_ANGLE_KI = 0.000003, WHEEL_ANGLE_KD = 0.00005;
 
                 // swerve dimensions
                 public static final double CHASSIS_WIDTH = 0.67, CHASSIS_LENGTH = 0.67;
@@ -164,12 +164,12 @@ public interface Consts {
                         for (EverMotorController driveMotor : DRIVE_MOTORS) {
                                 driveMotor.restoreFactoryDefaults();
                                 driveMotor.setInverted(false);
-                                driveMotor.setIdleMode(IdleMode.kCoast);
+                                driveMotor.setIdleMode(IdleMode.kBrake);
                         }
 
                         for (EverMotorController steerMotor : STEER_MOTORS) {
                                 steerMotor.restoreFactoryDefaults();
-                                steerMotor.setIdleMode(IdleMode.kCoast);
+                                steerMotor.setIdleMode(IdleMode.kBrake);
                         }
 
                         for (EverEncoder driveEncoder : DRIVE_ENCODERS) {
@@ -366,16 +366,16 @@ public interface Consts {
                 // public static final EverAnalogToDigitalLimitSwitch RETRACTION_LM = new EverAnalogToDigitalLimitSwitch(0),
                 //                 EXTENSION_LM = new EverAnalogToDigitalLimitSwitch(3);
 
-                public final double EXTENSION_SPEED = 0.3, PICKUP_SPEED = 0.6;
+                public final double EXTENSION_SPEED = 0.25, PICKUP_SPEED = 0.4;
                 public final boolean DEBUG_MODE = false;
                 public final double MAX_EXTENDING_ROTATIONS = 0;
 
                 public TalonFXConfiguration MOTOR_CONFIGS = new TalonFXConfiguration();
 
                 public static void config(){
-                        MOTOR_CONFIGS.MotionMagic.MotionMagicAcceleration = 100.0;
-                        MOTOR_CONFIGS.MotionMagic.MotionMagicJerk = 50.0;
-                        PICKUP_MOTOR.getControllerInstance().getConfigurator().apply(MOTOR_CONFIGS);
+                        // MOTOR_CONFIGS.MotionMagic.MotionMagicAcceleration = 100.0;
+                        // MOTOR_CONFIGS.MotionMagic.MotionMagicJerk = 50.0;
+                        // PICKUP_MOTOR.getControllerInstance().getConfigurator().apply(MOTOR_CONFIGS);
                 }
 
         }
@@ -384,7 +384,7 @@ public interface Consts {
 
                 public final static boolean DEBUG_MOD = false;
 
-                public final static double CONVEYING_TO_FEEDER_SPEED = -0.6, INTAKE_CONVEY_SPEED = -0.4; // motor power, place holder
+                public final static double CONVEYING_TO_FEEDER_SPEED = -0.4, INTAKE_CONVEY_SPEED = -0.2; // motor power, place holder
 
                 public final static EverTalonFX CONVEY_MOTOR = new EverTalonFX(17), FEEDING_MOTOR = new EverTalonFX(16);
 
