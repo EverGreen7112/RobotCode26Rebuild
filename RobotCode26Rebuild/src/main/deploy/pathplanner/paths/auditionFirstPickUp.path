@@ -44,11 +44,11 @@
   ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 0.75,
     "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 90.0,
+    "nominalVoltage": 6.0,
     "unlimited": false
   },
   "goalEndState": {
@@ -56,7 +56,7 @@
     "rotation": -178.4515286897703
   },
   "reversed": false,
-  "folder": "auditionPaths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

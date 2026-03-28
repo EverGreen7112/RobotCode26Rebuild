@@ -46,12 +46,12 @@ public interface Consts {
                 public static final boolean DEBUG_MODE = false;
                 // speed values
                 public static final double MAX_NORMAL_DRIVE_SPEED = 2; // m/s
-                public static final double MAX_TURBO_DRIVE_SPEED = 2;
+                public static final double MAX_TURBO_DRIVE_SPEED = 3;
                 public static final double MAX_SLOW_DRIVE_SPEED = 1;
                 public static final double MAX_ANGULAR_SPEED = 100; // deg/s/
                 public static final double MIN_SPEED = 0.4;
 
-                public static final double GYRO_DIRECTION = -1; // decide the direction of the gyro(counter clock wise
+                public static final double GYRO_DIRECTION = 1; // decide the direction of the gyro(counter clock wise
                                                                 // should be
                                                                 // positive)
 
@@ -238,7 +238,7 @@ public interface Consts {
                 public static final double SHOOTING_GEAR_RATIO = 1.0 , ANGLE_GEAR_RATIO = 1.0 / 23.51351;
 
                 public static final Pose2d BLUE_HUB_POSE = new Pose2d(4.620, 4.03, new Rotation2d());
-                public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d(Math.toDegrees(Math.PI)));
+                public static final Pose2d RED_HUB_POSE = new Pose2d(11.920, 4.03, new Rotation2d(0));
 
                 public static final Pose2d DELIVERY_POSES_BLUE = new Pose2d(1.723, 6.5, new Rotation2d(Math.toDegrees(Math.PI)));
 

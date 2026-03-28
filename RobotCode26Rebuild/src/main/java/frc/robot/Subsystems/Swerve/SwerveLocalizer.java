@@ -32,14 +32,14 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
                     VecBuilder.fill(0.0, 0.0, 0), VecBuilder.fill(0.0, 0.0, 0)),
             new LocalizationCamera("front_cam",
                                         AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark),
-                                        new Transform3d(-0.2275, -0.2725, 0.530, new Rotation3d(Math.toRadians(-1.7), Math.toRadians(90 - 22.15), 0)),
+                                        new Transform3d(-0.225, -0.282, 0.530, new Rotation3d(Math.toRadians(1.7), Math.toRadians(90 - 61.6), 0)),
                                         VecBuilder.fill(0, 0, 0), VecBuilder.fill(0, 0, 0))
     };
 
     private static final double FIELD_WIDTH = 8.05;
     private static final double FIELD_HEIGHT = 17.55;
-    private static final double MAX_ESTIMATION_HEIGHT = 0.08;
-    private static final double MAX_DISTANCE_FROM_TAG = 3;
+    private static final double MAX_ESTIMATION_HEIGHT = 0.6;
+    private static final double MAX_DISTANCE_FROM_TAG = 5;
 
     private static SwerveLocalizer m_instance = new SwerveLocalizer();
     private ArrayList<LocalizationCamera> m_cams;
@@ -132,6 +132,10 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
 
         boolean isTooFar = avgDist > MAX_DISTANCE_FROM_TAG;
         if(DEBUG_MODE){    
+            SmartDashboard.putNumber("x", x);
+            SmartDashboard.putNumber("y", y);
+            SmartDashboard.putNumber("z", z);
+            SmartDashboard.putNumber("dis", avgDist);
             SmartDashboard.putBoolean("out of field", outOfField);
             SmartDashboard.putBoolean("to far", isTooFar);
             SmartDashboard.putBoolean("above camera", aboveCamera);
@@ -142,7 +146,7 @@ public class SwerveLocalizer implements Periodic, Consts.SwerveConsts{
 
     private void addCameraVisionMeasurements(LocalizationCamera cam) {
         Optional<EstimatedRobotPose> est = cam.getEstimatedGlobalPose();
-        SmartDashboard.putBoolean("big yahu", true);
+        SmartDashboard.putBoolean("big yahu", cam.isConnected());
         if(DEBUG_MODE && est.isPresent())
             SmartDashboard.putString("vision pose", est.get().estimatedPose.toString());
         if (!takeVisionPoseEstimation(est)){

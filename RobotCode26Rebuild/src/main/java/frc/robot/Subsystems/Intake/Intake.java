@@ -47,8 +47,8 @@ public class Intake extends SubsystemBase implements Consts.IntakeConsts{
         m_extensionMotor.stop();
     }
 
-    public void startPickup(){
-        m_pickupMotor.set(-IntakeConsts.PICKUP_SPEED);
+    public void startPickup(double speed){
+        m_pickupMotor.set(speed);
     }
 
     public void stopPickup(){

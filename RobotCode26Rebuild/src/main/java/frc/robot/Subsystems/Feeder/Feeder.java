@@ -42,6 +42,10 @@ public class Feeder extends SubsystemBase implements Consts.FeedAndConveyConsts{
         m_feedingMotor.set(FEEDING_SPEED);
     }
 
+    public void reversFeed(){
+        m_feedingMotor.set(-FEEDING_SPEED);
+    }
+
     public void stopFeed(){
         m_feedingMotor.stop();
     }

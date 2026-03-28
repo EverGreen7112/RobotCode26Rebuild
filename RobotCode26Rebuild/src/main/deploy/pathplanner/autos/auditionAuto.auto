@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -15,16 +15,29 @@
                 }
               },
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "openIntake"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.7
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "openIntake"
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -43,57 +56,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "auditionScore"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "stopIntake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "scoring"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 3.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "auditionSecondPickup"
                 }
               },
               {
@@ -114,30 +83,18 @@
                 "data": {
                   "pathName": "auditionKick"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "startIntake"
-                }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "auditionSecondScore"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
-                  "name": "startIntake"
+                  "name": "scoring"
                 }
               }
             ]

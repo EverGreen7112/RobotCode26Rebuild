@@ -14,18 +14,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.ResetRobotCommand;
 import frc.robot.Commands.Conveyor.ConveyIntakeCommand;
 import frc.robot.Commands.Conveyor.ConveyToFeederCommand;
+import frc.robot.Commands.Conveyor.ReverseConveyCommand;
 import frc.robot.Commands.Feeder.FeedCommand;
+import frc.robot.Commands.Feeder.ReversFeeder;
 import frc.robot.Commands.Intake.IntakeCommand;
+import frc.robot.Commands.Intake.IntakeInjectCommand;
 import frc.robot.Commands.Intake.IntakePickupCommand;
 import frc.robot.Commands.Intake.RetractIntakeCommand;
 import frc.robot.Commands.Shooter.DeliverCommand;
 import frc.robot.Commands.Shooter.ScoreCommand;
 import frc.robot.Commands.Swerve.ManualDrive.ChangeTeleopSpeedModeCommand;
 import frc.robot.Commands.Swerve.ManualDrive.LockSwerveAngleCommand;
+import frc.robot.Commands.Swerve.ManualDrive.RotateByCommand;
 import frc.robot.Commands.Swerve.ManualDrive.RotateToCommand;
 import frc.robot.Commands.Swerve.ManualDrive.TeleopDriveCommand;
 import frc.robot.Commands.Swerve.ManualDrive.ChangeTeleopSpeedModeCommand.SpeedMode;
 import frc.robot.Subsystems.Consts.IntakeConsts;
+import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveLocalizer;
 import frc.robot.Utils.EverKit.Implementations.MotorControllers.EverSparkMax;
@@ -58,6 +63,7 @@ public class RobotContainer {
   public static final Trigger chassisA = chassis.a();
   public static final Trigger chassisB = chassis.b();
   public static final Trigger chassisX = chassis.x();
+  public static final Trigger chassisY = chassis.y();
   public static final Trigger chassisRT = chassis.rightTrigger();
   public static final Trigger chassisLT = chassis.leftTrigger();
   public static final Trigger chassisRB = chassis.rightBumper();
@@ -71,6 +77,7 @@ public class RobotContainer {
 
   private ParallelCommandGroup m_shooterCommands = new ParallelCommandGroup(new ConveyToFeederCommand(), new FeedCommand());
   private ParallelCommandGroup m_pickUpCommands = new ParallelCommandGroup(new IntakePickupCommand());
+  private ParallelCommandGroup m_reversCommands = new ParallelCommandGroup(new ReverseConveyCommand(), new ReversFeeder());
   private ParallelCommandGroup m_close = new ParallelCommandGroup(new RetractIntakeCommand());
 
   public RobotContainer() {
@@ -89,7 +96,9 @@ public class RobotContainer {
     chassisRT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kTurbo));
     chassisLT.whileTrue(new ChangeTeleopSpeedModeCommand(SpeedMode.kSlow));
     chassisBack.onTrue(new InstantCommand(() -> Swerve.getInstance().resetGyro()));
-    chassisRB.whileTrue(new LockSwerveAngleCommand());
+    chassisRB.whileTrue(new RotateToCommand(Shooter.getInstance().calcRobotShootingOffsetAngle(SwerveLocalizer.getInstance().getCurrentPoint()), true));
+    chassisY.whileTrue(m_reversCommands);
+    chassisX.whileTrue(new DeliverCommand());
     
 
     chassisB.whileTrue(m_shooterCommands);
@@ -98,6 +107,7 @@ public class RobotContainer {
     operatorLB.whileTrue(m_pickUpCommands);
     operatorRT.whileTrue(new IntakeCommand());
     operatorLT.whileTrue(m_close);
+    operatorRB.whileTrue(new IntakeInjectCommand());
 
   }
 

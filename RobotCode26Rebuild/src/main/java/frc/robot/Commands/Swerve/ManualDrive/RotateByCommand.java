@@ -8,6 +8,7 @@ public class RotateByCommand extends Command{
     private double m_targetAngle;
 
     public RotateByCommand(double targetAngle){
+        addRequirements(Swerve.getInstance());
         m_targetAngle = Swerve.getInstance().getGyroOrientedAngle() + targetAngle;
     }
 

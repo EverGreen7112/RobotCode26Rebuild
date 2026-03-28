@@ -67,7 +67,7 @@ public class Swerve extends SubsystemBase implements Consts.SwerveConsts{
         //convert to m/s
         double angularVel = (m_angularVelocity / 360.0) * SwerveConsts.ROBOT_BOUNDING_CIRCLE_PERIMETER;
 
-        if (m_velocity.mag() < SwerveConsts.MIN_SPEED && Math.abs(m_angularVelocity) < 0.04){
+        if (m_velocity.mag() < SwerveConsts.MIN_SPEED && Math.abs(m_angularVelocity) < 0.05){
             stop();
             return;
         }
@@ -92,7 +92,7 @@ public class Swerve extends SubsystemBase implements Consts.SwerveConsts{
             sumVectors[i].add(rotVecs[i]);
             m_modules[i].setState(sumVectors[i]);
         }
-    }
+    }   
 
     public double getGyroOrientedAngle(){
         return m_gyro.getYaw() * SwerveConsts.GYRO_DIRECTION + SwerveConsts.GYRO_OFFSET;

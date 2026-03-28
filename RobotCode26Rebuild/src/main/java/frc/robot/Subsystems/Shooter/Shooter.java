@@ -2,6 +2,7 @@ package frc.robot.Subsystems.Shooter;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -117,16 +118,16 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     private double getShootingDistance() {
         double locX = SwerveLocalizer.getInstance().getCurrentPoint().getX();
         double locY = SwerveLocalizer.getInstance().getCurrentPoint().getY();
-        if(m_shooterState == ShooterState.kStaticPoint){
-            locX = m_staticShootingPose.getX();
-            locY = m_staticShootingPose.getY();
-        }
-        else if(m_shooterState == ShooterState.kDelivery){
-            locX = m_deliveryPoints.getX();
-            locY = m_deliveryPoints.getY();
-        }
-        //return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
-        return 1.2;
+        // if(m_shooterState == ShooterState.kStaticPoint){
+        //     locX = m_staticShootingPose.getX();
+        //     locY = m_staticShootingPose.getY();
+        // }
+        // else if(m_shooterState == ShooterState.kDelivery){
+        //     locX = m_deliveryPoints.getX();
+        //     locY = m_deliveryPoints.getY();
+        // }
+        return Math.sqrt(Math.pow(m_targetHub.getX() - locX, 2) + Math.pow(m_targetHub.getY() - locY, 2));
+        // return 1.2;
     }
 
     /**
@@ -154,15 +155,12 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
     
 
     public double calcRobotShootingOffsetAngle(Pose2d robotPose) {
-        Pose2d pos = robotPose;
-        double x = m_targetHub.getX() - pos.getX();
-        double y = m_targetHub.getY() - pos.getY();
+        // Calculate the translation from robot to hub
+        double dx = m_targetHub.getX() - robotPose.getX();
+        double dy = m_targetHub.getY() - robotPose.getY();
 
-        double robotsOffsetAngleFromHub = Math.toDegrees(Math.atan2(y, x));
-
-        Vector2d robotVelocity = Swerve.getInstance().getRobotOrientedVelocity();
-
-        return robotsOffsetAngleFromHub + Math.toDegrees(Math.atan2(robotVelocity.y + m_predictedBallV0, robotVelocity.x));
+        // This replaces all the Vector2d.theta() and Math.toDegrees logic
+        return new Rotation2d(dx, dy).getDegrees(); //Rotation2d.fromDegrees(angleToHub).getDegrees();
     }
 
     public ShooterState getShooterState(){
@@ -181,10 +179,10 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
 
         switch (m_shooterState) {// kScoring is default
             case kScoring:
-                m_targetSpeed = calcShooterSpeed(calcBallV0MS()) * 1.15;
+                m_targetSpeed = calcShooterSpeed(calcBallV0MS()) * 1.13;
                 m_frontShootingController.activate(m_targetSpeed, ControlType.kVel);
                 m_backShootingController.activate((m_targetSpeed * WHEELS_RATIO), ControlType.kVel);
-                //anglePos(SCORING_ANGLE);
+                //anglePos(1.5);
                 break;
             case kDelivery:
                 m_frontShootingController.activate(ShooterConsts.DELIVERY_RPS, ControlType.kVel);
@@ -235,6 +233,8 @@ public class Shooter extends SubsystemBase implements Consts.ShooterConsts {
         SmartDashboard.putNumber("Back Wheel Shooting Speed", m_backShootingEncoder.getVel());
 
         SmartDashboard.putString("shooter state", m_shooterState + "");
+
+        SmartDashboard.putNumber("robot offset from hub",calcRobotShootingOffsetAngle(SwerveLocalizer.getInstance().getCurrentPoint()));
     }
 
     public void frontShootingRpm(double rps) {

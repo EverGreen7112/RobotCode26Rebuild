@@ -3,6 +3,7 @@ package frc.robot.Commands.Swerve.ManualDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveAngleController;
+import frc.robot.Utils.Math.Vector2d;
 
 public class RotateToCommand extends Command{
     
@@ -10,6 +11,7 @@ public class RotateToCommand extends Command{
     private boolean m_fieldOriented;
 
     public RotateToCommand(double targetAngle, boolean fieldOriented){
+        addRequirements(Swerve.getInstance());
         m_targetAngle = targetAngle;
         m_fieldOriented = fieldOriented;
     }
@@ -20,10 +22,18 @@ public class RotateToCommand extends Command{
     }
 
     @Override
-    public boolean isFinished() {
-        return true;
+    public void execute(){
+        double output = SwerveAngleController.getInstance().getAngularVelocity(); 
+        Swerve.getInstance().driveByAngularVelocity(output);
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        SwerveAngleController.getInstance().stop();
+    }
 }

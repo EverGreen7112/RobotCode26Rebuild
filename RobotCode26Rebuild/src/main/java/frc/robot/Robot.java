@@ -17,6 +17,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveModule;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -91,7 +92,7 @@ public class Robot extends LoggedRobot {
       m_camera = CameraServer.startAutomaticCapture();
 
         // 2. Set basic settings (Optional but helpful)
-        m_camera.setResolution(900, 900); // Keep it low to save bandwidth
+        m_camera.setResolution(820, 820); // Keep it low to save bandwidth
         m_camera.setFPS(30);
          
         m_led = new AddressableLED(8);
@@ -114,7 +115,7 @@ public class Robot extends LoggedRobot {
 
     m_field.setRobotPose(SwerveLocalizer.getInstance().getCurrentPoint());
     SmartDashboard.putData("Field", m_field);
-    
+    SmartDashboard.putString("autoName", PathPlannerAuto.currentPathName);
     //Shooter.getInstance().ConfigureAllianceShootingSetting(m_alliance == Alliance.Blue);
     //AutoOperationsController.getInstance().setAlliance(m_alliance == Alliance.Blue);
     
@@ -159,6 +160,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopPeriodic() {
+    //SmartDashboard.putNumber("clock",)
   }
 
   @Override

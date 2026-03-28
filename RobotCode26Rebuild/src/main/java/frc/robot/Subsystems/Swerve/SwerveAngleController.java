@@ -13,7 +13,7 @@ public class SwerveAngleController extends SubsystemBase implements Periodic {
     private static SwerveAngleController m_instance = new SwerveAngleController();
 
     private SwerveAngleController(){
-        m_angleController = new ProfiledPIDController(5, 0, 0, new Constraints(180, 180));
+        m_angleController = new ProfiledPIDController(2, 0.000, 0.00005, new Constraints(90, 180));
         m_angleController.enableContinuousInput(-180, 180);
         m_isFieldOriented = false;   
     }
@@ -40,8 +40,13 @@ public class SwerveAngleController extends SubsystemBase implements Periodic {
 
     @Override
     public void periodic() {
+        // double currentAngle = (m_isFieldOriented ) ? SwerveLocalizer.getInstance().getFieldOrientedAngle() : Swerve.getInstance().getGyroOrientedAngle();
+        // Swerve.getInstance().driveByAngularVelocity( m_angleController.calculate(currentAngle, m_targetAngle));    
+    }
+
+    public double getAngularVelocity(){
         double currentAngle = (m_isFieldOriented ) ? SwerveLocalizer.getInstance().getFieldOrientedAngle() : Swerve.getInstance().getGyroOrientedAngle();
-        Swerve.getInstance().driveByAngularVelocity( m_angleController.calculate(currentAngle, m_targetAngle));    
+        return m_angleController.calculate(currentAngle, m_targetAngle);  
     }
 
     public void stop(){
